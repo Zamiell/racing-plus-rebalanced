@@ -1,0 +1,38 @@
+{
+  "name": "racing_plus_rebalanced",
+  "version": "0.0.1",
+  "description": "A mod for The Binding of Isaac: Afterbirth+",
+  "main": "main.js",
+  "scripts": {
+    "build": "tstl --listFiles ",
+    "watch": "tstl --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zamiell/racing_plus_rebalanced.git"
+  },
+  "keywords": [
+    "isaac",
+    "mod",
+    "rebirth",
+    "afterbirth",
+    "repentance"
+  ],
+  "author": "Zamiell",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Zamiell/racing_plus_rebalanced/issues"
+  },
+  "homepage": "https://github.com/Zamiell/racing_plus_rebalanced#readme",
+  "devDependencies": {
+    "@btmills/prettier": "git+ssh://git@github.com/btmills/prettier.git",
+    "@types/isaac-typescript-definitions": "git+ssh://git@github.com/Zamiell/isaac-typescript-definitions",
+    "@typescript-eslint/eslint-plugin": "^4.4.1",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "typescript": "^4.0.3",
+    "typescript-to-lua": "^0.36.0"
+  }
+}
