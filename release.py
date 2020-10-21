@@ -113,7 +113,7 @@ for line in iter(FILE_DATA.splitlines()):
         NEW_FILE += '  "version": "' + VERSION_JUST_NUMBERS + '",\n'
     else:
         NEW_FILE += line + '\n'
-with open(METADATA_XML_PATH, 'w', newline='\n') as file:
+with open(PACKAGE_JSON_PATH, 'w', newline='\n') as file:
     file.write(NEW_FILE)
 
 # Remove the "disable.it" file, if present
