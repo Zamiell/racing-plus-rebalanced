@@ -48,16 +48,31 @@ if VERSION == '':
 with open(CONSTANTS_TS_FILE, 'w', newline='\n') as file:
     file.write(NEW_FILE)
 
-# Also write out the version to the "version.txt" file
+# Compile it
+os.chdir(DIR)
+TSTL_PATH = os.path.join(DIR, 'node_modules', '.bin', 'tstl.cmd')
+RETURN_CODE = subprocess.call([TSTL_PATH])
+if RETURN_CODE != 0:
+    error('Failed to compile.')
+
+# Copy it
 MOD_SOURCE_DIR = os.path.join(DIR, 'mod')
+SOURCE_MAIN_LUA = os.path.join(MOD_SOURCE_DIR, 'main.lua')
+MODS_DIR = 'C:\\Users\\james\\Documents\\My Games\\Binding of Isaac Afterbirth+ Mods'
+PROJECT_NAME = os.path.basename(DIR)
+MOD_TARGET_DIR = os.path.join(MODS_DIR, PROJECT_NAME)
+TARGET_MAIN_LUA = os.path.join(MOD_TARGET_DIR, 'main.lua')
+try:
+    shutil.copy(SOURCE_MAIN_LUA, TARGET_MAIN_LUA)
+except Exception as err:
+    error('Failed to copy the "' + SOURCE_MAIN_LUA + '" to "' + TARGET_MAIN_LUA + '":', err)
+
+# Also write out the version to the "version.txt" file
 VERSION_FILE = os.path.join(MOD_SOURCE_DIR, 'version.txt')
 with open(VERSION_FILE, 'w', newline='\n') as file:
     file.write(VERSION)
 
 # Remove the "disable.it" file, if present
-MODS_DIR = 'C:\\Users\\james\\Documents\\My Games\\Binding of Isaac Afterbirth+ Mods'
-PROJECT_NAME = os.path.basename(DIR)
-MOD_TARGET_DIR = os.path.join(MODS_DIR, PROJECT_NAME)
 DISABLE_IT_PATH = os.path.join(MOD_TARGET_DIR, 'disable.it')
 try:
     if os.path.exists(DISABLE_IT_PATH):
