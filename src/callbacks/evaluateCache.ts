@@ -27,31 +27,31 @@ function damageItems(player: EntityPlayer) {
 
   // 114
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_MOMS_KNIFE)
-    && !player.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS)
+    player.HasCollectible(CollectibleType.COLLECTIBLE_MOMS_KNIFE) &&
+    !player.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS)
   ) {
     player.Damage *= 0.7;
   }
 
   // 233
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET)
-    && !hasTinyPlanetExceptionItem()
+    player.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET) &&
+    !hasTinyPlanetExceptionItem()
   ) {
     player.Damage *= 1.5;
   }
 
   // 276
   if (player.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)) {
-    player.Damage *= 0.75;
+    player.Damage *= 0.8;
   }
 
   // 329
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE)
-    && !player.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS)
-    && !player.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X)
-    && !player.HasCollectible(CollectibleType.COLLECTIBLE_HAEMOLACRIA)
+    player.HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) &&
+    !player.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) &&
+    !player.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) &&
+    !player.HasCollectible(CollectibleType.COLLECTIBLE_HAEMOLACRIA)
   ) {
     player.Damage *= 3;
   }
@@ -68,8 +68,8 @@ function damageItems(player: EntityPlayer) {
 
   // 420
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_BLACK_POWDER)
-    && g.run.blackPowderActive
+    player.HasCollectible(CollectibleType.COLLECTIBLE_BLACK_POWDER) &&
+    g.run.blackPowderActive
   ) {
     player.Damage *= 1.5;
   }
@@ -128,8 +128,8 @@ function fireDelayItems(player: EntityPlayer) {
 
   // 2
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_INNER_EYE)
-    && !player.HasCollectible(
+    player.HasCollectible(CollectibleType.COLLECTIBLE_INNER_EYE) &&
+    !player.HasCollectible(
       CollectibleTypeCustom.COLLECTIBLE_MUTANT_SPIDER_INNER_EYE,
     )
   ) {
@@ -148,8 +148,8 @@ function fireDelayItems(player: EntityPlayer) {
 
   // 233
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET)
-    && !hasTinyPlanetExceptionItem()
+    player.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET) &&
+    !hasTinyPlanetExceptionItem()
   ) {
     player.MaxFireDelay -= 4;
   }
@@ -191,8 +191,8 @@ function fireDelayItems(player: EntityPlayer) {
 
   // 444
   if (
-    player.HasCollectible(CollectibleType.COLLECTIBLE_DARK_PRINCESS_CROWN)
-    && hearts === 2
+    player.HasCollectible(CollectibleType.COLLECTIBLE_DARK_PRINCESS_CROWN) &&
+    hearts === 2
   ) {
     player.MaxFireDelay -= 2;
   }

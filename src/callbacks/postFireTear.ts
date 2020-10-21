@@ -1,13 +1,14 @@
 import { FAMILIAR_TEAR_DAMAGE, FAMILIAR_TEAR_SCALE } from "../constants";
 import g from "../globals";
+import * as misc from "../misc";
 import * as pills from "../pills";
 import { CollectibleTypeCustom } from "../types/enums.custom";
 
 export function main(tear: EntityTear): void {
   if (
-    !g.run.abelDoubleTear // 188
-    && !g.run.wizDoubleTear // 358
-    && !g.run.strabismusDoubleTear
+    !g.run.abelDoubleTear && // 188
+    !g.run.wizDoubleTear && // 358
+    !g.run.strabismusDoubleTear
   ) {
     g.run.tearCounter += 1;
   }
@@ -16,7 +17,6 @@ export function main(tear: EntityTear): void {
   momsContacts(tear); // 110
   abel(tear); // 188
   tinyPlanet(tear); // 233
-  twentyTwenty(tear); // 245
   isaacsHeart(tear); // 276
   theWiz(tear); // 358
   fireMind(tear); // Replacing 257
@@ -44,8 +44,8 @@ function momsContacts(tear: EntityTear) {
 // CollectibleType.COLLECTIBLE_ABEL (188)
 function abel(tear: EntityTear) {
   if (
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_ABEL)
-    || g.run.abelDoubleTear
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_ABEL) ||
+    g.run.abelDoubleTear
   ) {
     return;
   }
@@ -103,34 +103,23 @@ function tinyPlanet(tear: EntityTear) {
   // callback
 }
 
-// CollectibleType.COLLECTIBLE_20_20 (245)
-function twentyTwenty(tear: EntityTear) {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_20_20)) {
-    return;
-  }
-
-  if (g.run.tearCounter % 8 === 0) {
-    tear.Remove();
-  }
-}
-
 // CollectibleType.COLLECTIBLE_ISAACS_HEART (276)
 function isaacsHeart(tear: EntityTear) {
   if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)) {
     return;
   }
 
-  g.run.spawningLaser = true;
+  g.run.spawningIsaacsHeartLaser = true;
   g.p.FireBrimstone(tear.Velocity);
-  g.run.spawningLaser = false;
+  g.run.spawningIsaacsHeartLaser = false;
   tear.Remove();
 }
 
 // CollectibleType.COLLECTIBLE_THE_WIZ (358)
 function theWiz(tear: EntityTear) {
   if (
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_THE_WIZ)
-    || g.run.wizDoubleTear
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_THE_WIZ) ||
+    g.run.wizDoubleTear
   ) {
     return;
   }
@@ -155,8 +144,8 @@ function fireMind(tear: EntityTear) {
 // CollectibleTypeCustom.COLLECTIBLE_STRABISMUS
 function strabismus(tear: EntityTear) {
   if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_STRABISMUS)
-    || g.run.strabismusDoubleTear
+    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_STRABISMUS) ||
+    g.run.strabismusDoubleTear
   ) {
     return;
   }
@@ -167,7 +156,7 @@ function strabismus(tear: EntityTear) {
   const rotation = math.random(1, 359);
   const velocity = tear.Velocity.Rotated(rotation);
   g.run.strabismusDoubleTear = true;
-  g.p.FireTear(g.p.Position, velocity, false, true, false);
+  g.p.FireTear(g.p.Position, velocity, false, false, false);
   g.run.strabismusDoubleTear = false;
 }
 
@@ -300,9 +289,6 @@ function removeFear(tear: EntityTear) {
 }
 
 function familiars(tear: EntityTear) {
-  // Local variables
-  const direction = g.p.GetFireDirection();
-
   let damage = 3.5 + g.p.Damage * FAMILIAR_TEAR_DAMAGE;
   if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
     damage *= 2;
@@ -312,16 +298,7 @@ function familiars(tear: EntityTear) {
   // Manually detect the direction && fix this
   let velocity = tear.Velocity;
   if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET)) {
-    if (direction === Direction.LEFT) {
-      velocity = Vector(-1, 0);
-    } else if (direction === Direction.UP) {
-      velocity = Vector(0, -1);
-    } else if (direction === Direction.RIGHT) {
-      velocity = Vector(1, 0);
-    } else if (direction === Direction.DOWN) {
-      velocity = Vector(0, 1);
-    }
-    velocity = velocity.__mul(g.p.ShotSpeed * 10);
+    velocity = misc.getVelocityFromAimDirection();
   }
 
   const familiarEntities = Isaac.FindByType(
@@ -333,16 +310,16 @@ function familiars(tear: EntityTear) {
   );
   for (const familiar of familiarEntities) {
     if (
-      familiar.Variant === FamiliarVariant.BROTHER_BOBBY // 1
-      || familiar.Variant === FamiliarVariant.DEMON_BABY // 2
-      || familiar.Variant === FamiliarVariant.LITTLE_GISH // 4
-      || familiar.Variant === FamiliarVariant.LITTLE_STEVEN // 5
-      || familiar.Variant === FamiliarVariant.SISTER_MAGGY // 7
-      || familiar.Variant === FamiliarVariant.GHOST_BABY // 9
-      || familiar.Variant === FamiliarVariant.RAINBOW_BABY // 11
-      || familiar.Variant === FamiliarVariant.ISAACS_HEAD // 12
-      || familiar.Variant === FamiliarVariant.MONGO_BABY // 74
-      || familiar.Variant === FamiliarVariant.SERAPHIM // 92
+      familiar.Variant === FamiliarVariant.BROTHER_BOBBY || // 1
+      familiar.Variant === FamiliarVariant.DEMON_BABY || // 2
+      familiar.Variant === FamiliarVariant.LITTLE_GISH || // 4
+      familiar.Variant === FamiliarVariant.LITTLE_STEVEN || // 5
+      familiar.Variant === FamiliarVariant.SISTER_MAGGY || // 7
+      familiar.Variant === FamiliarVariant.GHOST_BABY || // 9
+      familiar.Variant === FamiliarVariant.RAINBOW_BABY || // 11
+      familiar.Variant === FamiliarVariant.ISAACS_HEAD || // 12
+      familiar.Variant === FamiliarVariant.MONGO_BABY || // 74
+      familiar.Variant === FamiliarVariant.SERAPHIM // 92
     ) {
       const familiarTear = Isaac.Spawn(
         EntityType.ENTITY_TEAR,

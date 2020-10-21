@@ -40,6 +40,19 @@ import {
   PillEffectCustom,
 } from "./types/enums.custom";
 
+// Replace Lua's error function with something that actually displays the output
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+error = (err: number) => {
+  // For some reason, when reloading a mod, it will throw multiple errors of "0"
+  if (err === 0) {
+    return;
+  }
+
+  Isaac.DebugString(`Custom error function: ${err}`);
+  Isaac.DebugString(debug.traceback());
+};
+
 const RPRebalanced = RegisterMod("Racing+ Rebalanced", 1);
 
 // Set this mod's version as a global variable to inform other mods that Racing+ Rebalanced exists

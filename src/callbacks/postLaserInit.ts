@@ -6,7 +6,9 @@ export function main(laser: EntityLaser): void {
 
 // CollectibleType.COLLECTIBLE_ISAACS_HEART (276)
 function isaacsHeart(laser: EntityLaser) {
-  if (!g.run.spawningLaser) {
+  // We don't want to check for "!g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)"
+  // because we might have Isaac's Heart from a Monster Manual
+  if (!g.run.spawningIsaacsHeartLaser) {
     return;
   }
 

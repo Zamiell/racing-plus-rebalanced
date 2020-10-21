@@ -1,0 +1,20 @@
+<entities anm2root="gfx/" version="5">
+	<entity anm2path="1000.076_Dice Floor.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="1" collisionRadius="0" friction="1" id="1000" name="Dice Room Floor (Custom)" numGridCollisionPoints="0" shadowSize="0" stageHP="0" variant="300">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity anm2path="006.013_transmutation machine.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="6" name="Transmutation Machine" numGridCollisionPoints="24" shadowSize="33" stageHP="0" variant="13">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity anm2path="006.014_bomb donation machine.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="6" name="Bomb Donation Machine" numGridCollisionPoints="24" shadowSize="33" stageHP="0" variant="13">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity anm2path="006.015_key donation machine.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="6" name="Key Donation Machine" numGridCollisionPoints="24" shadowSize="33" stageHP="0" variant="13">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity anm2path="006.016_roulette table.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="6" name="Roulette Table" numGridCollisionPoints="24" shadowSize="33" stageHP="0" variant="13">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+	<entity anm2path="006.017_holy machine.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="6" name="Holy Machine" numGridCollisionPoints="24" shadowSize="33" stageHP="0" variant="13">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
+</entities>

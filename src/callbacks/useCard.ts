@@ -1,7 +1,7 @@
 import g from "../globals";
 import * as misc from "../misc";
-import { CollectibleTypeCustom } from "../types/enums.custom";
 import * as path from "../path";
+import { CollectibleTypeCustom } from "../types/enums.custom";
 
 // Card.CARD_MAGICIAN (2)
 export function magician(): void {
@@ -80,11 +80,11 @@ function deleteNearestHeart() {
   for (const heart of hearts) {
     const pickup = heart.ToPickup();
     if (
-      pickup.FrameCount <= 1
-      && pickup.SpawnerType === EntityType.ENTITY_PLAYER
-      && pickup.Touched === false
-      && pickup.Price === 0
-      && pickup.State !== 1 // We set the state to 1 when we are deleting it
+      pickup.FrameCount <= 1 &&
+      pickup.SpawnerType === EntityType.ENTITY_PLAYER &&
+      pickup.Touched === false &&
+      pickup.Price === 0 &&
+      pickup.State !== 1 // We set the state to 1 when we are deleting it
     ) {
       const distanceToPlayer = g.p.Position.Distance(pickup.Position);
       if (nearestPickup === null || nearestPickupDistance === null) {
@@ -193,6 +193,11 @@ export function sun(): void {
 export function world(): void {
   // Local variables
   const rooms = g.l.GetRooms();
+
+  // If they already have the compass effect, then this card will have no effect
+  if (g.l.GetStateFlag(LevelStateFlag.STATE_COMPASS_EFFECT)) {
+    return;
+  }
 
   // Make all the rooms invisible except for the Boss Room
   for (let i = 0; i < rooms.Size; i++) {

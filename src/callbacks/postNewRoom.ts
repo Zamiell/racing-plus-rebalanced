@@ -1,5 +1,6 @@
 import { POKE_GO_EXCEPTION_ENTITIES } from "../constants";
 import g from "../globals";
+import * as technology25 from "../items/technology25";
 import * as misc from "../misc";
 import {
   CollectibleTypeCustom,
@@ -24,9 +25,9 @@ export function main(): void {
   // Make sure the callbacks run in the right order
   // (naturally, PostNewRoom gets called before the PostNewLevel && PostGameStarted callbacks)
   if (
-    gameFrameCount === 0
-    || g.run.currentFloor !== stage
-    || g.run.currentFloorType !== stageType
+    gameFrameCount === 0 ||
+    g.run.currentFloor !== stage ||
+    g.run.currentFloorType !== stageType
   ) {
     return;
   }
@@ -52,7 +53,7 @@ export function newRoom(): void {
   blueMap(); // 246
   holyMantle(); // 313
   pokeGoImproved(); // Replacing 505
-  technology25();
+  technology25.postNewRoom();
 
   // Pills
   familiarFrenzy();
@@ -311,9 +312,9 @@ function replaceRedChestDD() {
   const isFirstVisit = g.r.IsFirstVisit();
 
   if (
-    roomType !== RoomType.ROOM_DEVIL // 14
-    || roomVariant !== 18 // The devil room with the 10 Red Chests is18.length
-    || !isFirstVisit
+    roomType !== RoomType.ROOM_DEVIL || // 14
+    roomVariant !== 18 || // The devil room with the 10 Red Chests is18.length
+    !isFirstVisit
   ) {
     return;
   }
@@ -469,8 +470,8 @@ function blueMap() {
 // CollectibleType.COLLECTIBLE_HOLY_MANTLE (313)
 function holyMantle() {
   if (
-    !g.run.holyMantle
-    || !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
+    !g.run.holyMantle ||
+    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
   ) {
     return;
   }
@@ -488,9 +489,9 @@ function pokeGoImproved() {
   for (const entity of Isaac.GetRoomEntities()) {
     const npc = entity.ToNPC();
     if (
-      npc !== null
-      && !npc.IsBoss()
-      && !POKE_GO_EXCEPTION_ENTITIES.includes(npc.Type)
+      npc !== null &&
+      !npc.IsBoss() &&
+      !POKE_GO_EXCEPTION_ENTITIES.includes(npc.Type)
     ) {
       targetNPC = npc;
       break;
@@ -503,27 +504,6 @@ function pokeGoImproved() {
   targetNPC.AddEntityFlags(EntityFlag.FLAG_CHARM); // 1 << 8
   targetNPC.AddEntityFlags(EntityFlag.FLAG_FRIENDLY); // 1 << 29
   targetNPC.AddEntityFlags(EntityFlag.FLAG_PERSISTENT); // 1 << 37
-}
-
-function technology25() {
-  if (!g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5)) {
-    return;
-  }
-
-  // Spawn a laser ring around the player
-  const radius = 66; // Copied from Samael's Tech X ability
-  const laser = g.p
-    .FireTechXLaser(g.p.Position, g.zeroVector, radius)
-    .ToLaser();
-
-  if (laser.Variant !== 2) {
-    laser.Variant = 2;
-    laser.SpriteScale = Vector(0.5, 1);
-  }
-  laser.TearFlags |= TearFlags.TEAR_CONTINUUM;
-  laser.CollisionDamage *= 0.33;
-  const data = laser.GetData();
-  data.ring = true;
 }
 
 export function familiarFrenzy(): void {

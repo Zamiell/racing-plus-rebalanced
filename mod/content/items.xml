@@ -1,0 +1,38 @@
+<items gfxroot="gfx/items/" version="1">
+	<!-- Replacing 36 (no costume) -->
+	<active description="Laser" gfx="collectibles_holy_poop.png" maxcharges="1" name="Holy Poop" />
+	<!-- Replacing 39 -->
+	<active cooldown="220" description="Mass freeze" gfx="Collectibles_039_MomsBra.png" maxcharges="1" name="Mom's Bra (Improved)" />
+	<!-- Replacing 123 (no costume) -->
+	<active description="Temporary buddy generator" gfx="Collectibles_123_MonsterManual.png" maxcharges="1" name="Monster Manual (Improved)" />
+	<!-- Replacing 152 -->
+	<passive description="Laser ring" gfx="collectibles_technology_2_5.png" name="Technology 2.5" />
+	<!-- Replacing 204 -->
+	<passive description="Filled with goodies" gfx="collectibles_204_fannypack.png" name="Fanny Pack (Improved)" />
+	<!-- Replacing 257 -->
+	<passive cache="tearflag" description="Flaming tears" gfx="collectibles_257_firemind.png" name="Fire Mind (Improved)" />
+	<!-- Replacing 288 (no costume) -->
+	<active description="It's a box of spiders" gfx="collectibles_288_boxofspiders.png" maxcharges="1" name="Box of Spiders (Improved)" />
+	<!-- Replacing 313 (no costume) -->
+	<passive description="Holy shield" gfx="collectibles_313_holymantle.png" name="Holy Mantle (Nerfed)" />
+	<!-- Replacing 370 -->
+	<passive description="Range + tears up" gfx="Collectibles_370_MrDolly.png" name="Mr. Dolly (Nerfed)" cache="range firedelay" />
+	<!-- Replacing 441 -->
+	<active description="Laser breath" gfx="collectibles_441_megasatansbreath.png" maxcharges="0" name="Mega Blast (Single Use)" />
+	<!-- Replacing 493 -->
+	<passive description="Panic = power" gfx="collectibles_493_adderline.png" name="Adrenaline (Improved)" />
+	<!-- Replacing 505 (no costume) -->
+	<passive description="Gotta catch em..." gfx="Collectibles_505_PokeGo.png" name="Poke Go (Improved)" />
+
+	<!-- Custom Items -->
+	<active description="Restock the room" gfx="collectibles_clockwork_assembly.png" maxcharges="12" name="Clockwork Assembly" />
+	<active description="Recharge yourself" gfx="collectibles_charging_station.png" maxcharges="0" name="Charging Station" />
+	<active description="Spawn a shop item" gfx="collectibles_catalog.png" maxcharges="6" name="Catalog" />
+	<passive description="Shoot extra tears in random directions" gfx="collectibles_strabismus.png" name="Strabismus" />
+	<passive description="Every 8th tear is a bomb" gfx="collectibles_u235.png" name="U-235" />
+
+	<!-- Trinkets -->
+	<trinket description="That's a hard nut to crack!" gfx="trinket_108_walnut.png" name="Walnut (Improved)" />
+	<trinket description="Wealth of spirit" gfx="trinket_etherealpenny.png" name="Ethereal Penny" />
+	<trinket description="Just kidding, I need that back" gfx="trinket_pennyonastring.png" name="Penny on a String" />
+</items>

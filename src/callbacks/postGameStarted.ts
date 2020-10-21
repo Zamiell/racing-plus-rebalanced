@@ -7,6 +7,7 @@ import {
   CollectibleTypeCustom,
   TrinketTypeCustom,
 } from "../types/enums.custom";
+import GlobalsRun from "../types/GlobalsRun";
 import * as postNewLevel from "./postNewLevel";
 
 export function main(saveState: boolean): void {
@@ -22,6 +23,7 @@ export function main(saveState: boolean): void {
   }
 
   // Reset all run-based variables
+  g.run = new GlobalsRun();
   g.run.init(startSeed);
 
   checkVanillaStartingItems();
@@ -50,8 +52,8 @@ function checkVanillaStartingItems() {
   // reset the game if this is the case
   if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_DUALITY)) {
     if (
-      Isaac.GetChallenge() === Challenge.CHALLENGE_NULL
-      && g.seeds.IsCustomRun()
+      Isaac.GetChallenge() === Challenge.CHALLENGE_NULL &&
+      g.seeds.IsCustomRun()
     ) {
       // In the unlikely event that they are playing on a specific seed with Eden,
       // the below code will cause the game to infinitely restart

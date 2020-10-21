@@ -1,7 +1,7 @@
 import g from "../globals";
 import * as catalog from "../items/catalog";
 import * as misc from "../misc";
-import { TrinketTypeCustom } from "../types/enums.custom";
+import { CollectibleState, TrinketTypeCustom } from "../types/enums.custom";
 import * as postNewRoom from "./postNewRoom";
 
 export function main(pickup: EntityPickup): void {
@@ -29,8 +29,8 @@ function touched(pickup: EntityPickup) {
 
 function touchedEtherealPenny(pickup: EntityPickup) {
   if (
-    pickup.Variant !== PickupVariant.PICKUP_COIN
-    || !g.p.HasTrinket(TrinketTypeCustom.TRINKET_ETHEREAL_PENNY)
+    pickup.Variant !== PickupVariant.PICKUP_COIN ||
+    !g.p.HasTrinket(TrinketTypeCustom.TRINKET_ETHEREAL_PENNY)
   ) {
     return;
   }
@@ -68,9 +68,9 @@ export function heart(pickup: EntityPickup): void {
 function heartRelic(pickup: EntityPickup) {
   // Replace soul hearts from The Relic with half soul hearts (5.10.8)
   if (
-    pickup.SubType === HeartSubType.HEART_SOUL // 3
-    && pickup.SpawnerType === EntityType.ENTITY_FAMILIAR // 3
-    && pickup.SpawnerVariant === FamiliarVariant.RELIC // 23
+    pickup.SubType === HeartSubType.HEART_SOUL && // 3
+    pickup.SpawnerType === EntityType.ENTITY_FAMILIAR && // 3
+    pickup.SpawnerVariant === FamiliarVariant.RELIC // 23
   ) {
     g.g.Spawn(
       EntityType.ENTITY_PICKUP, // 5
@@ -92,10 +92,10 @@ function heartCheckDDReroll(pickup: EntityPickup) {
   const roomType = g.r.GetType();
 
   if (
-    pickup.FrameCount === 1
-    && pickup.SubType === HeartSubType.HEART_FULL // 1
-    && pickup.Price === 3
-    && roomType === RoomType.ROOM_CURSE // 22
+    pickup.FrameCount === 1 &&
+    pickup.SubType === HeartSubType.HEART_FULL && // 1
+    pickup.Price === 3 &&
+    roomType === RoomType.ROOM_CURSE // 22
   ) {
     postNewRoom.spawnCurseRoomPedestalItem();
     pickup.Remove();
@@ -106,10 +106,10 @@ function heartCheckDDReroll(pickup: EntityPickup) {
 // Delete them and respawn another pedestal item
 function heartCheckCatalogReroll(pickup: EntityPickup) {
   if (
-    pickup.FrameCount === 1
-    && pickup.SubType === HeartSubType.HEART_FULL // 1
-    && pickup.Price === 3
-    && !catalog.inIllegalRoomType()
+    pickup.FrameCount === 1 &&
+    pickup.SubType === HeartSubType.HEART_FULL && // 1
+    pickup.Price === 3 &&
+    !catalog.inIllegalRoomType()
   ) {
     catalog.spawnItem(pickup.Position);
     pickup.Remove();
@@ -133,10 +133,10 @@ function collectibleCheckDouble(pickup: EntityPickup) {
     g.r.IsFirstVisit() &&
     // Frame 0 does not work
     // Frame 1 works but we need to wait an extra frame for Racing+ to replace the pedestal
-    pickup.FrameCount === 2
-    && pickup.State !== 2 // We mark a state of 2 to indicate a duplicated pedestal
-    && (g.run.room.doubleItemsFrame === 0
-      || g.run.room.doubleItemsFrame === gameFrameCount)
+    pickup.FrameCount === 2 &&
+    pickup.State !== 2 && // We mark a state of 2 to indicate a duplicated pedestal
+    (g.run.room.doubleItemsFrame === 0 ||
+      g.run.room.doubleItemsFrame === gameFrameCount)
   ) {
     const position = g.r.FindFreePickupSpawnPosition(pickup.Position, 1, true);
     g.run.randomSeed = misc.incrementRNG(g.run.randomSeed);
@@ -159,7 +159,7 @@ function collectibleCheckDouble(pickup: EntityPickup) {
     pedestal.TheresOptionsPickup = pickup.TheresOptionsPickup;
 
     // Mark it so that we don't duplicate it again
-    pedestal.State = 2;
+    pedestal.State = CollectibleState.DUPLICATED;
 
     // We only want to duplicate pedestals once per room to avoid duplicating rerolled pedestals
     // (the state will go back to 0 for a rerolled pedestal)

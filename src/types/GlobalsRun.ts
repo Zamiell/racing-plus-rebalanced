@@ -42,7 +42,7 @@ export default class GlobalsRun {
   fannyPackRNG: int = 0; // For Fanny Pack (204)
   piggyBankRNG: int = 0; // For Piggy Bank (227)
   technologyAdded2020 = false; // For 20/20 (245)
-  spawningLaser = false; // For the Isaac's Heart (276)
+  spawningIsaacsHeartLaser = false; // For the Isaac's Heart (276)
   judasShadow = false; // For Judas' Shadow (311)
   holyMantle = false; // For Holy Mantle (313)
   wizDoubleTear = false; // For The Wiz (358)
@@ -91,6 +91,7 @@ export default class GlobalsRun {
     hearts: 0,
     maxHearts: 0,
     soulHearts: 0,
+    blackHearts: 0,
     boneHearts: 0,
     changedOnThisFrame: false,
   };
@@ -99,6 +100,7 @@ export default class GlobalsRun {
     hearts: 0,
     maxHearts: 0,
     soulHearts: 0,
+    blackHearts: 0,
     boneHearts: 0,
   };
 

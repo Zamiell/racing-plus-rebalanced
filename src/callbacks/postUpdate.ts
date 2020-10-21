@@ -32,6 +32,7 @@ export function main(): void {
   fartingBaby(); // 404
   blackPowder(); // 420
   brownNugget(); // 504
+  fireMindImproved(); // Replacing 257
   holyMantleNerfed(); // Replacing 313
   adrenalineImproved(); // Replacing 493
 
@@ -63,6 +64,13 @@ function recordHealth() {
   const soulHearts = g.p.GetSoulHearts();
   if (soulHearts !== g.run.health.soulHearts) {
     g.run.health.soulHearts = soulHearts;
+    g.run.health.changedOnThisFrame = true;
+  }
+
+  g.run.lastHealth.blackHearts = g.run.health.blackHearts;
+  const blackHearts = g.p.GetBlackHearts();
+  if (blackHearts !== g.run.health.blackHearts) {
+    g.run.health.blackHearts = blackHearts;
     g.run.health.changedOnThisFrame = true;
   }
 
@@ -99,9 +107,9 @@ function checkItemPickup() {
     if (g.run.pickingUpItem !== 0) {
       // Check to see if we need to do something specific after this item is added to our inventory
       if (
-        g.run.pickingUpItemType === ItemType.ITEM_PASSIVE // 1
-        || g.run.pickingUpItemType === ItemType.ITEM_ACTIVE // 3
-        || g.run.pickingUpItemType === ItemType.ITEM_FAMILIAR // 4
+        g.run.pickingUpItemType === ItemType.ITEM_PASSIVE || // 1
+        g.run.pickingUpItemType === ItemType.ITEM_ACTIVE || // 3
+        g.run.pickingUpItemType === ItemType.ITEM_FAMILIAR // 4
       ) {
         const postItemFunction = postItemPickup.functionMap.get(
           g.run.pickingUpItem,
@@ -141,7 +149,7 @@ function checkTransformations() {
 
       if (i === PlayerForm.PLAYERFORM_EVIL_ANGEL) {
         // Leviathan
-        g.p.AddBlackHearts(-4);
+        misc.setHealthFromLastFrame();
         misc.killIfNoHealth();
       }
     }
@@ -301,10 +309,7 @@ function judasShadow() {
   // Local variables
   const character = g.p.GetPlayerType();
 
-  if (
-    !g.run.judasShadow
-    && character === PlayerType.PLAYER_BLACKJUDAS // 12
-  ) {
+  if (!g.run.judasShadow && character === PlayerType.PLAYER_BLACKJUDAS) {
     g.run.judasShadow = true;
     g.p.AddSoulHearts(-4);
     g.p.AddMaxHearts(2, false);
@@ -439,11 +444,29 @@ function brownNugget() {
   }
 }
 
+// CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED (replacing 257)
+function fireMindImproved() {
+  if (
+    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)
+  ) {
+    return;
+  }
+
+  if (!misc.isOnTearBuild()) {
+    // Remove the custom Fire Mind item and give back the normal one
+    g.p.RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED);
+    Isaac.DebugString(
+      `Removing collectible ${CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED} (Fire Mind Improved)`,
+    );
+    g.p.AddCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND, 0, false);
+  }
+}
+
 // CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED (replacing 313)
 function holyMantleNerfed() {
   if (
-    !g.run.holyMantle
-    || !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
+    !g.run.holyMantle ||
+    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
   ) {
     return;
   }
@@ -491,8 +514,8 @@ function checkPillTimer() {
   const gameFrameCount = g.g.GetFrameCount();
 
   if (
-    g.run.pills.superSadness !== 0
-    && gameFrameCount > g.run.pills.superSadness
+    g.run.pills.superSadness !== 0 &&
+    gameFrameCount > g.run.pills.superSadness
   ) {
     g.run.pills.superSadness = 0;
     g.p.AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
@@ -554,8 +577,8 @@ function checkPillTimer() {
   }
 
   if (
-    g.run.pills.wallsHaveEyes !== 0
-    && gameFrameCount > g.run.pills.wallsHaveEyes
+    g.run.pills.wallsHaveEyes !== 0 &&
+    gameFrameCount > g.run.pills.wallsHaveEyes
   ) {
     g.run.pills.wallsHaveEyes = 0;
   }
@@ -595,8 +618,8 @@ function checkPillTimer() {
   }
 
   if (
-    g.run.pills.familiarFrenzy !== 0
-    && gameFrameCount > g.run.pills.familiarFrenzy
+    g.run.pills.familiarFrenzy !== 0 &&
+    gameFrameCount > g.run.pills.familiarFrenzy
   ) {
     g.run.pills.familiarFrenzy = 0;
   }

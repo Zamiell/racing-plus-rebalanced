@@ -57,6 +57,11 @@ export function getTotalItemCount(): int {
   return id;
 }
 
+export function getVelocityFromAimDirection(): Vector {
+  const velocity = g.p.GetAimDirection();
+  return velocity.__mul(g.p.ShotSpeed * 10);
+}
+
 export function gridToPos(origX: int, origY: int): Vector {
   const x = origX + 1;
   const y = origY + 1;
@@ -77,6 +82,17 @@ export function incrementRNG(seed: int): int {
   return newSeed;
 }
 
+export function isOnTearBuild(): boolean {
+  return (
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) && // 52
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) && // 68
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_MOMS_KNIFE) && // 114
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) && // 118
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) && // 168
+    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) // 395
+  );
+}
+
 export function killIfNoHealth(): void {
   if (hasNoHealth()) {
     g.p.Kill();
@@ -85,22 +101,22 @@ export function killIfNoHealth(): void {
 
 export function hasNoHealth(): boolean {
   return (
-    g.p.GetHearts() === 0
-    && g.p.GetSoulHearts() === 0
-    && g.p.GetBoneHearts() === 0
+    g.p.GetHearts() === 0 &&
+    g.p.GetSoulHearts() === 0 &&
+    g.p.GetBoneHearts() === 0
   );
 }
 
 export function removeAllEntities(): void {
   for (const entity of Isaac.GetRoomEntities()) {
     if (
-      entity.ToNPC() !== null
-      || entity.Type === EntityType.ENTITY_PICKUP // 5
-      || entity.Type === EntityType.ENTITY_SLOT // 6
-      || (entity.Type === EntityType.ENTITY_EFFECT // 1000
-        && entity.Variant === EffectVariant.DEVIL) // 6
-      || (entity.Type === EntityType.ENTITY_EFFECT // 1000
-        && entity.Variant === EffectVariant.DICE_FLOOR) // 76
+      entity.ToNPC() !== null ||
+      entity.Type === EntityType.ENTITY_PICKUP || // 5
+      entity.Type === EntityType.ENTITY_SLOT || // 6
+      (entity.Type === EntityType.ENTITY_EFFECT && // 1000
+        entity.Variant === EffectVariant.DEVIL) || // 6
+      (entity.Type === EntityType.ENTITY_EFFECT && // 1000
+        entity.Variant === EffectVariant.DICE_FLOOR) // 76
     ) {
       entity.Remove();
     }
@@ -117,8 +133,8 @@ export function removeAllGridEntities(): void {
     const gridEntity = g.r.GetGridEntity(i);
     if (gridEntity !== null) {
       if (
-        gridEntity.GetSaveState().Type !== GridEntityType.GRID_WALL // 15
-        && gridEntity.GetSaveState().Type !== GridEntityType.GRID_DOOR // 16
+        gridEntity.GetSaveState().Type !== GridEntityType.GRID_WALL && // 15
+        gridEntity.GetSaveState().Type !== GridEntityType.GRID_DOOR // 16
       ) {
         g.r.RemoveGridEntity(i, 0, false); // gridEntity.Destroy() does not work
       }
@@ -134,4 +150,40 @@ export function removeSpecificEntities(
   for (const entity of entities) {
     entity.Remove();
   }
+}
+
+export function setHealth(
+  hearts: int,
+  maxHearts: int,
+  soulHearts: int,
+  blackHearts: int,
+  boneHearts: int,
+) {
+  g.p.AddMaxHearts(-24, true); // Remove all hearts
+  g.p.AddSoulHearts(-24);
+  g.p.AddBoneHearts(-24);
+  g.p.AddMaxHearts(maxHearts, true);
+  g.p.AddBoneHearts(boneHearts);
+  g.p.AddHearts(hearts);
+  for (let i = 0; i < soulHearts; i++) {
+    const bitPosition = math.floor(i / 2);
+    const bit = (blackHearts & (1 << bitPosition)) >>> bitPosition;
+    if (bit === 0) {
+      // Soul heart
+      g.p.AddSoulHearts(1);
+    } else {
+      // Black heart
+      g.p.AddBlackHearts(1);
+    }
+  }
+}
+
+export function setHealthFromLastFrame() {
+  setHealth(
+    g.run.lastHealth.hearts,
+    g.run.lastHealth.maxHearts,
+    g.run.lastHealth.soulHearts,
+    g.run.lastHealth.blackHearts,
+    g.run.lastHealth.boneHearts,
+  );
 }
