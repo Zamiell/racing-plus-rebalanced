@@ -335,15 +335,21 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 
 ### New Items
 
-* Treasure Room:
-  * Strabismus - Shoot extra tears in random directions.
-* Devil Room:
-  * Technology 2.5 (replaces Technology 2) - A laser ring orbits around you, similar to Circle of Protection.
-  * Holy Poop (replaces The Poop) - Creates a Holy Poop. (This counts towards the Oh Crap transformation.)
-* Shop:
-  * Clockwork Assembly - A 6 charge item that spawns a Restock Machine.
-  * Charging Station - An unlimited use item that converts 1 coin to 1 item charge.
-  * Catalog - Spawns a random collectible item on the ground that you can purchase for 10 cents.
+#### Treasure Room
+
+* Strabismus - Shoot extra tears in random directions.
+
+#### Devil Room
+
+* Technology 2.5 (replaces Technology 2) - A laser ring orbits around you, similar to Circle of Protection.
+* Holy Poop (replaces The Poop) - Creates a Holy Poop. (This counts towards the Oh Crap transformation.)
+
+#### Shop
+
+* Clockwork Assembly - A 12 charge item that spawns a Restock Machine.
+* Charging Station - An unlimited use item that converts 1 coin to 1 item charge.
+* Catalog - A 6 charge item that spawns a random collectible item on the ground that you can purchase for 10 cents.
+  * Catalog cannot be used in a shop, a Curse Room, a Devil Room, an Angel Room, or a Black Market.
 
 <br />
 
