@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 def main():
     total_items = {}
-    item_pools = ET.parse('resources/itempools.xml').getroot()
+    item_pools = ET.parse('mod/resources/itempools.xml').getroot()
     item_list = []
     for pool in item_pools:
         count = 0
@@ -173,8 +173,7 @@ def main():
             print('ERROR: Item ' + item + ' is not in a pool.')
             sys.exit(1)
 
-    print()
-    print('The item pools are valid.')
+    print('\nThe item pools are valid.')
 
 def find_correct_weight(count, num_weighted_items, num_desired_percent):
     base_weight = count - num_weighted_items
