@@ -140,7 +140,7 @@ export function reallyBadGas(pillEffect: int): void {
 }
 
 export function aether(): void {
-  g.run.pills.wallsHaveEyes = g.g.GetFrameCount() + pills.getDuration();
+  g.run.pills.aether = g.g.GetFrameCount() + pills.getDuration();
   pills.animateHappy();
 }
 
