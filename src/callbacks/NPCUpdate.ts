@@ -77,6 +77,21 @@ function checkTemporaryCharm(npc: EntityNPC) {
     return;
   }
 
+  // Check for Lil' Haunts to prevent the softlock where charming a Lil' Haunt will make The Haunt
+  // unkillable
+  if (npc.Type == EntityType.ENTITY_THE_HAUNT && npc.Variant == 1) {
+    const haunts = Isaac.FindByType(
+      EntityType.ENTITY_THE_HAUNT,
+      0,
+      -1,
+      false,
+      false,
+    );
+    if (haunts.length !== 0) {
+      return;
+    }
+  }
+
   // Make it permanently charmed instead of temporarily charmed
   npc.AddEntityFlags(EntityFlag.FLAG_FRIENDLY); // 1 << 29
   npc.AddEntityFlags(EntityFlag.FLAG_PERSISTENT); // 1 << 37

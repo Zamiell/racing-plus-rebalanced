@@ -1938,7 +1938,7 @@ require("lualib_bundle");
 local ____exports = {}
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-____exports.VERSION = "v1.0.9"
+____exports.VERSION = "v1.0.10"
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
 ____exports.FAMILIAR_TEAR_SCALE = 0.5
 ____exports.ITEM_STARTS = {{CollectibleType.COLLECTIBLE_MOMS_KNIFE}, {CollectibleType.COLLECTIBLE_IPECAC}, {CollectibleType.COLLECTIBLE_TECH_X}, {CollectibleType.COLLECTIBLE_EPIC_FETUS}, {CollectibleType.COLLECTIBLE_MAXS_HEAD}, {CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM}, {CollectibleType.COLLECTIBLE_DR_FETUS}, {CollectibleType.COLLECTIBLE_TECHNOLOGY}, {CollectibleType.COLLECTIBLE_POLYPHEMUS}, {CollectibleType.COLLECTIBLE_TECH_5}, {CollectibleType.COLLECTIBLE_20_20}, {CollectibleType.COLLECTIBLE_PROPTOSIS}, {CollectibleType.COLLECTIBLE_ISAACS_HEART}, {CollectibleType.COLLECTIBLE_JUDAS_SHADOW}, {CollectibleType.COLLECTIBLE_BRIMSTONE}, {CollectibleType.COLLECTIBLE_MAW_OF_VOID}, {CollectibleType.COLLECTIBLE_INCUBUS}, {CollectibleType.COLLECTIBLE_SACRED_HEART}, {CollectibleType.COLLECTIBLE_GODHEAD}, {CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT}, {CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_APPLE}, {CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleType.COLLECTIBLE_THERES_OPTIONS}, {CollectibleType.COLLECTIBLE_POINTY_RIB, CollectibleType.COLLECTIBLE_POINTY_RIB}, {CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_STEVEN, CollectibleType.COLLECTIBLE_SAD_ONION}}
@@ -2307,6 +2307,10 @@ function ____exports.setHealth(self, hearts, maxHearts, soulHearts, blackHearts,
     end
 end
 function ____exports.setHealthFromLastFrame(self)
+    local gameFrameCount = g.g:GetFrameCount()
+    if gameFrameCount == 0 then
+        return
+    end
     ____exports.setHealth(nil, g.run.lastHealth.hearts, g.run.lastHealth.maxHearts, g.run.lastHealth.soulHearts, g.run.lastHealth.blackHearts, g.run.lastHealth.boneHearts)
 end
 return ____exports
@@ -2928,6 +2932,12 @@ end
 function checkTemporaryCharm(self, npc)
     if (((not npc:HasEntityFlags(EntityFlag.FLAG_CHARM)) or npc:IsBoss()) or npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY)) or npc:HasEntityFlags(EntityFlag.FLAG_PERSISTENT) then
         return
+    end
+    if (npc.Type == EntityType.ENTITY_THE_HAUNT) and (npc.Variant == 1) then
+        local haunts = Isaac.FindByType(EntityType.ENTITY_THE_HAUNT, 0, -1, false, false)
+        if #haunts ~= 0 then
+            return
+        end
     end
     npc:AddEntityFlags(EntityFlag.FLAG_FRIENDLY)
     npc:AddEntityFlags(EntityFlag.FLAG_PERSISTENT)
@@ -4802,11 +4812,14 @@ end
 return ____exports
 end,
 ["callbacks.postPickupUpdate"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
 local catalog = require("items.catalog")
 local misc = require("misc")
+local ____pills = require("pills")
+local COLORS = ____pills.COLORS
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleState = ____enums_2Ecustom.CollectibleState
 local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
@@ -4880,6 +4893,15 @@ function ____exports.heart(self, pickup)
     heartRelic(nil, pickup)
     heartCheckDDReroll(nil, pickup)
     heartCheckCatalogReroll(nil, pickup)
+end
+function ____exports.pill(self, pickup)
+    if not __TS__ArrayIncludes(COLORS, pickup.Variant) then
+        pickup:Remove()
+        math.randomseed(pickup.InitSeed)
+        local colorIndex = math.random(0, #COLORS - 1)
+        local color = COLORS[colorIndex + 1]
+        g.g:Spawn(pickup.Type, color, pickup.Position, pickup.Velocity, pickup.SpawnerEntity, pickup.SubType, pickup.InitSeed)
+    end
 end
 function ____exports.collectible(self, pickup)
     collectibleCheckDouble(nil, pickup)
@@ -6670,6 +6692,7 @@ RPRebalanced:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, catalog.preUseItem, Colle
 RPRebalanced:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, preFamiliarCollision.momsRazor, FamiliarVariant.MOMS_RAZOR)
 RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, postPickupInit.tarotCard, PickupVariant.PICKUP_TAROTCARD)
 RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.heart, PickupVariant.PICKUP_HEART)
+RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.pill, PickupVariant.PICKUP_PILL)
 RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.collectible, PickupVariant.PICKUP_COLLECTIBLE)
 RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, postPickupRender.collectible, PickupVariant.PICKUP_COLLECTIBLE)
 RPRebalanced:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, postEffectUpdate.blueFlame, EffectVariant.BLUE_FLAME)

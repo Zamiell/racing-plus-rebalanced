@@ -1,5 +1,7 @@
 # Racing+ Rebalanced Mod Changes
 
+WARNING: Racing+ Rebalanced is a mod intended for speedrunners and people who play the game [competitively in actual tournaments](https://isaacrankings.com/). If you are a casual and/or don't play the game at a high level, then some of the balancing changes may not make sense to you. This mod is not recommended unless you are trying to complete the game as fast as possible (e.g. speedrunning or racing).
+
 Racing+ Rebalanced is a separate mod that is intended to be run alongside the Racing+ mod. The vanilla game has many design flaws: it contains many completely useless items and it contains many overpowered items. Most important of all, it was never designed to be played competitively. The Rebalanced mod changes many things about the game in an attempt to:
 
 1) Make every item in the game useful in a significant way / worth taking.

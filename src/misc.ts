@@ -179,6 +179,12 @@ export function setHealth(
 }
 
 export function setHealthFromLastFrame() {
+  // If this is the first frame of the game, then there is no last frame to revert the health to
+  const gameFrameCount = g.g.GetFrameCount();
+  if (gameFrameCount === 0) {
+    return;
+  }
+
   setHealth(
     g.run.lastHealth.hearts,
     g.run.lastHealth.maxHearts,

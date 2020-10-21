@@ -490,6 +490,11 @@ RPRebalanced.AddCallback(
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_POST_PICKUP_UPDATE,
+  postPickupUpdate.pill,
+  PickupVariant.PICKUP_PILL, // 70
+);
+RPRebalanced.AddCallback(
+  ModCallbacks.MC_POST_PICKUP_UPDATE,
   postPickupUpdate.collectible,
   PickupVariant.PICKUP_COLLECTIBLE, // 100
 );
