@@ -70,24 +70,26 @@ export function pill(pickup: EntityPickup): void {
   // Sometimes, pills can spawn from sources that will not go through the GetPillColor callback
   // (e.g. champions)
   // We need to delete and replace these pills with pills that have the correct pill color
-  if (!COLORS.includes(pickup.Variant)) {
-    pickup.Remove();
-
-    // Get a new random color
-    math.randomseed(pickup.InitSeed);
-    const colorIndex = math.random(0, COLORS.length - 1);
-    const color = COLORS[colorIndex];
-
-    g.g.Spawn(
-      pickup.Type,
-      color,
-      pickup.Position,
-      pickup.Velocity,
-      pickup.SpawnerEntity,
-      pickup.SubType,
-      pickup.InitSeed,
-    );
+  if (COLORS.includes(pickup.SubType)) {
+    return;
   }
+
+  pickup.Remove();
+
+  // Get a new random color
+  math.randomseed(pickup.InitSeed);
+  const colorIndex = math.random(0, COLORS.length - 1);
+  const color = COLORS[colorIndex];
+
+  g.g.Spawn(
+    pickup.Type,
+    pickup.Variant,
+    pickup.Position,
+    pickup.Velocity,
+    pickup.SpawnerEntity,
+    color,
+    pickup.InitSeed,
+  );
 }
 
 // CollectibleType.COLLECTIBLE_RELIC (98)

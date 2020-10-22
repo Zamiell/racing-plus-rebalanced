@@ -1,9 +1,19 @@
 import g from "../globals";
+import * as misc from "../misc";
 import * as postItemPickup from "../postItemPickup";
 import { CollectibleTypeCustom } from "../types/enums.custom";
 
-export function main(): boolean {
+export function main(collectibleType: CollectibleType): boolean {
+  // Buff 9-Volt
   if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_NINE_VOLT)) {
+    return true;
+  }
+
+  const maxCharges = misc.getItemMaxCharges(collectibleType);
+  if (maxCharges < 3) {
+    // If the item is a 0 charge item, then we don't have to do anything
+    // If it has 1 charge or 2 charges, then we do nothing,
+    // to prevent the item from infinitely recharging
     return true;
   }
 
@@ -107,6 +117,7 @@ export function monsterManualImproved(): boolean {
 
 // CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED (replacing 288)
 export function boxOfSpidersImproved(): boolean {
+  /*
   g.p.UseActiveItem(
     CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS,
     true,
@@ -114,6 +125,7 @@ export function boxOfSpidersImproved(): boolean {
     false,
     false,
   );
+  */
 
   return true;
 }

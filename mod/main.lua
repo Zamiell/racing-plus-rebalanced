@@ -1938,7 +1938,7 @@ require("lualib_bundle");
 local ____exports = {}
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-____exports.VERSION = "v1.0.11"
+____exports.VERSION = "v1.0.12"
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
 ____exports.FAMILIAR_TEAR_SCALE = 0.5
 ____exports.ITEM_STARTS = {{CollectibleType.COLLECTIBLE_MOMS_KNIFE}, {CollectibleType.COLLECTIBLE_IPECAC}, {CollectibleType.COLLECTIBLE_TECH_X}, {CollectibleType.COLLECTIBLE_EPIC_FETUS}, {CollectibleType.COLLECTIBLE_MAXS_HEAD}, {CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM}, {CollectibleType.COLLECTIBLE_DR_FETUS}, {CollectibleType.COLLECTIBLE_TECHNOLOGY}, {CollectibleType.COLLECTIBLE_POLYPHEMUS}, {CollectibleType.COLLECTIBLE_TECH_5}, {CollectibleType.COLLECTIBLE_20_20}, {CollectibleType.COLLECTIBLE_PROPTOSIS}, {CollectibleType.COLLECTIBLE_ISAACS_HEART}, {CollectibleType.COLLECTIBLE_JUDAS_SHADOW}, {CollectibleType.COLLECTIBLE_BRIMSTONE}, {CollectibleType.COLLECTIBLE_MAW_OF_VOID}, {CollectibleType.COLLECTIBLE_INCUBUS}, {CollectibleType.COLLECTIBLE_SACRED_HEART}, {CollectibleType.COLLECTIBLE_GODHEAD}, {CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT}, {CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_APPLE}, {CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleType.COLLECTIBLE_THERES_OPTIONS}, {CollectibleType.COLLECTIBLE_POINTY_RIB, CollectibleType.COLLECTIBLE_POINTY_RIB}, {CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_STEVEN, CollectibleType.COLLECTIBLE_SAD_ONION}}
@@ -1948,7 +1948,7 @@ ____exports.SHOP_PRICES = __TS__New(Map, {{CollectibleType.COLLECTIBLE_COMPASS, 
 ____exports.FLY_ENTITIES = {EntityType.ENTITY_FLY, EntityType.ENTITY_POOTER, EntityType.ENTITY_ATTACKFLY, EntityType.ENTITY_BOOMFLY, EntityType.ENTITY_SUCKER, EntityType.ENTITY_DUKE, EntityType.ENTITY_MOTER, EntityType.ENTITY_FLY_L2, EntityType.ENTITY_RING_OF_FLIES, EntityType.ENTITY_FULL_FLY, EntityType.ENTITY_DART_FLY, EntityType.ENTITY_SWARM, EntityType.ENTITY_HUSH_FLY}
 ____exports.SPIDER_ENTITIES = {EntityType.ENTITY_HOPPER, EntityType.ENTITY_SPIDER, EntityType.ENTITY_BIGSPIDER, EntityType.ENTITY_WIDOW, EntityType.ENTITY_DADDYLONGLEGS, EntityType.ENTITY_BABY_LONG_LEGS, EntityType.ENTITY_CRAZY_LONG_LEGS, EntityType.ENTITY_SPIDER_L2, EntityType.ENTITY_WALL_CREEP, EntityType.ENTITY_RAGE_CREEP, EntityType.ENTITY_BLIND_CREEP, EntityType.ENTITY_RAGLING, EntityType.ENTITY_TICKING_SPIDER, EntityType.ENTITY_BLISTER, EntityType.ENTITY_THE_THING}
 ____exports.TECHNOLOGY_EXCEPTION_ITEMS = {CollectibleType.COLLECTIBLE_DR_FETUS, CollectibleType.COLLECTIBLE_MOMS_KNIFE, CollectibleType.COLLECTIBLE_BRIMSTONE, CollectibleType.COLLECTIBLE_IPECAC, CollectibleType.COLLECTIBLE_EPIC_FETUS, CollectibleType.COLLECTIBLE_TINY_PLANET, CollectibleType.COLLECTIBLE_TECH_X}
-____exports.ISAACS_HEART_BROKEN_ITEMS = {CollectibleType.COLLECTIBLE_BRIMSTONE, CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE, CollectibleType.COLLECTIBLE_MULTIDIMENSIONAL_BABY}
+____exports.ISAACS_HEART_BROKEN_ITEMS = {CollectibleType.COLLECTIBLE_BRIMSTONE, CollectibleType.COLLECTIBLE_RUBBER_CEMENT, CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE, CollectibleType.COLLECTIBLE_MULTIDIMENSIONAL_BABY}
 ____exports.POKE_GO_EXCEPTION_ENTITIES = {EntityType.ENTITY_SHOPKEEPER, EntityType.ENTITY_FIREPLACE, EntityType.ENTITY_STONEHEAD, EntityType.ENTITY_POKY, EntityType.ENTITY_ETERNALFLY, EntityType.ENTITY_CONSTANT_STONE_SHOOTER, EntityType.ENTITY_BRIMSTONE_HEAD, EntityType.ENTITY_SWINGER, EntityType.ENTITY_WALL_HUGGER, EntityType.ENTITY_GAPING_MAW, EntityType.ENTITY_BROKEN_GAPING_MAW, EntityType.ENTITY_SWARM, EntityType.ENTITY_PITFALL}
 return ____exports
 end,
@@ -2180,6 +2180,12 @@ local ____globals = require("globals")
 local g = ____globals.default
 function ____exports.hasNoHealth(self)
     return ((g.p:GetHearts() == 0) and (g.p:GetSoulHearts() == 0)) and (g.p:GetBoneHearts() == 0)
+end
+function ____exports.getItemMaxCharges(self, collectibleType)
+    if collectibleType == 0 then
+        return 0
+    end
+    return g.itemConfig:GetCollectible(collectibleType).MaxCharges
 end
 function ____exports.getRandomOffsetPosition(self, position, offsetSize, seed)
     math.randomseed(seed)
@@ -4895,13 +4901,14 @@ function ____exports.heart(self, pickup)
     heartCheckCatalogReroll(nil, pickup)
 end
 function ____exports.pill(self, pickup)
-    if not __TS__ArrayIncludes(COLORS, pickup.Variant) then
-        pickup:Remove()
-        math.randomseed(pickup.InitSeed)
-        local colorIndex = math.random(0, #COLORS - 1)
-        local color = COLORS[colorIndex + 1]
-        g.g:Spawn(pickup.Type, color, pickup.Position, pickup.Velocity, pickup.SpawnerEntity, pickup.SubType, pickup.InitSeed)
+    if __TS__ArrayIncludes(COLORS, pickup.SubType) then
+        return
     end
+    pickup:Remove()
+    math.randomseed(pickup.InitSeed)
+    local colorIndex = math.random(0, #COLORS - 1)
+    local color = COLORS[colorIndex + 1]
+    g.g:Spawn(pickup.Type, pickup.Variant, pickup.Position, pickup.Velocity, pickup.SpawnerEntity, color, pickup.InitSeed)
 end
 function ____exports.collectible(self, pickup)
     collectibleCheckDouble(nil, pickup)
@@ -5489,7 +5496,7 @@ end
 function checkFamiliarMultiShot(self)
     if g.run.familiarMultiShot > 0 then
         local ____obj, ____index = g.run, "familiarMultiShot"
-        ____obj[____index] = ____obj[____index] - -1
+        ____obj[____index] = ____obj[____index] - 1
         local fakeTear = g.p:FireTear(g.p.Position, g.run.familiarMultiShotVelocity, false, true, false)
         fakeTear:Remove()
     end
@@ -5522,7 +5529,7 @@ function nineVolt(self)
     if activeItem == 0 then
         return
     end
-    local maxCharges = g.itemConfig:GetCollectible(activeItem).MaxCharges
+    local maxCharges = misc:getItemMaxCharges(activeItem)
     local charge = g.p:GetActiveCharge()
     charge = charge + 1
     if charge > maxCharges then
@@ -6302,11 +6309,16 @@ end,
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
+local misc = require("misc")
 local postItemPickup = require("postItemPickup")
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-function ____exports.main(self)
+function ____exports.main(self, collectibleType)
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_NINE_VOLT) then
+        return true
+    end
+    local maxCharges = misc:getItemMaxCharges(collectibleType)
+    if maxCharges < 3 then
         return true
     end
     g.run.nineVoltFrame = g.g:GetFrameCount()
@@ -6362,7 +6374,6 @@ function ____exports.monsterManualImproved(self)
     return true
 end
 function ____exports.boxOfSpidersImproved(self)
-    g.p:UseActiveItem(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, true, false, false, false)
     return true
 end
 function ____exports.megaBlastSingle(self)

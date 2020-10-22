@@ -68,7 +68,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * The Poop (36) - This is replaced with a new custom item called Holy Poop.
 * Mom's Pad (41) - This item no longer does anything since fear is removed.
 * Lucky Foot (46) - Luck ups are useless on the vast majority of speedruns.
-* Mom's Eye (55) - This effect overlaps with Loki's Horns and we will prefer buffing the latter.
+* Mom's Eye (55) - This effect overlaps with Loki's Horns and buffing the latter is preferred.
 * Lemon Mishap (56) - This effect overlaps with Bladder Infection.
 * The Ladder (60) - With so many flight items in the game, it is not useful enough to warrant including in a pool.
 * Charm of the Vampire (62) - Only beneficial on the Forgotten.
@@ -185,7 +185,6 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * Eye of Greed (450) - Not useful enough to warrant including in a pool.
 * Tarot Cloth (451) - Not useful enough to warrant including in a pool.
 * Dad's Lost Coin (455) - Range ups are useless on the vast majority of speedruns.
-* Sinus Infection (459) - An annoying item for speedruns that often slows the player down.
 * Glaucoma (460) - Mostly pointless not that all enemies are immune to confusion.
 * Glyph of Balance (464) - Not useful enough to warrant including in a pool.
 * Shade (468) - Not useful enough to warrant including in a pool.

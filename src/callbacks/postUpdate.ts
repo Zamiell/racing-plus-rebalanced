@@ -158,7 +158,7 @@ function checkTransformations() {
 
 function checkFamiliarMultiShot() {
   if (g.run.familiarMultiShot > 0) {
-    g.run.familiarMultiShot -= -1;
+    g.run.familiarMultiShot -= 1;
 
     const fakeTear = g.p.FireTear(
       g.p.Position,
@@ -218,7 +218,7 @@ function nineVolt() {
   if (activeItem === 0) {
     return;
   }
-  const maxCharges = g.itemConfig.GetCollectible(activeItem).MaxCharges;
+  const maxCharges = misc.getItemMaxCharges(activeItem);
   let charge = g.p.GetActiveCharge();
   charge += 1;
   if (charge > maxCharges) {

@@ -272,6 +272,8 @@
 		<Item Id="452" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<!--Compound Fracture-->
 		<Item Id="453" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Sinus Infection -->
+		<Item Id="459" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<!--Analog Stick-->
 		<Item Id="465" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 		<!--Finger!-->

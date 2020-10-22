@@ -1,6 +1,6 @@
 import { CollectibleTypeCustom } from "./types/enums.custom";
 
-export const VERSION = "v1.0.11";
+export const VERSION = "v1.0.12";
 
 export const FAMILIAR_TEAR_DAMAGE = 0.33;
 export const FAMILIAR_TEAR_SCALE = 0.5;
@@ -288,6 +288,7 @@ export const TECHNOLOGY_EXCEPTION_ITEMS = [
 // Isaac's Heart is broken with certain other items
 export const ISAACS_HEART_BROKEN_ITEMS = [
   CollectibleType.COLLECTIBLE_BRIMSTONE, // 118
+  CollectibleType.COLLECTIBLE_RUBBER_CEMENT, // 221
   CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE, // 329
   CollectibleType.COLLECTIBLE_MULTIDIMENSIONAL_BABY, // 431
 ];

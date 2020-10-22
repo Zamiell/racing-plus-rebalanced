@@ -1,5 +1,13 @@
 import g from "./globals";
 
+export function getItemMaxCharges(collectibleType: CollectibleType): int {
+  if (collectibleType === 0) {
+    return 0;
+  }
+
+  return g.itemConfig.GetCollectible(collectibleType).MaxCharges;
+}
+
 export function getRandomOffsetPosition(
   position: Vector,
   offsetSize: int,
