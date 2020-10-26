@@ -5,4 +5,5 @@ export default interface GlobalsRunHealth {
   blackHearts: int;
   boneHearts: int;
   changedOnThisFrame: boolean;
+  restoredLastHealthOnThisFrame: boolean;
 }

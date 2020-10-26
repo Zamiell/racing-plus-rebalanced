@@ -339,6 +339,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 #### Treasure Room
 
 * Strabismus - Shoot extra tears in random directions.
+* U-235 - Shoot a bomb every 8 tears.
 
 #### Devil Room
 

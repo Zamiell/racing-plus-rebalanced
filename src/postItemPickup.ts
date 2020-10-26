@@ -326,6 +326,23 @@ function fireMindImproved() {
   g.p.AddCostume(item, false);
 }
 
+// Replacing 288
+functionMap.set(
+  CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED,
+  () => {
+    // Add and remove the old Box of Spiders so that the improved version will still count for the
+    // Spider Baby transformation
+    const activeCharge = g.p.GetActiveCharge();
+    g.p.AddCollectible(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, 0, false);
+    g.p.AddCollectible(
+      CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED,
+      activeCharge,
+      false,
+    );
+    Isaac.DebugString("Removing collectible 288 (Box of Spiders)");
+  },
+);
+
 // Replacing 313
 functionMap.set(
   CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED,
@@ -333,6 +350,12 @@ functionMap.set(
 );
 function holyMantleNerfed() {
   g.run.holyMantle = true;
+
+  // Add and remove the old Holy Mantle so that the nerfed version will still count for the Seraphim
+  // transformation
+  g.p.AddCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE, 0, false);
+  g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE);
+  Isaac.DebugString("Removing collectible 313 (Holy Mantle)");
 
   const effects = g.p.GetEffects();
   if (!effects.HasCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE)) {

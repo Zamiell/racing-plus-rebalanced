@@ -24,6 +24,7 @@ export default class GlobalsRun {
   pickingUpItem: int = 0; // Equal to the ID of the currently queued item
   pickingUpItemRoom: int = 0; // Equal to the room that we picked up the currently queued item
   pickingUpItemType: ItemType = ItemType.ITEM_NULL; // Equal to the "QueuedItem.Item.Type"
+  lastFireDirection: Direction = Direction.DOWN;
   dealingExtraDamage = false;
   familiarMultiShot: int = 0;
   familiarMultiShotVelocity = Vector(0, 0);
@@ -94,6 +95,7 @@ export default class GlobalsRun {
     blackHearts: 0,
     boneHearts: 0,
     changedOnThisFrame: false,
+    restoredLastHealthOnThisFrame: false,
   };
 
   lastHealth: GlobalsRunLastHealth = {

@@ -34,31 +34,21 @@ import * as useItem from "./callbacks/useItem";
 import * as usePill from "./callbacks/usePill";
 import { VERSION } from "./constants";
 import * as catalog from "./items/catalog";
+import overwriteError from "./overwriteError";
 import {
   CollectibleTypeCustom,
   EffectVariantCustom,
   PillEffectCustom,
 } from "./types/enums.custom";
 
-// Replace Lua's error function with something that actually displays the output
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-error = (err: number) => {
-  // For some reason, when reloading a mod, it will throw multiple errors of "0"
-  if (err === 0) {
-    return;
-  }
-
-  Isaac.DebugString(`Custom error function: ${err}`);
-  Isaac.DebugString(debug.traceback());
-};
+// First, prepare special error handling
+// (since the vanilla Lua error handling does not work properly)
+overwriteError();
 
 const RPRebalanced = RegisterMod("Racing+ Rebalanced", 1);
 
 // Set this mod's version as a global variable to inform other mods that Racing+ Rebalanced exists
-declare global {
-  let RacingPlusRebalancedVersion: string;
-}
+declare let RacingPlusRebalancedVersion: string;
 RacingPlusRebalancedVersion = VERSION;
 
 // Define miscellaneous callbacks

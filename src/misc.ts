@@ -193,6 +193,13 @@ export function setHealthFromLastFrame() {
     return;
   }
 
+  // If we already restored the health from the last frame on this frame,
+  // then don't do it a second time
+  if (g.run.health.restoredLastHealthOnThisFrame) {
+    return;
+  }
+  g.run.health.restoredLastHealthOnThisFrame = true;
+
   setHealth(
     g.run.lastHealth.hearts,
     g.run.lastHealth.maxHearts,

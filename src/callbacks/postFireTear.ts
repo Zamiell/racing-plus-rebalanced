@@ -207,8 +207,13 @@ function pillWallsHaveEyes(tear: EntityTear) {
   g.run.pills.wallsHaveEyesShooting = true;
 
   // Local variables
-  const direction = g.p.GetFireDirection();
   const roomShape = g.r.GetRoomShape();
+  const fireDirection = g.p.GetFireDirection();
+
+  const direction =
+    fireDirection === Direction.NO_DIRECTION
+      ? g.run.lastFireDirection
+      : fireDirection;
 
   let amountToAdd = 1;
   if (direction === Direction.LEFT || direction === Direction.RIGHT) {
@@ -221,15 +226,11 @@ function pillWallsHaveEyes(tear: EntityTear) {
   // Make a list of the walls to shoot from
   const roomShapeCoordinates = pills.WALL_COORDINATES.get(roomShape);
   if (roomShapeCoordinates === undefined) {
-    throw new Error(
-      `Failed to get the wall coordinates for room shape: ${roomShape}`,
-    );
+    error(`Failed to get the wall coordinates for room shape: ${roomShape}`);
   }
   const coordinates = roomShapeCoordinates.get(direction);
   if (coordinates === undefined) {
-    throw new Error(
-      `Failed to get the wall coordinates direction: ${direction}`,
-    );
+    error(`Failed to get the wall coordinates direction: ${direction}`);
   }
   const [
     startingGridCoordinate,

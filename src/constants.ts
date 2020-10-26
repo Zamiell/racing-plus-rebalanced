@@ -1,6 +1,6 @@
 import { CollectibleTypeCustom } from "./types/enums.custom";
 
-export const VERSION = "v1.0.12";
+export const VERSION = "v1.0.13";
 
 export const FAMILIAR_TEAR_DAMAGE = 0.33;
 export const FAMILIAR_TEAR_SCALE = 0.5;

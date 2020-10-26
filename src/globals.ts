@@ -4,7 +4,5 @@ const globals = new Globals();
 export default globals;
 
 // Also make it a global variable for debugging purposes
-declare global {
-  let RacingPlusRebalancedGlobals: Globals;
-}
+declare let RacingPlusRebalancedGlobals: Globals;
 RacingPlusRebalancedGlobals = globals;

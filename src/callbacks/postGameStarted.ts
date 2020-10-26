@@ -85,10 +85,25 @@ function checkVanillaStartingItems() {
   if (schoolbagItem === CollectibleType.COLLECTIBLE_POOP) {
     // 36
     RacingPlusSchoolbag.Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP);
+  } else if (schoolbagItem === CollectibleType.COLLECTIBLE_MOMS_BRA) {
+    // 39
+    RacingPlusSchoolbag.Put(
+      CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED,
+    );
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD) {
     // 42
     RacingPlusSchoolbag.Put(
       CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED,
+    );
+  } else if (schoolbagItem === CollectibleType.COLLECTIBLE_MONSTER_MANUAL) {
+    // 123
+    RacingPlusSchoolbag.Put(
+      CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED,
+    );
+  } else if (schoolbagItem === CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS) {
+    // 288
+    RacingPlusSchoolbag.Put(
+      CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED,
     );
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_MEGA_SATANS_BREATH) {
     // 441

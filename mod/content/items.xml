@@ -1,5 +1,5 @@
 <items gfxroot="gfx/items/" version="1">
-	<!-- Replacing 36 (no costume) -->
+	<!-- Replacing 36 -->
 	<active description="Laser" gfx="collectibles_holy_poop.png" maxcharges="1" name="Holy Poop" />
 	<!-- Replacing 39 -->
 	<active cooldown="220" description="Mass freeze" gfx="Collectibles_039_MomsBra.png" maxcharges="1" name="Mom's Bra (Improved)" />

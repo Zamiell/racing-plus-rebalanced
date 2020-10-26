@@ -11,6 +11,7 @@ import {
 import postUpdateCollectible from "./postUpdateCollectible";
 
 export function main(): void {
+  recordLastFireDirection();
   recordHealth();
   checkRoomCleared();
   checkItemPickup();
@@ -43,8 +44,16 @@ export function main(): void {
   checkPillTimer();
 }
 
+function recordLastFireDirection() {
+  const fireDirection = g.p.GetFireDirection();
+  if (fireDirection !== Direction.NO_DIRECTION) {
+    g.run.lastFireDirection = fireDirection;
+  }
+}
+
 function recordHealth() {
   g.run.health.changedOnThisFrame = false;
+  g.run.health.restoredLastHealthOnThisFrame = false;
 
   g.run.lastHealth.hearts = g.run.health.hearts;
   const hearts = g.p.GetHearts();

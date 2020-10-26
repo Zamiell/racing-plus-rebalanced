@@ -1938,7 +1938,7 @@ require("lualib_bundle");
 local ____exports = {}
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-____exports.VERSION = "v1.0.12"
+____exports.VERSION = "v1.0.13"
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
 ____exports.FAMILIAR_TEAR_SCALE = 0.5
 ____exports.ITEM_STARTS = {{CollectibleType.COLLECTIBLE_MOMS_KNIFE}, {CollectibleType.COLLECTIBLE_IPECAC}, {CollectibleType.COLLECTIBLE_TECH_X}, {CollectibleType.COLLECTIBLE_EPIC_FETUS}, {CollectibleType.COLLECTIBLE_MAXS_HEAD}, {CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM}, {CollectibleType.COLLECTIBLE_DR_FETUS}, {CollectibleType.COLLECTIBLE_TECHNOLOGY}, {CollectibleType.COLLECTIBLE_POLYPHEMUS}, {CollectibleType.COLLECTIBLE_TECH_5}, {CollectibleType.COLLECTIBLE_20_20}, {CollectibleType.COLLECTIBLE_PROPTOSIS}, {CollectibleType.COLLECTIBLE_ISAACS_HEART}, {CollectibleType.COLLECTIBLE_JUDAS_SHADOW}, {CollectibleType.COLLECTIBLE_BRIMSTONE}, {CollectibleType.COLLECTIBLE_MAW_OF_VOID}, {CollectibleType.COLLECTIBLE_INCUBUS}, {CollectibleType.COLLECTIBLE_SACRED_HEART}, {CollectibleType.COLLECTIBLE_GODHEAD}, {CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT}, {CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_APPLE}, {CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleType.COLLECTIBLE_THERES_OPTIONS}, {CollectibleType.COLLECTIBLE_POINTY_RIB, CollectibleType.COLLECTIBLE_POINTY_RIB}, {CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_STEVEN, CollectibleType.COLLECTIBLE_SAD_ONION}}
@@ -2029,6 +2029,7 @@ ____exports.default = (function()
         self.pickingUpItem = 0
         self.pickingUpItemRoom = 0
         self.pickingUpItemType = ItemType.ITEM_NULL
+        self.lastFireDirection = Direction.DOWN
         self.dealingExtraDamage = false
         self.familiarMultiShot = 0
         self.familiarMultiShotVelocity = Vector(0, 0)
@@ -2077,7 +2078,7 @@ ____exports.default = (function()
             scorchedEarth = 0,
             familiarFrenzy = 0
         }
-        self.health = {hearts = 0, maxHearts = 0, soulHearts = 0, blackHearts = 0, boneHearts = 0, changedOnThisFrame = false}
+        self.health = {hearts = 0, maxHearts = 0, soulHearts = 0, blackHearts = 0, boneHearts = 0, changedOnThisFrame = false, restoredLastHealthOnThisFrame = false}
         self.lastHealth = {hearts = 0, maxHearts = 0, soulHearts = 0, blackHearts = 0, boneHearts = 0}
         self.transformations = __TS__New(Map)
     end
@@ -2317,6 +2318,10 @@ function ____exports.setHealthFromLastFrame(self)
     if gameFrameCount == 0 then
         return
     end
+    if g.run.health.restoredLastHealthOnThisFrame then
+        return
+    end
+    g.run.health.restoredLastHealthOnThisFrame = true
     ____exports.setHealth(nil, g.run.lastHealth.hearts, g.run.lastHealth.maxHearts, g.run.lastHealth.soulHearts, g.run.lastHealth.blackHearts, g.run.lastHealth.boneHearts)
 end
 return ____exports
@@ -3418,8 +3423,9 @@ function pillWallsHaveEyes(self, tear)
         return
     end
     g.run.pills.wallsHaveEyesShooting = true
-    local direction = g.p:GetFireDirection()
     local roomShape = g.r:GetRoomShape()
+    local fireDirection = g.p:GetFireDirection()
+    local direction = ((fireDirection == Direction.NO_DIRECTION) and g.run.lastFireDirection) or fireDirection
     local amountToAdd = 1
     if (direction == Direction.LEFT) or (direction == Direction.RIGHT) then
         amountToAdd = 15
@@ -3430,21 +3436,13 @@ function pillWallsHaveEyes(self, tear)
     local roomShapeCoordinates = pills.WALL_COORDINATES:get(roomShape)
     if roomShapeCoordinates == nil then
         error(
-            __TS__New(
-                Error,
-                "Failed to get the wall coordinates for room shape: " .. tostring(roomShape)
-            ),
-            0
+            "Failed to get the wall coordinates for room shape: " .. tostring(roomShape)
         )
     end
     local coordinates = roomShapeCoordinates:get(direction)
     if coordinates == nil then
         error(
-            __TS__New(
-                Error,
-                "Failed to get the wall coordinates direction: " .. tostring(direction)
-            ),
-            0
+            "Failed to get the wall coordinates direction: " .. tostring(direction)
         )
     end
     local startingGridCoordinate, numTimesToIterate, startingGridCoordinateForSecondWall = table.unpack(coordinates)
@@ -3701,6 +3699,9 @@ function fireMindImproved(self)
 end
 function holyMantleNerfed(self)
     g.run.holyMantle = true
+    g.p:AddCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE, 0, false)
+    g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
+    Isaac.DebugString("Removing collectible 313 (Holy Mantle)")
     local effects = g.p:GetEffects()
     if not effects:HasCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE) then
         effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE, false)
@@ -3983,6 +3984,15 @@ ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP, holyPoo
 ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5, technology25.postItemPickup)
 ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED, fannyPackImproved)
 ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED, fireMindImproved)
+____exports.functionMap:set(
+    CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED,
+    function()
+        local activeCharge = g.p:GetActiveCharge()
+        g.p:AddCollectible(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, 0, false)
+        g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED, activeCharge, false)
+        Isaac.DebugString("Removing collectible 288 (Box of Spiders)")
+    end
+)
 ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED, holyMantleNerfed)
 ____exports.functionMap:set(
     CollectibleTypeCustom.COLLECTIBLE_MR_DOLLY_NERFED,
@@ -4493,8 +4503,14 @@ function checkVanillaStartingItems(self)
     local schoolbagItem = RacingPlusGlobals.run.schoolbag.item
     if schoolbagItem == CollectibleType.COLLECTIBLE_POOP then
         RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP)
+    elseif schoolbagItem == CollectibleType.COLLECTIBLE_MOMS_BRA then
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD then
         RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED)
+    elseif schoolbagItem == CollectibleType.COLLECTIBLE_MONSTER_MANUAL then
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED)
+    elseif schoolbagItem == CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS then
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MEGA_SATANS_BREATH then
         RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE)
     end
@@ -5400,9 +5416,16 @@ local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
 local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
 local ____postUpdateCollectible = require("callbacks.postUpdateCollectible")
 local postUpdateCollectible = ____postUpdateCollectible.default
-local recordHealth, checkRoomCleared, checkItemPickup, checkTransformations, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
+local recordLastFireDirection, recordHealth, checkRoomCleared, checkItemPickup, checkTransformations, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
+function recordLastFireDirection(self)
+    local fireDirection = g.p:GetFireDirection()
+    if fireDirection ~= Direction.NO_DIRECTION then
+        g.run.lastFireDirection = fireDirection
+    end
+end
 function recordHealth(self)
     g.run.health.changedOnThisFrame = false
+    g.run.health.restoredLastHealthOnThisFrame = false
     g.run.lastHealth.hearts = g.run.health.hearts
     local hearts = g.p:GetHearts()
     if hearts ~= g.run.health.hearts then
@@ -5791,6 +5814,7 @@ function checkPillTimer(self)
     end
 end
 function ____exports.main(self)
+    recordLastFireDirection(nil)
     recordHealth(nil)
     checkRoomCleared(nil)
     checkItemPickup(nil)
@@ -6549,6 +6573,49 @@ function ____exports.unlock(self)
 end
 return ____exports
 end,
+["overwriteError"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+require("lualib_bundle");
+local ____exports = {}
+____exports.default = function()
+    if ___LUA_ERROR_BACKUP == nil then
+        ___LUA_ERROR_BACKUP = error
+    end
+    error = function(err)
+        if err == "" then
+            Isaac.DebugString("Lua error (with a blank error message)")
+        else
+            Isaac.DebugString(
+                "Lua error: " .. tostring(err)
+            )
+        end
+        if debug ~= nil then
+            local tracebackLines = __TS__StringSplit(
+                debug.traceback(),
+                "\n"
+            )
+            do
+                local i = 0
+                while i < #tracebackLines do
+                    do
+                        local line = tracebackLines[i + 1]
+                        if (i == 0) or (i == 1) then
+                            goto __continue8
+                        end
+                        if (i == 1) and string.match(line, "in function 'error'") then
+                            goto __continue8
+                        end
+                        Isaac.DebugString(line)
+                    end
+                    ::__continue8::
+                    i = i + 1
+                end
+            end
+        end
+        ___LUA_ERROR_BACKUP(nil)
+    end
+end
+return ____exports
+end,
 ["main"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
 local entityTakeDmg = require("callbacks.entityTakeDmg")
@@ -6588,21 +6655,13 @@ local usePill = require("callbacks.usePill")
 local ____constants = require("constants")
 local VERSION = ____constants.VERSION
 local catalog = require("items.catalog")
+local ____overwriteError = require("overwriteError")
+local overwriteError = ____overwriteError.default
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
 local EffectVariantCustom = ____enums_2Ecustom.EffectVariantCustom
 local PillEffectCustom = ____enums_2Ecustom.PillEffectCustom
-error = function(____, err)
-    if err == 0 then
-        return
-    end
-    Isaac.DebugString(
-        "Custom error function: " .. tostring(err)
-    )
-    Isaac.DebugString(
-        debug.traceback()
-    )
-end
+overwriteError(nil)
 local RPRebalanced = RegisterMod("Racing+ Rebalanced", 1)
 RacingPlusRebalancedVersion = VERSION
 RPRebalanced:AddCallback(ModCallbacks.MC_NPC_UPDATE, NPCUpdate.main)

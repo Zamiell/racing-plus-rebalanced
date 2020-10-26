@@ -26,5 +26,7 @@
     "luaTarget": "5.3",
     "luaBundle": "./mod/main.lua",
     "luaBundleEntry": "./src/main.ts",
+    // Setting "sourceMapTraceback" equal to true causing the following error:
+    // unexpected symbol near '{'
   },
 }
