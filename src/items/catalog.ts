@@ -1,19 +1,13 @@
+import { CATALOG_ILLEGAL_ROOM_TYPES, CATALOG_ITEM_PRICE } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
-
-const CATALOG_ITEM_PRICE = 10;
-const CATALOG_ILLEGAL_ROOM_TYPES = [
-  RoomType.ROOM_SHOP, // 2
-  RoomType.ROOM_CURSE, // 10
-  RoomType.ROOM_DEVIL, // 14
-  RoomType.ROOM_ANGEL, // 15
-  RoomType.ROOM_BLACK_MARKET, // 22
-];
+import { SoundEffectCustom } from "../types/enums.custom";
 
 // ModCallbacks.MC_USE_ITEM (3)
 export function useItem(): boolean {
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
   spawnItem(position);
+  g.sfx.Play(SoundEffectCustom.SOUND_SANTA, 1, 0, false, 1);
   return true;
 }
 
@@ -31,7 +25,12 @@ export function spawnItem(position: Vector): void {
     )
     .ToPickup();
 
-  // Set a price for the item
+  // Mark that this is a pedestal item spawned from a Catalog
+  const data = item.GetData();
+  data.catalogItem = true;
+
+  // Set the initial price
+  item.AutoUpdatePrice = false;
   item.Price = CATALOG_ITEM_PRICE;
 }
 

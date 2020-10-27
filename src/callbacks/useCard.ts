@@ -121,7 +121,7 @@ export function wheelOfFortune(): void {
     } else if (slotChoice === 3) {
       slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE;
     } else {
-      throw new Error(`Unknown slot choice: ${slotChoice}`);
+      error(`Unknown slot choice: ${slotChoice}`);
     }
   }
 

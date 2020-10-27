@@ -57,7 +57,7 @@ const dicePipFunctions = [
     ]);
     const itemPoolType = itemPoolTypeMap.get(randomMapIndex);
     if (itemPoolType === undefined) {
-      throw new Error(`Unknown map index of ${randomMapIndex}.`);
+      error(`Unknown map index of ${randomMapIndex}.`);
     }
 
     const subType = g.itemPool.GetCollectible(

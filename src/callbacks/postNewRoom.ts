@@ -140,7 +140,7 @@ function checkShopMachine() {
     }
 
     default: {
-      throw new Error(`Unknown machine case of: ${machine}`);
+      error(`Unknown machine case of: ${machine}`);
     }
   }
 }

@@ -600,3 +600,10 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
   * Chocolate Milk + Stephen + Sad Onion <!-- Triple item starts -->
 
 <br />
+
+### Change Log
+
+* Added a new sound effect for when you use the Catalog. (Thanks Tremis)
+* Fixed the bug where the Catalog items were 15 cents instead of 10 cents.
+* Fixed the bug where the yellow text on a Catalog item would not work properly in large rooms. (Thanks Tremis)
+* Fixed the bug where the Blue Map would not work properly if you already had the Treasure Map. (Thanks CrafterLynx)

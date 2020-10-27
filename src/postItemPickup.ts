@@ -118,8 +118,15 @@ functionMap.set(CollectibleType.COLLECTIBLE_BLUE_MAP, blueMap);
 export function blueMap(): void {
   const bossIndex = g.l.QueryRoomTypeIndex(RoomType.ROOM_BOSS, false, RNG());
   const bossRoom = g.l.GetRoomByIdx(bossIndex);
+
+  // Completely invisible
   if (bossRoom.DisplayFlags === 0) {
     bossRoom.DisplayFlags = 4;
+  }
+
+  // No icon (e.g. from Treasure Map)
+  if (bossRoom.DisplayFlags === 1) {
+    bossRoom.DisplayFlags = 5;
   }
 
   // Setting the display flag will ! actually update the map

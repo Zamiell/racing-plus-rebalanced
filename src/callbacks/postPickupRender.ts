@@ -1,9 +1,19 @@
+import g from "../globals";
+
 const shopItemNumbersYellow = Sprite();
 shopItemNumbersYellow.Load("gfx/005.150_shop item custom.anm2", true);
 shopItemNumbersYellow.Play("NumbersYellow", true);
 
 // PickupVariant.PICKUP_COLLECTIBLE (100)
 export function collectible(pickup: EntityPickup): void {
+  // Local variables
+  const roomShape = g.r.GetRoomShape();
+
+  // The special yellow rendering will not work in large rooms
+  if (roomShape > RoomShape.ROOMSHAPE_1x1) {
+    return;
+  }
+
   // Make shop pedestal items always have yellow price text so that it is easier to distinguish them
   // from other pickups
   if (pickup.Price <= 0) {

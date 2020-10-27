@@ -1924,6 +1924,8 @@ ____exports.PillEffectCustom[____exports.PillEffectCustom.PILLEFFECT_UNLOCK] = "
 ____exports.SoundEffectCustom = {}
 ____exports.SoundEffectCustom.SOUND_WALNUT = Isaac.GetSoundIdByName("Walnut")
 ____exports.SoundEffectCustom[____exports.SoundEffectCustom.SOUND_WALNUT] = "SOUND_WALNUT"
+____exports.SoundEffectCustom.SOUND_SANTA = Isaac.GetSoundIdByName("Santa")
+____exports.SoundEffectCustom[____exports.SoundEffectCustom.SOUND_SANTA] = "SOUND_SANTA"
 ____exports.CollectibleState = {}
 ____exports.CollectibleState.NORMAL = 0
 ____exports.CollectibleState[____exports.CollectibleState.NORMAL] = "NORMAL"
@@ -1938,7 +1940,7 @@ require("lualib_bundle");
 local ____exports = {}
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-____exports.VERSION = "v1.0.13"
+____exports.VERSION = "v1.0.14"
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
 ____exports.FAMILIAR_TEAR_SCALE = 0.5
 ____exports.ITEM_STARTS = {{CollectibleType.COLLECTIBLE_MOMS_KNIFE}, {CollectibleType.COLLECTIBLE_IPECAC}, {CollectibleType.COLLECTIBLE_TECH_X}, {CollectibleType.COLLECTIBLE_EPIC_FETUS}, {CollectibleType.COLLECTIBLE_MAXS_HEAD}, {CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM}, {CollectibleType.COLLECTIBLE_DR_FETUS}, {CollectibleType.COLLECTIBLE_TECHNOLOGY}, {CollectibleType.COLLECTIBLE_POLYPHEMUS}, {CollectibleType.COLLECTIBLE_TECH_5}, {CollectibleType.COLLECTIBLE_20_20}, {CollectibleType.COLLECTIBLE_PROPTOSIS}, {CollectibleType.COLLECTIBLE_ISAACS_HEART}, {CollectibleType.COLLECTIBLE_JUDAS_SHADOW}, {CollectibleType.COLLECTIBLE_BRIMSTONE}, {CollectibleType.COLLECTIBLE_MAW_OF_VOID}, {CollectibleType.COLLECTIBLE_INCUBUS}, {CollectibleType.COLLECTIBLE_SACRED_HEART}, {CollectibleType.COLLECTIBLE_GODHEAD}, {CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT}, {CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_APPLE}, {CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleType.COLLECTIBLE_THERES_OPTIONS}, {CollectibleType.COLLECTIBLE_POINTY_RIB, CollectibleType.COLLECTIBLE_POINTY_RIB}, {CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_STEVEN, CollectibleType.COLLECTIBLE_SAD_ONION}}
@@ -1950,6 +1952,8 @@ ____exports.SPIDER_ENTITIES = {EntityType.ENTITY_HOPPER, EntityType.ENTITY_SPIDE
 ____exports.TECHNOLOGY_EXCEPTION_ITEMS = {CollectibleType.COLLECTIBLE_DR_FETUS, CollectibleType.COLLECTIBLE_MOMS_KNIFE, CollectibleType.COLLECTIBLE_BRIMSTONE, CollectibleType.COLLECTIBLE_IPECAC, CollectibleType.COLLECTIBLE_EPIC_FETUS, CollectibleType.COLLECTIBLE_TINY_PLANET, CollectibleType.COLLECTIBLE_TECH_X}
 ____exports.ISAACS_HEART_BROKEN_ITEMS = {CollectibleType.COLLECTIBLE_BRIMSTONE, CollectibleType.COLLECTIBLE_RUBBER_CEMENT, CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE, CollectibleType.COLLECTIBLE_MULTIDIMENSIONAL_BABY}
 ____exports.POKE_GO_EXCEPTION_ENTITIES = {EntityType.ENTITY_SHOPKEEPER, EntityType.ENTITY_FIREPLACE, EntityType.ENTITY_STONEHEAD, EntityType.ENTITY_POKY, EntityType.ENTITY_ETERNALFLY, EntityType.ENTITY_CONSTANT_STONE_SHOOTER, EntityType.ENTITY_BRIMSTONE_HEAD, EntityType.ENTITY_SWINGER, EntityType.ENTITY_WALL_HUGGER, EntityType.ENTITY_GAPING_MAW, EntityType.ENTITY_BROKEN_GAPING_MAW, EntityType.ENTITY_SWARM, EntityType.ENTITY_PITFALL}
+____exports.CATALOG_ITEM_PRICE = 10
+____exports.CATALOG_ILLEGAL_ROOM_TYPES = {RoomType.ROOM_SHOP, RoomType.ROOM_CURSE, RoomType.ROOM_DEVIL, RoomType.ROOM_ANGEL, RoomType.ROOM_BLACK_MARKET}
 return ____exports
 end,
 ["types.GlobalsRunHealth"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
@@ -2175,7 +2179,6 @@ end
 return ____exports
 end,
 ["misc"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
-require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
@@ -2206,10 +2209,7 @@ function ____exports.getRandomOffsetPosition(self, position, offsetSize, seed)
         offsetX = offsetSize * -1
         offsetY = offsetSize * -1
     else
-        error(
-            __TS__New(Error, "Unknown offset direction."),
-            0
-        )
+        error("Unknown offset direction.")
     end
     return Vector(position.X + offsetX, position.Y + offsetY)
 end
@@ -2327,7 +2327,6 @@ end
 return ____exports
 end,
 ["callbacks.entityTakeDmgPlayer"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
-require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
@@ -2536,11 +2535,7 @@ function fannyPackImproved(self, player)
     do
         do
             error(
-                __TS__New(
-                    Error,
-                    ("Unknown pickup case of " .. tostring(pickupRoll)) .. "."
-                ),
-                0
+                ("Unknown pickup case of " .. tostring(pickupRoll)) .. "."
             )
         end
     end
@@ -3139,11 +3134,7 @@ function ____exports.main(self, pillEffect, pillColor)
     local newPillEffect = g.run.pills.effects:get(pillColor)
     if newPillEffect == nil then
         error(
-            __TS__New(
-                Error,
-                "Failed to get the pill effect for a pill color of: " .. tostring(pillColor)
-            ),
-            0
+            "Failed to get the pill effect for a pill color of: " .. tostring(pillColor)
         )
     end
     return newPillEffect
@@ -3247,11 +3238,7 @@ dicePipFunctions = {
         local itemPoolType = itemPoolTypeMap:get(randomMapIndex)
         if itemPoolType == nil then
             error(
-                __TS__New(
-                    Error,
-                    ("Unknown map index of " .. tostring(randomMapIndex)) .. "."
-                ),
-                0
+                ("Unknown map index of " .. tostring(randomMapIndex)) .. "."
             )
         end
         local subType = g.itemPool:GetCollectible(
@@ -3683,6 +3670,9 @@ function ____exports.blueMap(self)
     if bossRoom.DisplayFlags == 0 then
         bossRoom.DisplayFlags = 4
     end
+    if bossRoom.DisplayFlags == 1 then
+        bossRoom.DisplayFlags = 5
+    end
     g.l:UpdateVisibility()
 end
 function holyPoop(self)
@@ -4112,11 +4102,7 @@ function checkShopMachine(self)
     do
         do
             error(
-                __TS__New(
-                    Error,
-                    "Unknown machine case of: " .. tostring(machine)
-                ),
-                0
+                "Unknown machine case of: " .. tostring(machine)
             )
         end
     end
@@ -4763,10 +4749,16 @@ return ____exports
 end,
 ["callbacks.postPickupRender"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
+local ____globals = require("globals")
+local g = ____globals.default
 local shopItemNumbersYellow = Sprite()
 shopItemNumbersYellow:Load("gfx/005.150_shop item custom.anm2", true)
 shopItemNumbersYellow:Play("NumbersYellow", true)
 function ____exports.collectible(self, pickup)
+    local roomShape = g.r:GetRoomShape()
+    if roomShape > RoomShape.ROOMSHAPE_1x1 then
+        return
+    end
     if pickup.Price <= 0 then
         return
     end
@@ -4802,24 +4794,30 @@ end,
 ["items.catalog"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 require("lualib_bundle");
 local ____exports = {}
+local ____constants = require("constants")
+local CATALOG_ILLEGAL_ROOM_TYPES = ____constants.CATALOG_ILLEGAL_ROOM_TYPES
+local CATALOG_ITEM_PRICE = ____constants.CATALOG_ITEM_PRICE
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local CATALOG_ITEM_PRICE, CATALOG_ILLEGAL_ROOM_TYPES
+local ____enums_2Ecustom = require("types.enums.custom")
+local SoundEffectCustom = ____enums_2Ecustom.SoundEffectCustom
 function ____exports.spawnItem(self, position)
     g.run.catalogRNG = misc:incrementRNG(g.run.catalogRNG)
     local item = g.g:Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, position, g.zeroVector, nil, 0, g.run.catalogRNG):ToPickup()
+    local data = item:GetData()
+    data.catalogItem = true
+    item.AutoUpdatePrice = false
     item.Price = CATALOG_ITEM_PRICE
 end
 function ____exports.inIllegalRoomType(self)
     local roomType = g.r:GetType()
     return __TS__ArrayIncludes(CATALOG_ILLEGAL_ROOM_TYPES, roomType)
 end
-CATALOG_ITEM_PRICE = 10
-CATALOG_ILLEGAL_ROOM_TYPES = {RoomType.ROOM_SHOP, RoomType.ROOM_CURSE, RoomType.ROOM_DEVIL, RoomType.ROOM_ANGEL, RoomType.ROOM_BLACK_MARKET}
 function ____exports.useItem(self)
     local position = g.r:FindFreePickupSpawnPosition(g.p.Position, 1, true)
     ____exports.spawnItem(nil, position)
+    g.sfx:Play(SoundEffectCustom.SOUND_SANTA, 1, 0, false, 1)
     return true
 end
 function ____exports.preUseItem(self)
@@ -5312,6 +5310,7 @@ end,
 require("lualib_bundle");
 local ____exports = {}
 local ____constants = require("constants")
+local CATALOG_ITEM_PRICE = ____constants.CATALOG_ITEM_PRICE
 local SHOP_PRICES = ____constants.SHOP_PRICES
 local TWO_HEART_ITEMS = ____constants.TWO_HEART_ITEMS
 local ____globals = require("globals")
@@ -5367,7 +5366,12 @@ function getPrice(self, pickup)
     local price
     local shopPrice = SHOP_PRICES:get(pickup.SubType)
     if shopPrice == nil then
-        price = 15
+        local data = pickup:GetData()
+        if data.catalogItem then
+            price = CATALOG_ITEM_PRICE
+        else
+            price = 15
+        end
     else
         price = shopPrice
     end
@@ -5498,11 +5502,7 @@ function checkTransformations(self)
             local storedHasPlayerForm = g.run.transformations:get(i)
             if storedHasPlayerForm == nil then
                 error(
-                    __TS__New(
-                        Error,
-                        "Failed to get the stored player form for: " .. tostring(i)
-                    ),
-                    0
+                    "Failed to get the stored player form for: " .. tostring(i)
                 )
             end
             if hasPlayerForm ~= storedHasPlayerForm then
@@ -6082,10 +6082,7 @@ function ____exports.findMidBoss(self, percent)
     end
     local startingRoomCoords = getCoordsFromGridIndex(nil, startingRoomIndex)
     if bossRoomIndex == nil then
-        error(
-            __TS__New(Error, "Failed to find the boss room when iterating through the rooms."),
-            0
-        )
+        error("Failed to find the boss room when iterating through the rooms.")
     end
     local bossRoomCoords = getCoordsFromGridIndex(nil, bossRoomIndex)
     Isaac.DebugString("Grid:")
@@ -6241,11 +6238,7 @@ function ____exports.wheelOfFortune(self)
             slotVariant = 10
         else
             error(
-                __TS__New(
-                    Error,
-                    "Unknown slot choice: " .. tostring(slotChoice)
-                ),
-                0
+                "Unknown slot choice: " .. tostring(slotChoice)
             )
         end
     end
@@ -6597,13 +6590,10 @@ ____exports.default = function()
                 local i = 0
                 while i < #tracebackLines do
                     do
-                        local line = tracebackLines[i + 1]
                         if (i == 0) or (i == 1) then
                             goto __continue8
                         end
-                        if (i == 1) and string.match(line, "in function 'error'") then
-                            goto __continue8
-                        end
+                        local line = tracebackLines[i + 1]
                         Isaac.DebugString(line)
                     end
                     ::__continue8::

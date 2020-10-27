@@ -12,9 +12,7 @@ export function main(pillEffect: int, pillColor: int): int | null {
 
   const newPillEffect = g.run.pills.effects.get(pillColor);
   if (newPillEffect === undefined) {
-    throw new Error(
-      `Failed to get the pill effect for a pill color of: ${pillColor}`,
-    );
+    error(`Failed to get the pill effect for a pill color of: ${pillColor}`);
   }
   return newPillEffect;
 }

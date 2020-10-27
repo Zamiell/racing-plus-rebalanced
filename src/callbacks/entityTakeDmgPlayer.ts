@@ -18,10 +18,10 @@ export default function entityTakeDmgPlayer(
   }
 
   if (
-    damageSource.Type === EntityType.ENTITY_FAMILIAR
-    && (damageSource.Variant === FamiliarVariant.BLUE_FLY
-      || damageSource.Variant === FamiliarVariant.BBF // 58
-      || damageSource.Variant === FamiliarVariant.BOBS_BRAIN) // 59
+    damageSource.Type === EntityType.ENTITY_FAMILIAR &&
+    (damageSource.Variant === FamiliarVariant.BLUE_FLY ||
+      damageSource.Variant === FamiliarVariant.BBF || // 58
+      damageSource.Variant === FamiliarVariant.BOBS_BRAIN) // 59
   ) {
     return false;
   }
@@ -332,7 +332,7 @@ function fannyPackImproved(player: EntityPlayer) {
     }
 
     default: {
-      throw new Error(`Unknown pickup case of ${pickupRoll}.`);
+      error(`Unknown pickup case of ${pickupRoll}.`);
     }
   }
 }

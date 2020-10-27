@@ -35,7 +35,7 @@ export function getRandomOffsetPosition(
     offsetX = offsetSize * -1;
     offsetY = offsetSize * -1;
   } else {
-    throw new Error("Unknown offset direction.");
+    error("Unknown offset direction.");
   }
 
   return Vector(position.X + offsetX, position.Y + offsetY);

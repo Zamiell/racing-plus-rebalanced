@@ -46,13 +46,13 @@ export function findMidBoss(percent: int): int {
       grid[y][x] = GridValue.ROOM;
 
       if (
-        roomShape === RoomShape.ROOMSHAPE_1x2 // 1 wide x 2 tall
-        || roomShape === RoomShape.ROOMSHAPE_IIV // 1 wide x 2 tall, narrow
+        roomShape === RoomShape.ROOMSHAPE_1x2 || // 1 wide x 2 tall
+        roomShape === RoomShape.ROOMSHAPE_IIV // 1 wide x 2 tall, narrow
       ) {
         grid[y + 1][x] = GridValue.ROOM; // The square below
       } else if (
-        roomShape === RoomShape.ROOMSHAPE_2x1 // 2 wide x 1 tall
-        || roomShape === RoomShape.ROOMSHAPE_IIH // 2 wide x 1 tall, narrow
+        roomShape === RoomShape.ROOMSHAPE_2x1 || // 2 wide x 1 tall
+        roomShape === RoomShape.ROOMSHAPE_IIH // 2 wide x 1 tall, narrow
       ) {
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
       } else if (roomShape === RoomShape.ROOMSHAPE_2x2) {
@@ -89,9 +89,7 @@ export function findMidBoss(percent: int): int {
   // Get the coordinates for the two most important rooms
   const startingRoomCoords = getCoordsFromGridIndex(startingRoomIndex);
   if (bossRoomIndex === undefined) {
-    throw new Error(
-      "Failed to find the boss room when iterating through the rooms.",
-    );
+    error("Failed to find the boss room when iterating through the rooms.");
   }
   const bossRoomCoords = getCoordsFromGridIndex(bossRoomIndex);
 

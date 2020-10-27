@@ -1,4 +1,4 @@
-import { SHOP_PRICES, TWO_HEART_ITEMS } from "../constants";
+import { CATALOG_ITEM_PRICE, SHOP_PRICES, TWO_HEART_ITEMS } from "../constants";
 import g from "../globals";
 import { CollectibleState, CollectibleTypeCustom } from "../types/enums.custom";
 
@@ -113,7 +113,12 @@ function getPrice(pickup: EntityPickup) {
 
   const shopPrice = SHOP_PRICES.get(pickup.SubType);
   if (shopPrice === undefined) {
-    price = 15; // Default price
+    const data = pickup.GetData();
+    if (data.catalogItem) {
+      price = CATALOG_ITEM_PRICE;
+    } else {
+      price = 15; // Default price
+    }
   } else {
     price = shopPrice;
   }

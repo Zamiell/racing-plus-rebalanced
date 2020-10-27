@@ -21,15 +21,13 @@ export default () => {
     if (debug !== undefined) {
       const tracebackLines = debug.traceback().split("\n");
       for (let i = 0; i < tracebackLines.length; i++) {
-        const line = tracebackLines[i];
+        // The first line is always "stack traceback:"
+        // The second line is always this line, e.g. "in function 'error'", which is not useful
         if (i === 0 || i === 1) {
-          // The first line is always "stack traceback:"
-          // The second line is always this line, e.g. "in function 'error'", which is not useful
           continue;
         }
-        if (i === 1 && string.match(line, "in function 'error'")) {
-          continue;
-        }
+
+        const line = tracebackLines[i];
         Isaac.DebugString(line);
       }
     }

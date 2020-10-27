@@ -151,7 +151,7 @@ function checkTransformations() {
     const hasPlayerForm = g.p.HasPlayerForm(i);
     const storedHasPlayerForm = g.run.transformations.get(i);
     if (storedHasPlayerForm === undefined) {
-      throw new Error(`Failed to get the stored player form for: ${i}`);
+      error(`Failed to get the stored player form for: ${i}`);
     }
     if (hasPlayerForm !== storedHasPlayerForm) {
       g.run.transformations.set(i, hasPlayerForm);

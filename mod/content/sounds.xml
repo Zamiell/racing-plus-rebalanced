@@ -1,0 +1,5 @@
+<sounds root="sfx/">
+	<sound name="Santa">
+		<sample weight="1" path="santa.wav" />
+	</sound>
+</sounds>

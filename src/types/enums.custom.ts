@@ -97,6 +97,7 @@ export enum PillEffectCustom {
 
 export enum SoundEffectCustom {
   SOUND_WALNUT = Isaac.GetSoundIdByName("Walnut"), // This is included in Racing+
+  SOUND_SANTA = Isaac.GetSoundIdByName("Santa"),
 }
 
 export enum CollectibleState {

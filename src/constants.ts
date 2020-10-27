@@ -1,6 +1,6 @@
 import { CollectibleTypeCustom } from "./types/enums.custom";
 
-export const VERSION = "v1.0.13";
+export const VERSION = "v1.0.14";
 
 export const FAMILIAR_TEAR_DAMAGE = 0.33;
 export const FAMILIAR_TEAR_SCALE = 0.5;
@@ -308,4 +308,13 @@ export const POKE_GO_EXCEPTION_ENTITIES = [
   EntityType.ENTITY_BROKEN_GAPING_MAW, // 236
   EntityType.ENTITY_SWARM, // 281
   EntityType.ENTITY_PITFALL, // 291
+];
+
+export const CATALOG_ITEM_PRICE = 10;
+export const CATALOG_ILLEGAL_ROOM_TYPES = [
+  RoomType.ROOM_SHOP, // 2
+  RoomType.ROOM_CURSE, // 10
+  RoomType.ROOM_DEVIL, // 14
+  RoomType.ROOM_ANGEL, // 15
+  RoomType.ROOM_BLACK_MARKET, // 22
 ];
