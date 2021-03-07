@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/Zamiell/racing_plus_rebalanced#readme",
   "devDependencies": {
-    "isaacscript": "^1.0.2"
+    "isaacscript": "^1.0.12"
   }
 }
