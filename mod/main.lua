@@ -6391,6 +6391,7 @@ function ____exports.monsterManualImproved(self)
     return true
 end
 function ____exports.boxOfSpidersImproved(self)
+    g.p:UseActiveItem(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, true, false, false, false)
     return true
 end
 function ____exports.megaBlastSingle(self)
