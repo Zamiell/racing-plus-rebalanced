@@ -117,7 +117,6 @@ export function monsterManualImproved(): boolean {
 
 // CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED (replacing 288)
 export function boxOfSpidersImproved(): boolean {
-  /*
   g.p.UseActiveItem(
     CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS,
     true,
@@ -125,8 +124,6 @@ export function boxOfSpidersImproved(): boolean {
     false,
     false,
   );
-  */
-
   return true;
 }
 
