@@ -166,7 +166,7 @@ export function setHealth(
   soulHearts: int,
   blackHearts: int,
   boneHearts: int,
-) {
+): void {
   g.p.AddMaxHearts(-24, true); // Remove all hearts
   g.p.AddSoulHearts(-24);
   g.p.AddBoneHearts(-24);
@@ -186,7 +186,7 @@ export function setHealth(
   }
 }
 
-export function setHealthFromLastFrame() {
+export function setHealthFromLastFrame(): void {
   // If this is the first frame of the game, then there is no last frame to revert the health to
   const gameFrameCount = g.g.GetFrameCount();
   if (gameFrameCount === 0) {

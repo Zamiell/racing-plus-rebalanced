@@ -7,6 +7,6 @@ export default class GlobalsRunRoom {
   softlock = false;
   knifeFlying = new Map<int, boolean>();
   knifePositions = new Map<int, Vector>();
-  mongoBabyTears: Array<Tear> = []; // For Mongo Baby (322)
-  fartingBabyShockwaves: Array<Shockwave> = []; // For Farting Baby (404)
+  mongoBabyTears: Tear[] = []; // For Mongo Baby (322)
+  fartingBabyShockwaves: Shockwave[] = []; // For Farting Baby (404)
 }

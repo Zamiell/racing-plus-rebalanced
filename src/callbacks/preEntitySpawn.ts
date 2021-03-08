@@ -14,8 +14,8 @@ export function main(
   initSeed: int,
 ): [int, int, int, int] | null {
   if (
-    entityType === EntityType.ENTITY_PICKUP
-    && variant === PickupVariant.PICKUP_COLLECTIBLE
+    entityType === EntityType.ENTITY_PICKUP &&
+    variant === PickupVariant.PICKUP_COLLECTIBLE
   ) {
     return collectible(subType, position, velocity, spawner, initSeed);
   }

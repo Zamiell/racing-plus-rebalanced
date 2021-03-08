@@ -172,7 +172,7 @@ function trinkets() {
 function initPills() {
   // Get the 4 random pill effects for this seed
   let seed = g.seeds.GetStartSeed();
-  const chosenEffectIndexes: Array<int> = [];
+  const chosenEffectIndexes: int[] = [];
   for (const pillColor of pills.COLORS) {
     let randomEffectIndex;
     do {

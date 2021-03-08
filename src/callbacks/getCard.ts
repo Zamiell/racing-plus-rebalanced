@@ -13,8 +13,8 @@ const REPLACEMENT_CARDS = [
 export function main(rng: RNG, card: int): int | null {
   // Remove the Rules Card && A Card Against Humanity from the game
   if (
-    card !== Card.CARD_RULES // 44
-    && card !== Card.CARD_HUMANITY // 45
+    card !== Card.CARD_RULES && // 44
+    card !== Card.CARD_HUMANITY // 45
   ) {
     return null;
   }

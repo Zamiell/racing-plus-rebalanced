@@ -18,7 +18,7 @@ export default (): void => {
     // (we must wait until it has replaced the pedestal, or we will inadvertently duplicate it)
     if (
       pickup.SubType !== CollectibleType.COLLECTIBLE_NULL &&
-      pickup.State != CollectibleState.NORMAL
+      pickup.State !== CollectibleState.NORMAL
     ) {
       checkDDPrice(pickup);
       checkShopPrice(pickup);

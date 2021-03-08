@@ -1,3 +1,4 @@
+import * as isaacscript from "isaacscript";
 import * as entityTakeDmg from "./callbacks/entityTakeDmg";
 import * as evaluateCache from "./callbacks/evaluateCache";
 import * as executeCmd from "./callbacks/executeCmd";
@@ -34,22 +35,21 @@ import * as useItem from "./callbacks/useItem";
 import * as usePill from "./callbacks/usePill";
 import { VERSION } from "./constants";
 import * as catalog from "./items/catalog";
-import overwriteError from "./overwriteError";
 import {
   CollectibleTypeCustom,
   EffectVariantCustom,
   PillEffectCustom,
 } from "./types/enums.custom";
 
-// First, prepare special error handling
-// (since the vanilla Lua error handling does not work properly)
-overwriteError();
+// Initialize some IsaacScript-specific functions
+// https://github.com/IsaacScript/isaacscript/blob/main/src/exports/init.ts
+isaacscript.init();
 
 const RPRebalanced = RegisterMod("Racing+ Rebalanced", 1);
 
 // Set this mod's version as a global variable to inform other mods that Racing+ Rebalanced exists
 declare let RacingPlusRebalancedVersion: string;
-RacingPlusRebalancedVersion = VERSION;
+RacingPlusRebalancedVersion = VERSION; // eslint-disable-line
 
 // Define miscellaneous callbacks
 RPRebalanced.AddCallback(ModCallbacks.MC_NPC_UPDATE, NPCUpdate.main); // 0

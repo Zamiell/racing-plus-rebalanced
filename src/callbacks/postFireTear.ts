@@ -237,7 +237,7 @@ function pillWallsHaveEyes(tear: EntityTear) {
     numTimesToIterate,
     startingGridCoordinateForSecondWall,
   ] = coordinates;
-  const walls: Array<int> = [];
+  const walls: int[] = [];
   for (let i = 0; i < numTimesToIterate; i++) {
     const coordinate = startingGridCoordinate + i * amountToAdd;
     walls.push(coordinate);

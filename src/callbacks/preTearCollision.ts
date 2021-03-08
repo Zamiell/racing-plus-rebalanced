@@ -8,8 +8,8 @@ export function main(tear: EntityTear, collider: Entity): null | boolean {
 
 function lostContact(tear: EntityTear, collider: Entity) {
   if (
-    collider.Type === EntityType.ENTITY_PROJECTILE
-    && g.p.HasCollectible(CollectibleType.COLLECTIBLE_LOST_CONTACT)
+    collider.Type === EntityType.ENTITY_PROJECTILE &&
+    g.p.HasCollectible(CollectibleType.COLLECTIBLE_LOST_CONTACT)
   ) {
     // We want the tear to block the incoming projectile && keep going
     // If we return true here, the tear will ! block the shot

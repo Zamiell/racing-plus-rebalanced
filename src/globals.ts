@@ -5,4 +5,4 @@ export default globals;
 
 // Also make it a global variable for debugging purposes
 declare let RacingPlusRebalancedGlobals: Globals;
-RacingPlusRebalancedGlobals = globals;
+RacingPlusRebalancedGlobals = globals; // eslint-disable-line

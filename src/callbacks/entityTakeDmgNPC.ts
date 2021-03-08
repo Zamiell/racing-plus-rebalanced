@@ -22,8 +22,8 @@ function spearOfDestiny(
   // (this does not work if we set effect.CollisionDamage in the PostEffectInit callback;
   // the damage appears to be hard-coded)
   if (
-    damageSource.Type === EntityType.ENTITY_EFFECT
-    && damageSource.Variant === EffectVariant.SPEAR_OF_DESTINY
+    damageSource.Type === EntityType.ENTITY_EFFECT &&
+    damageSource.Variant === EffectVariant.SPEAR_OF_DESTINY
   ) {
     const damage = g.p.Damage * 3;
     g.run.dealingExtraDamage = true;

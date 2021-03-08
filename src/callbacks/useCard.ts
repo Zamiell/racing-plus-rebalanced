@@ -167,7 +167,7 @@ export function sun(): void {
   }
 
   // Reveal 3 random rooms
-  const randomIndexes: Array<int> = [];
+  const randomIndexes: int[] = [];
   do {
     let randomIndex;
     do {

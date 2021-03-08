@@ -13,7 +13,7 @@ export function findMidBoss(percent: int): int {
   const rooms = g.l.GetRooms();
 
   // Initialize an empty 13x13 grid
-  const grid: Array<Array<GridValue>> = [];
+  const grid: GridValue[][] = [];
   for (let i = 0; i < 13; i++) {
     const row = [];
     for (let j = 0; j < 13; j++) {

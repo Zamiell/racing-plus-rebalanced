@@ -79,7 +79,7 @@ function checkTemporaryCharm(npc: EntityNPC) {
 
   // Check for Lil' Haunts to prevent the softlock where charming a Lil' Haunt will make The Haunt
   // unkillable
-  if (npc.Type == EntityType.ENTITY_THE_HAUNT && npc.Variant == 1) {
+  if (npc.Type === EntityType.ENTITY_THE_HAUNT && npc.Variant === 1) {
     const haunts = Isaac.FindByType(
       EntityType.ENTITY_THE_HAUNT,
       0,

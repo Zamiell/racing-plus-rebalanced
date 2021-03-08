@@ -17,10 +17,10 @@ export function yoListen(familiar: EntityFamiliar): void {
 
   // Destroy tinted rocks, secret room walls, && so forth
   if (
-    familiar.Velocity.X > -0.5
-    && familiar.Velocity.X < 0.5
-    && familiar.Velocity.Y > -0.5
-    && familiar.Velocity.Y < 0.5
+    familiar.Velocity.X > -0.5 &&
+    familiar.Velocity.X < 0.5 &&
+    familiar.Velocity.Y > -0.5 &&
+    familiar.Velocity.Y < 0.5
   ) {
     const gridEntity = g.r.GetGridEntityFromPos(familiar.Position);
     if (gridEntity !== null) {

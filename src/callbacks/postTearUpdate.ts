@@ -15,8 +15,8 @@ export function main(tear: EntityTear): void {
 // CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD (42)
 function bobsRottenHead(tear: EntityTear) {
   if (
-    tear.Variant === TearVariant.BOBS_HEAD
-    && tear.FrameCount === 1 // If we do it on frame 0, the charge won't work
+    tear.Variant === TearVariant.BOBS_HEAD &&
+    tear.FrameCount === 1 // If we do it on frame 0, the charge won't work
   ) {
     tear.TearFlags |= TearFlags.TEAR_SAD_BOMB;
     g.p.SetActiveCharge(1);
@@ -26,9 +26,9 @@ function bobsRottenHead(tear: EntityTear) {
 // CollectibleType.COLLECTIBLE_DEMON_BABY (113)
 function demonBaby(tear: EntityTear) {
   if (
-    tear.FrameCount === 1
-    && tear.SpawnerType === EntityType.ENTITY_FAMILIAR
-    && tear.SpawnerVariant === FamiliarVariant.DEMON_BABY
+    tear.FrameCount === 1 &&
+    tear.SpawnerType === EntityType.ENTITY_FAMILIAR &&
+    tear.SpawnerVariant === FamiliarVariant.DEMON_BABY
   ) {
     tear.CollisionDamage = 7 + g.p.Damage * 0.33;
   }
@@ -38,9 +38,9 @@ function demonBaby(tear: EntityTear) {
 function abel(tear: EntityTear) {
   // Delete Abel's vanilla tear (which deals 3.5 damage)
   if (
-    tear.SpawnerType === EntityType.ENTITY_FAMILIAR
-    && tear.SpawnerVariant === FamiliarVariant.ABEL
-    && tear.CollisionDamage === 3.5
+    tear.SpawnerType === EntityType.ENTITY_FAMILIAR &&
+    tear.SpawnerVariant === FamiliarVariant.ABEL &&
+    tear.CollisionDamage === 3.5
   ) {
     tear.Remove();
   }
@@ -104,9 +104,9 @@ function explosivo(tear: EntityTear) {
 // CollectibleType.COLLECTIBLE_LIL_MONSTRO (471)
 function lilMonstro(tear: EntityTear) {
   if (
-    tear.FrameCount === 1
-    && tear.SpawnerType === EntityType.ENTITY_FAMILIAR
-    && tear.SpawnerVariant === FamiliarVariant.LIL_MONSTRO
+    tear.FrameCount === 1 &&
+    tear.SpawnerType === EntityType.ENTITY_FAMILIAR &&
+    tear.SpawnerVariant === FamiliarVariant.LIL_MONSTRO
   ) {
     tear.CollisionDamage = g.p.Damage * FAMILIAR_TEAR_DAMAGE;
     tear.Velocity = tear.Velocity.__mul(2);
@@ -116,9 +116,9 @@ function lilMonstro(tear: EntityTear) {
 // CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED (replacing 257)
 function fireMindImproved(tear: EntityTear) {
   if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)
-    || tear.SubType !== 1
-    || tear.FrameCount % 2 !== 0
+    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED) ||
+    tear.SubType !== 1 ||
+    tear.FrameCount % 2 !== 0
   ) {
     return;
   }

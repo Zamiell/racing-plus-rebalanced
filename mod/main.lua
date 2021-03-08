@@ -18,16 +18,18 @@ local function require(file)
     end
 end
 ____modules = {
-["lualib_bundle"] = function() function __TS__ArrayConcat(arr1, ...)
+["lualib_bundle"] = function() function __TS__ArrayIsArray(value)
+    return (type(value) == "table") and ((value[1] ~= nil) or (next(value, nil) == nil))
+end
+
+function __TS__ArrayConcat(arr1, ...)
     local args = {...}
     local out = {}
     for ____, val in ipairs(arr1) do
         out[#out + 1] = val
     end
     for ____, arg in ipairs(args) do
-        if pcall(
-            function() return #arg end
-        ) and (type(arg) ~= "string") then
+        if __TS__ArrayIsArray(arg) then
             local argAsArray = arg
             for ____, val in ipairs(argAsArray) do
                 out[#out + 1] = val
@@ -414,7 +416,7 @@ function __TS__ArrayFlat(array, depth)
     end
     local result = {}
     for ____, value in ipairs(array) do
-        if ((depth > 0) and (type(value) == "table")) and ((value[1] ~= nil) or (next(value, nil) == nil)) then
+        if (depth > 0) and __TS__ArrayIsArray(value) then
             result = __TS__ArrayConcat(
                 result,
                 __TS__ArrayFlat(value, depth - 1)
@@ -432,7 +434,7 @@ function __TS__ArrayFlatMap(array, callback)
         local i = 0
         while i < #array do
             local value = callback(_G, array[i + 1], i, array)
-            if (type(value) == "table") and ((value[1] ~= nil) or (next(value, nil) == nil)) then
+            if (type(value) == "table") and __TS__ArrayIsArray(value) then
                 result = __TS__ArrayConcat(result, value)
             else
                 result[#result + 1] = value
@@ -567,7 +569,7 @@ function __TS__ObjectGetOwnPropertyDescriptors(object)
     if not metatable then
         return {}
     end
-    return rawget(metatable, "_descriptors")
+    return rawget(metatable, "_descriptors") or ({})
 end
 
 function __TS__Delete(target, key)
@@ -654,7 +656,7 @@ function __TS__WrapErrorToString(self, getDescription)
         if (_VERSION == "Lua 5.1") or (caller and (caller.func ~= error)) then
             return description
         else
-            return (tostring(description) .. "\n") .. tostring(self.stack)
+            return (tostring(description) .. "\n") .. self.stack
         end
     end
 end
@@ -686,7 +688,7 @@ Error = __TS__InitErrorClass(
             end
         end
         function ____.prototype.__tostring(self)
-            return (((self.message ~= "") and (function() return (tostring(self.name) .. ": ") .. tostring(self.message) end)) or (function() return self.name end))()
+            return (((self.message ~= "") and (function() return (self.name .. ": ") .. self.message end)) or (function() return self.name end))()
         end
         return ____
     end)(),
@@ -731,7 +733,7 @@ end
 
 ____symbolMetatable = {
     __tostring = function(self)
-        return ("Symbol(" .. tostring(self.description or "")) .. ")"
+        return ("Symbol(" .. (self.description or "")) .. ")"
     end
 }
 function __TS__Symbol(description)
@@ -835,7 +837,11 @@ function __TS__Iterator(iterable)
         local iterator = iterable[Symbol.iterator](iterable)
         return __TS__IteratorIteratorStep, iterator
     else
-        return ipairs(iterable)
+        return __TS__Unpack(
+            {
+                ipairs(iterable)
+            }
+        )
     end
 end
 
@@ -1118,7 +1124,7 @@ function ____descriptorNewindex(self, key, value)
                 else
                     if descriptor.writable == false then
                         error(
-                            ((("Cannot assign to read only property '" .. tostring(key)) .. "' of object '") .. tostring(self)) .. "'",
+                            ((("Cannot assign to read only property '" .. key) .. "' of object '") .. tostring(self)) .. "'",
                             0
                         )
                     end
@@ -1274,7 +1280,7 @@ function __TS__ParseInt(numberString, base)
         return 0 / 0
     end
     local allowedDigits = (((base <= 10) and (function() return __TS__StringSubstring(__TS__parseInt_base_pattern, 0, base) end)) or (function() return __TS__StringSubstr(__TS__parseInt_base_pattern, 0, 10 + (2 * (base - 10))) end))()
-    local pattern = ("^%s*(-?[" .. tostring(allowedDigits)) .. "]*)"
+    local pattern = ("^%s*(-?[" .. allowedDigits) .. "]*)"
     local number = tonumber(
         string.match(numberString, pattern),
         base
@@ -1531,9 +1537,9 @@ function __TS__SourceMapTraceBack(fileName, sourceMap)
                 function(file, line)
                     local fileSourceMap = _G.__TS__sourcemap[tostring(file) .. ".lua"]
                     if fileSourceMap and fileSourceMap[line] then
-                        return (tostring(file) .. ".ts:") .. tostring(fileSourceMap[line])
+                        return (file .. ".ts:") .. tostring(fileSourceMap[line])
                     end
-                    return (tostring(file) .. ".lua:") .. tostring(line)
+                    return (file .. ".lua:") .. line
                 end
             )
             return result
@@ -1599,6 +1605,16 @@ function __TS__StringEndsWith(self, searchString, endPosition)
         endPosition = #self
     end
     return string.sub(self, (endPosition - #searchString) + 1, endPosition) == searchString
+end
+
+function __TS__StringIncludes(self, searchString, position)
+    if not position then
+        position = 1
+    else
+        position = position + 1
+    end
+    local index = string.find(self, searchString, position, true)
+    return index ~= nil
 end
 
 function __TS__StringPadEnd(self, maxLength, fillString)
@@ -1696,6 +1712,24 @@ function __TS__StringSlice(self, start, ____end)
     return string.sub(self, start, ____end)
 end
 
+function __TS__StringSubstring(self, start, ____end)
+    if ____end ~= ____end then
+        ____end = 0
+    end
+    if (____end ~= nil) and (start > ____end) then
+        start, ____end = __TS__Unpack({____end, start})
+    end
+    if start >= 0 then
+        start = start + 1
+    else
+        start = 1
+    end
+    if (____end ~= nil) and (____end < 0) then
+        ____end = 0
+    end
+    return string.sub(self, start, ____end)
+end
+
 function __TS__StringSplit(source, separator, limit)
     if limit == nil then
         limit = 4294967295
@@ -1756,24 +1790,6 @@ function __TS__StringSubstr(self, from, length)
     return string.sub(self, from, length)
 end
 
-function __TS__StringSubstring(self, start, ____end)
-    if ____end ~= ____end then
-        ____end = 0
-    end
-    if (____end ~= nil) and (start > ____end) then
-        start, ____end = __TS__Unpack({____end, start})
-    end
-    if start >= 0 then
-        start = start + 1
-    else
-        start = 1
-    end
-    if (____end ~= nil) and (____end < 0) then
-        ____end = 0
-    end
-    return string.sub(self, start, ____end)
-end
-
 function __TS__StringTrim(self)
     local result = string.gsub(self, "^[%s ﻿]*(.-)[%s ﻿]*$", "%1")
     return result
@@ -1818,10 +1834,10 @@ end
 end,
 ["types.enums.custom"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
-____exports.PickupVariantCustom = {}
+____exports.PickupVariantCustom = PickupVariantCustom or ({})
 ____exports.PickupVariantCustom.INVISIBLE_PICKUP = Isaac.GetEntityVariantByName("Invisible Pickup")
 ____exports.PickupVariantCustom[____exports.PickupVariantCustom.INVISIBLE_PICKUP] = "INVISIBLE_PICKUP"
-____exports.CollectibleTypeCustom = {}
+____exports.CollectibleTypeCustom = CollectibleTypeCustom or ({})
 ____exports.CollectibleTypeCustom.COLLECTIBLE_DADS_LOST_COIN_CUSTOM = Isaac.GetItemIdByName("Dad's Lost Coin")
 ____exports.CollectibleTypeCustom[____exports.CollectibleTypeCustom.COLLECTIBLE_DADS_LOST_COIN_CUSTOM] = "COLLECTIBLE_DADS_LOST_COIN_CUSTOM"
 ____exports.CollectibleTypeCustom.COLLECTIBLE_SCHOOLBAG_CUSTOM = Isaac.GetItemIdByName("Schoolbag")
@@ -1864,14 +1880,14 @@ ____exports.CollectibleTypeCustom.COLLECTIBLE_U235 = Isaac.GetItemIdByName("U-23
 ____exports.CollectibleTypeCustom[____exports.CollectibleTypeCustom.COLLECTIBLE_U235] = "COLLECTIBLE_U235"
 ____exports.CollectibleTypeCustom.COLLECTIBLE_CATALOG = Isaac.GetItemIdByName("Catalog")
 ____exports.CollectibleTypeCustom[____exports.CollectibleTypeCustom.COLLECTIBLE_CATALOG] = "COLLECTIBLE_CATALOG"
-____exports.TrinketTypeCustom = {}
+____exports.TrinketTypeCustom = TrinketTypeCustom or ({})
 ____exports.TrinketTypeCustom.TRINKET_WALNUT_IMPROVED = Isaac.GetTrinketIdByName("Walnut (Improved)")
 ____exports.TrinketTypeCustom[____exports.TrinketTypeCustom.TRINKET_WALNUT_IMPROVED] = "TRINKET_WALNUT_IMPROVED"
 ____exports.TrinketTypeCustom.TRINKET_ETHEREAL_PENNY = Isaac.GetTrinketIdByName("Ethereal Penny")
 ____exports.TrinketTypeCustom[____exports.TrinketTypeCustom.TRINKET_ETHEREAL_PENNY] = "TRINKET_ETHEREAL_PENNY"
 ____exports.TrinketTypeCustom.TRINKET_PENNY_ON_A_STRING = Isaac.GetTrinketIdByName("Penny on a String")
 ____exports.TrinketTypeCustom[____exports.TrinketTypeCustom.TRINKET_PENNY_ON_A_STRING] = "TRINKET_PENNY_ON_A_STRING"
-____exports.SlotVariantCustom = {}
+____exports.SlotVariantCustom = SlotVariantCustom or ({})
 ____exports.SlotVariantCustom.TRANSMUTATION_MACHINE = Isaac.GetEntityVariantByName("Transmutation Machine")
 ____exports.SlotVariantCustom[____exports.SlotVariantCustom.TRANSMUTATION_MACHINE] = "TRANSMUTATION_MACHINE"
 ____exports.SlotVariantCustom.BOMB_DONATION_MACHINE = Isaac.GetEntityVariantByName("Bomb Donation Machine")
@@ -1882,13 +1898,13 @@ ____exports.SlotVariantCustom.ROULETTE_TABLE = Isaac.GetEntityVariantByName("Rou
 ____exports.SlotVariantCustom[____exports.SlotVariantCustom.ROULETTE_TABLE] = "ROULETTE_TABLE"
 ____exports.SlotVariantCustom.HOLY_MACHINE = Isaac.GetEntityVariantByName("Holy Machine")
 ____exports.SlotVariantCustom[____exports.SlotVariantCustom.HOLY_MACHINE] = "HOLY_MACHINE"
-____exports.EffectVariantCustom = {}
+____exports.EffectVariantCustom = EffectVariantCustom or ({})
 ____exports.EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM = Isaac.GetEntityVariantByName("Dice Room Floor (Custom)")
 ____exports.EffectVariantCustom[____exports.EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM] = "DICE_ROOM_FLOOR_CUSTOM"
-____exports.CreepSubTypeCustom = {}
+____exports.CreepSubTypeCustom = CreepSubTypeCustom or ({})
 ____exports.CreepSubTypeCustom.FLOOR_EFFECT_CREEP = 12545
 ____exports.CreepSubTypeCustom[____exports.CreepSubTypeCustom.FLOOR_EFFECT_CREEP] = "FLOOR_EFFECT_CREEP"
-____exports.PillEffectCustom = {}
+____exports.PillEffectCustom = PillEffectCustom or ({})
 ____exports.PillEffectCustom.PILLEFFECT_DAMAGE_UP = Isaac.GetPillEffectByName("Damage Up")
 ____exports.PillEffectCustom[____exports.PillEffectCustom.PILLEFFECT_DAMAGE_UP] = "PILLEFFECT_DAMAGE_UP"
 ____exports.PillEffectCustom.PILLEFFECT_TEAR_DELAY_DOWN = Isaac.GetPillEffectByName("Tear Delay Down")
@@ -1921,12 +1937,12 @@ ____exports.PillEffectCustom.PILLEFFECT_FAMILIAR_FRENZY = Isaac.GetPillEffectByN
 ____exports.PillEffectCustom[____exports.PillEffectCustom.PILLEFFECT_FAMILIAR_FRENZY] = "PILLEFFECT_FAMILIAR_FRENZY"
 ____exports.PillEffectCustom.PILLEFFECT_UNLOCK = Isaac.GetPillEffectByName("Unlock")
 ____exports.PillEffectCustom[____exports.PillEffectCustom.PILLEFFECT_UNLOCK] = "PILLEFFECT_UNLOCK"
-____exports.SoundEffectCustom = {}
+____exports.SoundEffectCustom = SoundEffectCustom or ({})
 ____exports.SoundEffectCustom.SOUND_WALNUT = Isaac.GetSoundIdByName("Walnut")
 ____exports.SoundEffectCustom[____exports.SoundEffectCustom.SOUND_WALNUT] = "SOUND_WALNUT"
 ____exports.SoundEffectCustom.SOUND_SANTA = Isaac.GetSoundIdByName("Santa")
 ____exports.SoundEffectCustom[____exports.SoundEffectCustom.SOUND_SANTA] = "SOUND_SANTA"
-____exports.CollectibleState = {}
+____exports.CollectibleState = CollectibleState or ({})
 ____exports.CollectibleState.NORMAL = 0
 ____exports.CollectibleState[____exports.CollectibleState.NORMAL] = "NORMAL"
 ____exports.CollectibleState.RACING_PLUS_REPLACED = 1
@@ -4756,7 +4772,7 @@ shopItemNumbersYellow:Load("gfx/005.150_shop item custom.anm2", true)
 shopItemNumbersYellow:Play("NumbersYellow", true)
 function ____exports.collectible(self, pickup)
     local roomShape = g.r:GetRoomShape()
-    if roomShape > RoomShape.ROOMSHAPE_1x1 then
+    if roomShape >= RoomShape.ROOMSHAPE_1x2 then
         return
     end
     if pickup.Price <= 0 then
@@ -5999,7 +6015,7 @@ function getGridIndexFromXY(self, coords)
     local y = coords.y - 1
     return (y * 13) + x
 end
-local GridValue = {}
+local GridValue = GridValue or ({})
 GridValue.ROOM = 0
 GridValue[GridValue.ROOM] = "ROOM"
 GridValue.NULL = 1
@@ -6391,6 +6407,7 @@ function ____exports.monsterManualImproved(self)
     return true
 end
 function ____exports.boxOfSpidersImproved(self)
+    g.p:UseActiveItem(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, true, false, false, false)
     return true
 end
 function ____exports.megaBlastSingle(self)
@@ -6577,9 +6594,7 @@ ____exports.default = function()
         if err == "" then
             Isaac.DebugString("Lua error (with a blank error message)")
         else
-            Isaac.DebugString(
-                "Lua error: " .. tostring(err)
-            )
+            Isaac.DebugString("Lua error: " .. err)
         end
         if debug ~= nil then
             local tracebackLines = __TS__StringSplit(
@@ -6762,16 +6777,14 @@ for ____, effectVariant in ipairs(playerCreepEffectVariants) do
     RPRebalanced:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, postEffectUpdate.creepScaling, effectVariant)
 end
 local modName = "Racing+ Rebalanced"
-local welcomeText = ((tostring(modName) .. " ") .. tostring(VERSION)) .. " initialized."
+local welcomeText = ((modName .. " ") .. VERSION) .. " initialized."
 local hyphens = string.rep(
     "-",
     math.floor(#welcomeText)
 )
-local welcomeTextBorder = ("+-" .. tostring(hyphens)) .. "-+"
+local welcomeTextBorder = ("+-" .. hyphens) .. "-+"
 Isaac.DebugString(welcomeTextBorder)
-Isaac.DebugString(
-    ("| " .. tostring(welcomeText)) .. " |"
-)
+Isaac.DebugString(("| " .. welcomeText) .. " |")
 Isaac.DebugString(welcomeTextBorder)
 return ____exports
 end,

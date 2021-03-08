@@ -2,10 +2,6 @@
   "name": "racing_plus_rebalanced",
   "version": "1.0.14",
   "description": "A mod for The Binding of Isaac: Afterbirth+",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Zamiell/racing_plus_rebalanced.git"
-  },
   "keywords": [
     "isaac",
     "mod",
@@ -13,13 +9,17 @@
     "afterbirth",
     "repentance"
   ],
-  "author": "Zamiell",
-  "license": "GPL-3.0",
+  "homepage": "https://github.com/Zamiell/racing_plus_rebalanced#readme",
   "bugs": {
     "url": "https://github.com/Zamiell/racing_plus_rebalanced/issues"
   },
-  "homepage": "https://github.com/Zamiell/racing_plus_rebalanced#readme",
-  "devDependencies": {
-    "isaacscript": "^1.0.12"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zamiell/racing_plus_rebalanced.git"
+  },
+  "license": "GPL-3.0",
+  "author": "Zamiell",
+  "dependencies": {
+    "isaacscript": "^1.0.19"
   }
 }
