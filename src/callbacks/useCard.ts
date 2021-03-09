@@ -21,7 +21,9 @@ export function magician(): void {
   for (const entity of lasers) {
     if (entity.SpawnerType === EntityType.ENTITY_PLAYER) {
       const laser = entity.ToLaser();
-      laser.TearFlags |= TearFlags.TEAR_HOMING;
+      if (laser !== null) {
+        laser.TearFlags |= TearFlags.TEAR_HOMING;
+      }
     }
   }
 }
@@ -79,6 +81,9 @@ function deleteNearestHeart() {
   let nearestPickupDistance: int | null = null;
   for (const heart of hearts) {
     const pickup = heart.ToPickup();
+    if (pickup === null) {
+      continue;
+    }
     if (
       pickup.FrameCount <= 1 &&
       pickup.SpawnerType === EntityType.ENTITY_PLAYER &&

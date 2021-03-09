@@ -12,6 +12,9 @@ export default (): void => {
   );
   for (const pedestal of pedestals) {
     const pickup = pedestal.ToPickup();
+    if (pickup === null) {
+      continue;
+    }
 
     // Collectible states start at 0
     // Racing+ sets the state to 1 when it is finished replacing the pedestal
@@ -157,7 +160,9 @@ function checkSetBossItem(pedestal: EntityPickup) {
       pedestal.InitSeed,
     );
     const newPedestal = newEntity.ToPickup();
-    newPedestal.TheresOptionsPickup = pedestal.TheresOptionsPickup;
+    if (newPedestal !== null) {
+      newPedestal.TheresOptionsPickup = pedestal.TheresOptionsPickup;
+    }
     pedestal.Remove();
   }
 }

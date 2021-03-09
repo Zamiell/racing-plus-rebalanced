@@ -7,13 +7,13 @@ import GlobalsRunRoom from "./GlobalsRunRoom";
 // Per-run variables
 export default class GlobalsRun {
   // Tracking per run
-  randomSeed: int = 0;
-  tearCounter: int = 0;
+  randomSeed = 0;
+  tearCounter = 0;
 
   // Tracking per level
-  currentFloor: int = 0;
-  currentFloorType: int = 0;
-  currentFloorFrame: int = 0;
+  currentFloor = 0;
+  currentFloorType = 0;
+  currentFloorFrame = 0;
   level = new GlobalsRunLevel();
 
   // Tracking per room
@@ -21,49 +21,49 @@ export default class GlobalsRun {
   room = new GlobalsRunRoom();
 
   // Miscellaneous variables
-  pickingUpItem: int = 0; // Equal to the ID of the currently queued item
-  pickingUpItemRoom: int = 0; // Equal to the room that we picked up the currently queued item
-  pickingUpItemType: ItemType = ItemType.ITEM_NULL; // Equal to the "QueuedItem.Item.Type"
-  lastFireDirection: Direction = Direction.DOWN;
+  pickingUpItem = 0; // Equal to the ID of the currently queued item
+  pickingUpItemRoom = 0; // Equal to the room that we picked up the currently queued item
+  pickingUpItemType = ItemType.ITEM_NULL; // Equal to the "QueuedItem.Item.Type"
+  lastFireDirection = Direction.DOWN;
   dealingExtraDamage = false;
-  familiarMultiShot: int = 0;
+  familiarMultiShot = 0;
   familiarMultiShotVelocity = Vector(0, 0);
-  rouletteTableRNG: int = 0;
+  rouletteTableRNG = 0;
 
   // Item variables
-  monstroCounters: int = 0; // For Monstro's Tooth (86)
-  monstroFrame: int = 0; // For Monstro's Tooth (86)
+  monstroCounters = 0; // For Monstro's Tooth (86)
+  monstroFrame = 0; // For Monstro's Tooth (86)
   wafer = false; // For The Wafer (108)
-  waferCounters: int = 0; // For The Wafer (108)
-  knifeCooldownFrames: int = 0; // For Mom's Knife (114)
-  nineVoltFrame: int = 0; // For 9 Volt (116)
+  waferCounters = 0; // For The Wafer (108)
+  knifeCooldownFrames = 0; // For Mom's Knife (114)
+  nineVoltFrame = 0; // For 9 Volt (116)
   spawningDeadBird = false; // For Dead Bird (117)
-  blackBeanEndFrame: int = 0; // For The Black Bean (180)
+  blackBeanEndFrame = 0; // For The Black Bean (180)
   abelDoubleTear = false; // For Abel (188)
-  fannyPackRNG: int = 0; // For Fanny Pack (204)
-  piggyBankRNG: int = 0; // For Piggy Bank (227)
+  fannyPackRNG = 0; // For Fanny Pack (204)
+  piggyBankRNG = 0; // For Piggy Bank (227)
   technologyAdded2020 = false; // For 20/20 (245)
   spawningIsaacsHeartLaser = false; // For the Isaac's Heart (276)
   judasShadow = false; // For Judas' Shadow (311)
   holyMantle = false; // For Holy Mantle (313)
   wizDoubleTear = false; // For The Wiz (358)
-  chargedBabyCounters: int = 0; // For Charged Baby (372)
-  fartingBabyCounters: int = 0; // For Farting Baby (404)
+  chargedBabyCounters = 0; // For Charged Baby (372)
+  fartingBabyCounters = 0; // For Farting Baby (404)
   blackPowderActive = false; // For Black Powder (420)
-  brownNuggetCounters: int = 0; // For Brown Nugget (504)
-  brownNuggetFrame: int = 0; // For Brown Nugget (504)
-  walnutCounters: int = 0; // For Walnut (108)
+  brownNuggetCounters = 0; // For Brown Nugget (504)
+  brownNuggetFrame = 0; // For Brown Nugget (504)
+  walnutCounters = 0; // For Walnut (108)
   spawningRestock = false; // For Clockwork Assembly
   strabismusDoubleTear = false; // For Strabismus
-  catalogRNG: int = 0;
+  catalogRNG = 0;
 
   // Trinket variables
-  etherealPennyRNG: int = 0; // For Ethereal Penny
-  numCoins: int = 0; // For Penny on a String
+  etherealPennyRNG = 0; // For Ethereal Penny
+  numCoins = 0; // For Penny on a String
 
   // Card variables
-  wheelOfFortuneRNG: int = 0; // For the Wheel of Fortune card (11)
-  sunCardRNG: int = 0; // For the Sun card (20)
+  wheelOfFortuneRNG = 0; // For the Wheel of Fortune card (11)
+  sunCardRNG = 0; // For the Sun card (20)
 
   // Pill variables
   pills: GlobalsRunPills = {

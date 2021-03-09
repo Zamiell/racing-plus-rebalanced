@@ -13,7 +13,7 @@ export function useItem(): boolean {
 
 export function spawnItem(position: Vector): void {
   g.run.catalogRNG = misc.incrementRNG(g.run.catalogRNG);
-  const item = g.g
+  const spawnedItem = g.g
     .Spawn(
       EntityType.ENTITY_PICKUP, // 5
       PickupVariant.PICKUP_COLLECTIBLE, // 100
@@ -25,13 +25,15 @@ export function spawnItem(position: Vector): void {
     )
     .ToPickup();
 
-  // Mark that this is a pedestal item spawned from a Catalog
-  const data = item.GetData();
-  data.catalogItem = true;
+  if (spawnedItem !== null) {
+    // Mark that this is a pedestal item spawned from a Catalog
+    const data = spawnedItem.GetData();
+    data.catalogItem = true;
 
-  // Set the initial price
-  item.AutoUpdatePrice = false;
-  item.Price = CATALOG_ITEM_PRICE;
+    // Set the initial price
+    spawnedItem.AutoUpdatePrice = false;
+    spawnedItem.Price = CATALOG_ITEM_PRICE;
+  }
 }
 
 // ModCallbacks.MC_PRE_USE_ITEM (23)

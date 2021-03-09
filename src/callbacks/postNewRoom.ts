@@ -265,8 +265,10 @@ export function spawnCurseRoomPedestalItem(): void {
     g.zeroVector,
     null,
   ).ToPickup();
-  collectible.AutoUpdatePrice = false;
-  collectible.Price = -1; // All Curse Room items should have a price of one red heart container
+  if (collectible !== null) {
+    collectible.AutoUpdatePrice = false;
+    collectible.Price = -1; // All Curse Room items should have a price of one red heart container
+  }
 }
 
 // RoomType.ROOM_CHALLENGE (21)
@@ -450,7 +452,10 @@ function abel() {
     false,
   );
   for (const abelEntity of abels) {
-    abelEntity.ToFamiliar().FireCooldown = 1000000;
+    const familiar = abelEntity.ToFamiliar();
+    if (familiar !== null) {
+      familiar.FireCooldown = 1000000;
+    }
   }
 }
 

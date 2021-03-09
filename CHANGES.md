@@ -603,6 +603,13 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 
 ### Change Log
 
+### March ?, 2021
+
+* Fixed the bug where Book of Revelations would not give the appropriate amount of soul hearts.
+* Added a new sprite for the Catalog. (Thanks Tremis)
+
+### October 27th, 2020
+
 * Added a new sound effect for when you use the Catalog. (Thanks Tremis)
 * Fixed the bug where the Catalog items were 15 cents instead of 10 cents.
 * Fixed the bug where the yellow text on a Catalog item would not work properly in large rooms. (Thanks Tremis)

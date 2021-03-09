@@ -1,4 +1,3 @@
-import * as isaacscript from "isaacscript";
 import * as entityTakeDmg from "./callbacks/entityTakeDmg";
 import * as evaluateCache from "./callbacks/evaluateCache";
 import * as executeCmd from "./callbacks/executeCmd";
@@ -34,6 +33,7 @@ import * as useCard from "./callbacks/useCard";
 import * as useItem from "./callbacks/useItem";
 import * as usePill from "./callbacks/usePill";
 import { VERSION } from "./constants";
+import isaacScriptInit from "./isaacScriptInit";
 import * as catalog from "./items/catalog";
 import {
   CollectibleTypeCustom,
@@ -42,8 +42,7 @@ import {
 } from "./types/enums.custom";
 
 // Initialize some IsaacScript-specific functions
-// https://github.com/IsaacScript/isaacscript/blob/main/src/exports/init.ts
-isaacscript.init();
+isaacScriptInit();
 
 const RPRebalanced = RegisterMod("Racing+ Rebalanced", 1);
 
@@ -102,8 +101,7 @@ RPRebalanced.AddCallback(ModCallbacks.MC_GET_PILL_EFFECT, getPillEffect.main); /
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.bookOfRevelations,
-  // CollectibleType.COLLECTIBLE_BOOK_REVELATIONS, // 78
-  999,
+  CollectibleType.COLLECTIBLE_BOOK_REVELATIONS, // 78
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,

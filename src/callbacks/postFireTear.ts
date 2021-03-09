@@ -179,7 +179,9 @@ function u235(tear: EntityTear) {
         tear.InitSeed,
       )
       .ToBomb();
-    bomb.ExplosionDamage = g.p.Damage * 5 + 30; // Same formula as Dr. Fetus
+    if (bomb !== null) {
+      bomb.ExplosionDamage = g.p.Damage * 5 + 30; // Same formula as Dr. Fetus
+    }
 
     tear.Remove();
   }
@@ -252,34 +254,34 @@ function pillWallsHaveEyes(tear: EntityTear) {
 
   for (const wall of walls) {
     const gridEntity = g.r.GetGridEntity(wall);
-    if (gridEntity !== null) {
-      const saveState = gridEntity.GetSaveState();
-      if (saveState.Type === GridEntityType.GRID_WALL) {
-        // By default, the tear will get hit by the collision of the wall,
-        // so we need to move it closer to the center of the room
-        let adjustedPosition = gridEntity.Position;
-        const distanceToAdjust = 15;
-        if (direction === Direction.LEFT) {
-          adjustedPosition = adjustedPosition.__add(
-            Vector(distanceToAdjust * -1, 0),
-          );
-        } else if (direction === Direction.UP) {
-          adjustedPosition = adjustedPosition.__add(
-            Vector(0, distanceToAdjust * -1),
-          );
-        } else if (direction === Direction.RIGHT) {
-          adjustedPosition = adjustedPosition.__add(
-            Vector(distanceToAdjust, 0),
-          );
-        } else if (direction === Direction.DOWN) {
-          adjustedPosition = adjustedPosition.__add(
-            Vector(0, distanceToAdjust),
-          );
-        }
-
-        g.p.FireTear(adjustedPosition, tear.Velocity, false, true, false);
-      }
+    if (gridEntity === null) {
+      continue;
     }
+
+    const saveState = gridEntity.GetSaveState();
+    if (saveState.Type !== GridEntityType.GRID_WALL) {
+      continue;
+    }
+
+    // By default, the tear will get hit by the collision of the wall,
+    // so we need to move it closer to the center of the room
+    let adjustedPosition = gridEntity.Position;
+    const distanceToAdjust = 15;
+    if (direction === Direction.LEFT) {
+      adjustedPosition = adjustedPosition.__add(
+        Vector(distanceToAdjust * -1, 0),
+      );
+    } else if (direction === Direction.UP) {
+      adjustedPosition = adjustedPosition.__add(
+        Vector(0, distanceToAdjust * -1),
+      );
+    } else if (direction === Direction.RIGHT) {
+      adjustedPosition = adjustedPosition.__add(Vector(distanceToAdjust, 0));
+    } else if (direction === Direction.DOWN) {
+      adjustedPosition = adjustedPosition.__add(Vector(0, distanceToAdjust));
+    }
+
+    g.p.FireTear(adjustedPosition, tear.Velocity, false, true, false);
   }
 
   g.run.pills.wallsHaveEyesShooting = false;
@@ -310,113 +312,168 @@ function familiars(tear: EntityTear) {
     false,
   );
   for (const familiar of familiarEntities) {
-    if (
-      familiar.Variant === FamiliarVariant.BROTHER_BOBBY || // 1
-      familiar.Variant === FamiliarVariant.DEMON_BABY || // 2
-      familiar.Variant === FamiliarVariant.LITTLE_GISH || // 4
-      familiar.Variant === FamiliarVariant.LITTLE_STEVEN || // 5
-      familiar.Variant === FamiliarVariant.SISTER_MAGGY || // 7
-      familiar.Variant === FamiliarVariant.GHOST_BABY || // 9
-      familiar.Variant === FamiliarVariant.RAINBOW_BABY || // 11
-      familiar.Variant === FamiliarVariant.ISAACS_HEAD || // 12
-      familiar.Variant === FamiliarVariant.MONGO_BABY || // 74
-      familiar.Variant === FamiliarVariant.SERAPHIM // 92
-    ) {
-      const familiarTear = Isaac.Spawn(
-        EntityType.ENTITY_TEAR,
-        0,
-        0,
-        familiar.Position,
-        velocity,
-        null,
-      ).ToTear();
-      familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
-      familiarTear.CollisionDamage = damage;
-
-      if (familiar.Variant === FamiliarVariant.LITTLE_GISH) {
-        // 4
-        const color = Color(0, 0, 0, 1, 1, 1, 1); // Black
-        familiarTear.SetColor(color, 10000, 1000, false, false);
-        familiarTear.TearFlags |= TearFlags.TEAR_SLOW;
-      } else if (familiar.Variant === FamiliarVariant.LITTLE_STEVEN) {
-        // 5
-        const color = Color(1, 0, 1, 1, 1, 1, 1); // Purple
-        familiarTear.SetColor(color, 10000, 1000, false, false);
-        familiarTear.TearFlags |= TearFlags.TEAR_HOMING;
-      } else if (familiar.Variant === FamiliarVariant.GHOST_BABY) {
-        // 9
-        const color = Color(1, 1, 1, 0.5, 1, 1, 1); // Faded
-        familiarTear.SetColor(color, 10000, 1000, false, false);
-        familiarTear.TearFlags |= TearFlags.TEAR_SPECTRAL;
-      } else if (familiar.Variant === FamiliarVariant.RAINBOW_BABY) {
-        // 11
-        const color = Color(2, 0, 2, 1, 1, 1, 1); // Pink
-        familiarTear.SetColor(color, 10000, 1000, false, false);
-        math.randomseed(g.g.GetFrameCount());
-        const tearFlag = math.random(1, 60);
-        familiarTear.TearFlags |= 1 << tearFlag;
-      } else if (familiar.Variant === FamiliarVariant.MONGO_BABY) {
-        // 74
-        // Shoot a second tear a few frames from now
-        g.run.room.mongoBabyTears.push({
-          frame: g.g.GetFrameCount() + 3,
-          familiar: EntityRef(familiar),
-          velocity,
-          damage,
-          scale: tear.Scale * FAMILIAR_TEAR_SCALE,
-        });
-      } else if (familiar.Variant === FamiliarVariant.SERAPHIM) {
+    switch (familiar.Variant) {
+      case FamiliarVariant.BROTHER_BOBBY: // 1
+      case FamiliarVariant.DEMON_BABY: // 2
+      case FamiliarVariant.LITTLE_GISH: // 4
+      case FamiliarVariant.LITTLE_STEVEN: // 5
+      case FamiliarVariant.SISTER_MAGGY: // 7
+      case FamiliarVariant.GHOST_BABY: // 9
+      case FamiliarVariant.RAINBOW_BABY: // 11
+      case FamiliarVariant.ISAACS_HEAD: // 12
+      case FamiliarVariant.MONGO_BABY: // 74
+      case FamiliarVariant.SERAPHIM: {
         // 92
-        // Sacred Heart gives a 89.53% damage up, so emulate this
-        familiarTear.CollisionDamage = damage * 1.8953;
-        const color = Color(1, 1, 1, 1, 1, 1, 1); // White
-        familiarTear.SetColor(color, 10000, 1000, false, false);
-        familiarTear.TearFlags |= TearFlags.TEAR_HOMING; // 1 << 2
+        spawnTearWithIncreasedDmg(tear, familiar, velocity, damage);
+        break;
       }
-    } else if (familiar.Variant === FamiliarVariant.ROBO_BABY) {
-      // 6
-      const laser = g.p.FireTechLaser(
-        familiar.Position,
-        0,
-        velocity,
-        false,
-        false,
-      );
-      laser.CollisionDamage = damage;
-    } else if (familiar.Variant === FamiliarVariant.HARLEQUIN_BABY) {
-      // 10
-      for (let i = 0; i < 2; i++) {
-        if (i === 1) {
-          velocity = velocity.Rotated(-10);
-        } else if (i === 2) {
-          velocity = velocity.Rotated(10);
+
+      case FamiliarVariant.ROBO_BABY: {
+        // 6
+        const laser = g.p.FireTechLaser(
+          familiar.Position,
+          0,
+          velocity,
+          false,
+          false,
+        );
+        laser.CollisionDamage = damage;
+        break;
+      }
+
+      case FamiliarVariant.HARLEQUIN_BABY: {
+        // 10
+        for (let i = 0; i < 2; i++) {
+          if (i === 1) {
+            velocity = velocity.Rotated(-10);
+          } else if (i === 2) {
+            velocity = velocity.Rotated(10);
+          }
+          const familiarTear = Isaac.Spawn(
+            EntityType.ENTITY_TEAR,
+            0,
+            0,
+            familiar.Position,
+            velocity,
+            null,
+          ).ToTear();
+          if (familiarTear !== null) {
+            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
+            familiarTear.CollisionDamage = damage;
+          }
         }
-        const familiarTear = Isaac.Spawn(
-          EntityType.ENTITY_TEAR,
-          0,
-          0,
-          familiar.Position,
-          velocity,
-          null,
-        ).ToTear();
-        familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
-        familiarTear.CollisionDamage = damage;
+        break;
       }
-    } else if (familiar.Variant === FamiliarVariant.LIL_LOKI) {
-      // 97
-      for (let i = 0; i < 4; i++) {
-        const familiarTear = Isaac.Spawn(
-          EntityType.ENTITY_TEAR,
-          0,
-          0,
-          familiar.Position,
-          velocity,
-          null,
-        ).ToTear();
-        velocity = velocity.Rotated(90);
-        familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
-        familiarTear.CollisionDamage = damage;
+
+      case FamiliarVariant.LIL_LOKI: {
+        // 97
+        for (let i = 0; i < 4; i++) {
+          const familiarTear = Isaac.Spawn(
+            EntityType.ENTITY_TEAR,
+            0,
+            0,
+            familiar.Position,
+            velocity,
+            null,
+          ).ToTear();
+          if (familiarTear !== null) {
+            velocity = velocity.Rotated(90);
+            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
+            familiarTear.CollisionDamage = damage;
+          }
+        }
+        break;
       }
+
+      default: {
+        break;
+      }
+    }
+  }
+}
+
+function spawnTearWithIncreasedDmg(
+  tear: EntityTear,
+  familiar: Entity,
+  velocity: Vector,
+  damage: number,
+) {
+  const familiarTear = Isaac.Spawn(
+    EntityType.ENTITY_TEAR,
+    0,
+    0,
+    familiar.Position,
+    velocity,
+    null,
+  ).ToTear();
+  if (familiarTear === null) {
+    return;
+  }
+  familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
+  familiarTear.CollisionDamage = damage;
+
+  switch (familiar.Variant) {
+    case FamiliarVariant.LITTLE_GISH: {
+      // 4
+      const color = Color(0, 0, 0, 1, 1, 1, 1); // Black
+      familiarTear.SetColor(color, 10000, 1000, false, false);
+      familiarTear.TearFlags |= TearFlags.TEAR_SLOW;
+      break;
+    }
+
+    case FamiliarVariant.LITTLE_STEVEN: {
+      // 5
+      const color = Color(1, 0, 1, 1, 1, 1, 1); // Purple
+      familiarTear.SetColor(color, 10000, 1000, false, false);
+      familiarTear.TearFlags |= TearFlags.TEAR_HOMING;
+      break;
+    }
+
+    case FamiliarVariant.GHOST_BABY: {
+      // 9
+      const color = Color(1, 1, 1, 0.5, 1, 1, 1); // Faded
+      familiarTear.SetColor(color, 10000, 1000, false, false);
+      familiarTear.TearFlags |= TearFlags.TEAR_SPECTRAL;
+      break;
+    }
+
+    case FamiliarVariant.RAINBOW_BABY: {
+      // 11
+      const color = Color(2, 0, 2, 1, 1, 1, 1); // Pink
+      familiarTear.SetColor(color, 10000, 1000, false, false);
+      math.randomseed(g.g.GetFrameCount());
+      const tearFlag = math.random(1, 60);
+      familiarTear.TearFlags |= 1 << tearFlag;
+      break;
+    }
+
+    case FamiliarVariant.MONGO_BABY: {
+      // 74
+      // Shoot a second tear a few frames from now
+      g.run.room.mongoBabyTears.push({
+        frame: g.g.GetFrameCount() + 3,
+        familiar: EntityRef(familiar),
+        velocity,
+        damage,
+        scale: tear.Scale * FAMILIAR_TEAR_SCALE,
+      });
+      break;
+    }
+
+    case FamiliarVariant.SERAPHIM: {
+      // 92
+      // Sacred Heart gives a 89.53% damage up, so emulate this
+      familiarTear.CollisionDamage = damage * 1.8953;
+      const color = Color(1, 1, 1, 1, 1, 1, 1); // White
+      familiarTear.SetColor(color, 10000, 1000, false, false);
+      familiarTear.TearFlags |= TearFlags.TEAR_HOMING; // 1 << 2
+      break;
+    }
+
+    default: {
+      error(
+        `The familiar variant was an unknown value of: ${familiar.Variant}`,
+      );
     }
   }
 }

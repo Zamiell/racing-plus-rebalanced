@@ -180,17 +180,19 @@ function collectibleCheckDouble(pickup: EntityPickup) {
       )
       .ToPickup();
 
-    // We don't want it to automatically be bought
-    pedestal.Price = pickup.Price;
+    if (pedestal !== null) {
+      // We don't want it to automatically be bought
+      pedestal.Price = pickup.Price;
 
-    // We want it to keep the behavior of the room
-    pedestal.TheresOptionsPickup = pickup.TheresOptionsPickup;
+      // We want it to keep the behavior of the room
+      pedestal.TheresOptionsPickup = pickup.TheresOptionsPickup;
 
-    // Mark it so that we don't duplicate it again
-    pedestal.State = CollectibleState.DUPLICATED;
+      // Mark it so that we don't duplicate it again
+      pedestal.State = CollectibleState.DUPLICATED;
 
-    // We only want to duplicate pedestals once per room to avoid duplicating rerolled pedestals
-    // (the state will go back to 0 for a rerolled pedestal)
-    g.run.room.doubleItemsFrame = gameFrameCount;
+      // We only want to duplicate pedestals once per room to avoid duplicating rerolled pedestals
+      // (the state will go back to 0 for a rerolled pedestal)
+      g.run.room.doubleItemsFrame = gameFrameCount;
+    }
   }
 }

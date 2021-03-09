@@ -1956,7 +1956,7 @@ require("lualib_bundle");
 local ____exports = {}
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-____exports.VERSION = "v1.0.14"
+____exports.VERSION = "v1.1.0"
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
 ____exports.FAMILIAR_TEAR_SCALE = 0.5
 ____exports.ITEM_STARTS = {{CollectibleType.COLLECTIBLE_MOMS_KNIFE}, {CollectibleType.COLLECTIBLE_IPECAC}, {CollectibleType.COLLECTIBLE_TECH_X}, {CollectibleType.COLLECTIBLE_EPIC_FETUS}, {CollectibleType.COLLECTIBLE_MAXS_HEAD}, {CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM}, {CollectibleType.COLLECTIBLE_DR_FETUS}, {CollectibleType.COLLECTIBLE_TECHNOLOGY}, {CollectibleType.COLLECTIBLE_POLYPHEMUS}, {CollectibleType.COLLECTIBLE_TECH_5}, {CollectibleType.COLLECTIBLE_20_20}, {CollectibleType.COLLECTIBLE_PROPTOSIS}, {CollectibleType.COLLECTIBLE_ISAACS_HEART}, {CollectibleType.COLLECTIBLE_JUDAS_SHADOW}, {CollectibleType.COLLECTIBLE_BRIMSTONE}, {CollectibleType.COLLECTIBLE_MAW_OF_VOID}, {CollectibleType.COLLECTIBLE_INCUBUS}, {CollectibleType.COLLECTIBLE_SACRED_HEART}, {CollectibleType.COLLECTIBLE_GODHEAD}, {CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT}, {CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_APPLE}, {CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleType.COLLECTIBLE_THERES_OPTIONS}, {CollectibleType.COLLECTIBLE_POINTY_RIB, CollectibleType.COLLECTIBLE_POINTY_RIB}, {CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_STEVEN, CollectibleType.COLLECTIBLE_SAD_ONION}}
@@ -2165,6 +2165,48 @@ local g = ____globals.default
 function ____exports.default(self)
     Isaac.DebugString("Racing+ Rebalanced debug function activated.")
     g.run.level.doubleItems = true
+end
+return ____exports
+end,
+["isaacScriptInit"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+require("lualib_bundle");
+local ____exports = {}
+local overwriteError
+function overwriteError(self)
+    if ___LUA_ERROR_BACKUP == nil then
+        ___LUA_ERROR_BACKUP = error
+    end
+    error = function(____, err, _level)
+        if err == "" then
+            Isaac.DebugString("Lua error (with a blank error message)")
+        else
+            Isaac.DebugString("Lua error: " .. err)
+        end
+        if debug ~= nil then
+            local tracebackLines = __TS__StringSplit(
+                debug.traceback(),
+                "\n"
+            )
+            do
+                local i = 0
+                while i < #tracebackLines do
+                    do
+                        if (i == 0) or (i == 1) then
+                            goto __continue9
+                        end
+                        local line = tracebackLines[i + 1]
+                        Isaac.DebugString(line)
+                    end
+                    ::__continue9::
+                    i = i + 1
+                end
+            end
+        end
+        ___LUA_ERROR_BACKUP(nil, "")
+    end
+end
+function ____exports.default(self)
+    overwriteError(nil)
 end
 return ____exports
 end,
@@ -3317,7 +3359,7 @@ local misc = require("misc")
 local pills = require("pills")
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local momsContacts, abel, tinyPlanet, isaacsHeart, theWiz, fireMind, strabismus, u235, pillAether, pillWallsHaveEyes, removeFear, familiars
+local momsContacts, abel, tinyPlanet, isaacsHeart, theWiz, fireMind, strabismus, u235, pillAether, pillWallsHaveEyes, removeFear, familiars, spawnTearWithIncreasedDmg
 function momsContacts(self, tear)
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_CONTACTS) then
         return
@@ -3404,7 +3446,9 @@ function u235(self, tear)
     end
     if (g.run.tearCounter % 8) == 0 then
         local bomb = g.g:Spawn(EntityType.ENTITY_BOMBDROP, 0, tear.Position, tear.Velocity, tear.SpawnerEntity, 0, tear.InitSeed):ToBomb()
-        bomb.ExplosionDamage = (g.p.Damage * 5) + 30
+        if bomb ~= nil then
+            bomb.ExplosionDamage = (g.p.Damage * 5) + 30
+        end
         tear:Remove()
     end
 end
@@ -3469,32 +3513,37 @@ function pillWallsHaveEyes(self, tear)
         end
     end
     for ____, wall in ipairs(walls) do
-        local gridEntity = g.r:GetGridEntity(wall)
-        if gridEntity ~= nil then
-            local saveState = gridEntity:GetSaveState()
-            if saveState.Type == GridEntityType.GRID_WALL then
-                local adjustedPosition = gridEntity.Position
-                local distanceToAdjust = 15
-                if direction == Direction.LEFT then
-                    adjustedPosition = adjustedPosition:__add(
-                        Vector(distanceToAdjust * -1, 0)
-                    )
-                elseif direction == Direction.UP then
-                    adjustedPosition = adjustedPosition:__add(
-                        Vector(0, distanceToAdjust * -1)
-                    )
-                elseif direction == Direction.RIGHT then
-                    adjustedPosition = adjustedPosition:__add(
-                        Vector(distanceToAdjust, 0)
-                    )
-                elseif direction == Direction.DOWN then
-                    adjustedPosition = adjustedPosition:__add(
-                        Vector(0, distanceToAdjust)
-                    )
-                end
-                g.p:FireTear(adjustedPosition, tear.Velocity, false, true, false)
+        do
+            local gridEntity = g.r:GetGridEntity(wall)
+            if gridEntity == nil then
+                goto __continue39
             end
+            local saveState = gridEntity:GetSaveState()
+            if saveState.Type ~= GridEntityType.GRID_WALL then
+                goto __continue39
+            end
+            local adjustedPosition = gridEntity.Position
+            local distanceToAdjust = 15
+            if direction == Direction.LEFT then
+                adjustedPosition = adjustedPosition:__add(
+                    Vector(distanceToAdjust * -1, 0)
+                )
+            elseif direction == Direction.UP then
+                adjustedPosition = adjustedPosition:__add(
+                    Vector(0, distanceToAdjust * -1)
+                )
+            elseif direction == Direction.RIGHT then
+                adjustedPosition = adjustedPosition:__add(
+                    Vector(distanceToAdjust, 0)
+                )
+            elseif direction == Direction.DOWN then
+                adjustedPosition = adjustedPosition:__add(
+                    Vector(0, distanceToAdjust)
+                )
+            end
+            g.p:FireTear(adjustedPosition, tear.Velocity, false, true, false)
         end
+        ::__continue39::
     end
     g.run.pills.wallsHaveEyesShooting = false
 end
@@ -3512,78 +3561,223 @@ function familiars(self, tear)
     end
     local familiarEntities = Isaac.FindByType(EntityType.ENTITY_FAMILIAR, -1, -1, false, false)
     for ____, familiar in ipairs(familiarEntities) do
-        if (((((((((familiar.Variant == FamiliarVariant.BROTHER_BOBBY) or (familiar.Variant == FamiliarVariant.DEMON_BABY)) or (familiar.Variant == FamiliarVariant.LITTLE_GISH)) or (familiar.Variant == FamiliarVariant.LITTLE_STEVEN)) or (familiar.Variant == FamiliarVariant.SISTER_MAGGY)) or (familiar.Variant == FamiliarVariant.GHOST_BABY)) or (familiar.Variant == FamiliarVariant.RAINBOW_BABY)) or (familiar.Variant == FamiliarVariant.ISAACS_HEAD)) or (familiar.Variant == FamiliarVariant.MONGO_BABY)) or (familiar.Variant == FamiliarVariant.SERAPHIM) then
-            local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, familiar.Position, velocity, nil):ToTear()
-            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
-            familiarTear.CollisionDamage = damage
-            if familiar.Variant == FamiliarVariant.LITTLE_GISH then
-                local color = Color(0, 0, 0, 1, 1, 1, 1)
-                familiarTear:SetColor(color, 10000, 1000, false, false)
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_SLOW
-            elseif familiar.Variant == FamiliarVariant.LITTLE_STEVEN then
-                local color = Color(1, 0, 1, 1, 1, 1, 1)
-                familiarTear:SetColor(color, 10000, 1000, false, false)
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_HOMING
-            elseif familiar.Variant == FamiliarVariant.GHOST_BABY then
-                local color = Color(1, 1, 1, 0.5, 1, 1, 1)
-                familiarTear:SetColor(color, 10000, 1000, false, false)
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_SPECTRAL
-            elseif familiar.Variant == FamiliarVariant.RAINBOW_BABY then
-                local color = Color(2, 0, 2, 1, 1, 1, 1)
-                familiarTear:SetColor(color, 10000, 1000, false, false)
-                math.randomseed(
-                    g.g:GetFrameCount()
-                )
-                local tearFlag = math.random(1, 60)
-                familiarTear.TearFlags = familiarTear.TearFlags | (1 << tearFlag)
-            elseif familiar.Variant == FamiliarVariant.MONGO_BABY then
-                __TS__ArrayPush(
-                    g.run.room.mongoBabyTears,
-                    {
-                        frame = g.g:GetFrameCount() + 3,
-                        familiar = EntityRef(familiar),
-                        velocity = velocity,
-                        damage = damage,
-                        scale = tear.Scale * FAMILIAR_TEAR_SCALE
-                    }
-                )
-            elseif familiar.Variant == FamiliarVariant.SERAPHIM then
-                familiarTear.CollisionDamage = damage * 1.8953
-                local color = Color(1, 1, 1, 1, 1, 1, 1)
-                familiarTear:SetColor(color, 10000, 1000, false, false)
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_HOMING
-            end
-        elseif familiar.Variant == FamiliarVariant.ROBO_BABY then
-            local laser = g.p:FireTechLaser(familiar.Position, 0, velocity, false, false)
-            laser.CollisionDamage = damage
-        elseif familiar.Variant == FamiliarVariant.HARLEQUIN_BABY then
+        local ____switch51 = familiar.Variant
+        if ____switch51 == FamiliarVariant.BROTHER_BOBBY then
+            goto ____switch51_case_0
+        elseif ____switch51 == FamiliarVariant.DEMON_BABY then
+            goto ____switch51_case_1
+        elseif ____switch51 == FamiliarVariant.LITTLE_GISH then
+            goto ____switch51_case_2
+        elseif ____switch51 == FamiliarVariant.LITTLE_STEVEN then
+            goto ____switch51_case_3
+        elseif ____switch51 == FamiliarVariant.SISTER_MAGGY then
+            goto ____switch51_case_4
+        elseif ____switch51 == FamiliarVariant.GHOST_BABY then
+            goto ____switch51_case_5
+        elseif ____switch51 == FamiliarVariant.RAINBOW_BABY then
+            goto ____switch51_case_6
+        elseif ____switch51 == FamiliarVariant.ISAACS_HEAD then
+            goto ____switch51_case_7
+        elseif ____switch51 == FamiliarVariant.MONGO_BABY then
+            goto ____switch51_case_8
+        elseif ____switch51 == FamiliarVariant.SERAPHIM then
+            goto ____switch51_case_9
+        elseif ____switch51 == FamiliarVariant.ROBO_BABY then
+            goto ____switch51_case_10
+        elseif ____switch51 == FamiliarVariant.HARLEQUIN_BABY then
+            goto ____switch51_case_11
+        elseif ____switch51 == FamiliarVariant.LIL_LOKI then
+            goto ____switch51_case_12
+        end
+        goto ____switch51_case_default
+        ::____switch51_case_0::
+        do
+        end
+        ::____switch51_case_1::
+        do
+        end
+        ::____switch51_case_2::
+        do
+        end
+        ::____switch51_case_3::
+        do
+        end
+        ::____switch51_case_4::
+        do
+        end
+        ::____switch51_case_5::
+        do
+        end
+        ::____switch51_case_6::
+        do
+        end
+        ::____switch51_case_7::
+        do
+        end
+        ::____switch51_case_8::
+        do
+        end
+        ::____switch51_case_9::
+        do
             do
-                local i = 0
-                while i < 2 do
-                    if i == 1 then
-                        velocity = velocity:Rotated(-10)
-                    elseif i == 2 then
-                        velocity = velocity:Rotated(10)
-                    end
-                    local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, familiar.Position, velocity, nil):ToTear()
-                    familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
-                    familiarTear.CollisionDamage = damage
-                    i = i + 1
-                end
-            end
-        elseif familiar.Variant == FamiliarVariant.LIL_LOKI then
-            do
-                local i = 0
-                while i < 4 do
-                    local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, familiar.Position, velocity, nil):ToTear()
-                    velocity = velocity:Rotated(90)
-                    familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
-                    familiarTear.CollisionDamage = damage
-                    i = i + 1
-                end
+                spawnTearWithIncreasedDmg(nil, tear, familiar, velocity, damage)
+                goto ____switch51_end
             end
         end
+        ::____switch51_case_10::
+        do
+            do
+                local laser = g.p:FireTechLaser(familiar.Position, 0, velocity, false, false)
+                laser.CollisionDamage = damage
+                goto ____switch51_end
+            end
+        end
+        ::____switch51_case_11::
+        do
+            do
+                do
+                    local i = 0
+                    while i < 2 do
+                        if i == 1 then
+                            velocity = velocity:Rotated(-10)
+                        elseif i == 2 then
+                            velocity = velocity:Rotated(10)
+                        end
+                        local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, familiar.Position, velocity, nil):ToTear()
+                        if familiarTear ~= nil then
+                            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
+                            familiarTear.CollisionDamage = damage
+                        end
+                        i = i + 1
+                    end
+                end
+                goto ____switch51_end
+            end
+        end
+        ::____switch51_case_12::
+        do
+            do
+                do
+                    local i = 0
+                    while i < 4 do
+                        local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, familiar.Position, velocity, nil):ToTear()
+                        if familiarTear ~= nil then
+                            velocity = velocity:Rotated(90)
+                            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
+                            familiarTear.CollisionDamage = damage
+                        end
+                        i = i + 1
+                    end
+                end
+                goto ____switch51_end
+            end
+        end
+        ::____switch51_case_default::
+        do
+            do
+                goto ____switch51_end
+            end
+        end
+        ::____switch51_end::
     end
+end
+function spawnTearWithIncreasedDmg(self, tear, familiar, velocity, damage)
+    local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, familiar.Position, velocity, nil):ToTear()
+    if familiarTear == nil then
+        return
+    end
+    familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
+    familiarTear.CollisionDamage = damage
+    local ____switch65 = familiar.Variant
+    if ____switch65 == FamiliarVariant.LITTLE_GISH then
+        goto ____switch65_case_0
+    elseif ____switch65 == FamiliarVariant.LITTLE_STEVEN then
+        goto ____switch65_case_1
+    elseif ____switch65 == FamiliarVariant.GHOST_BABY then
+        goto ____switch65_case_2
+    elseif ____switch65 == FamiliarVariant.RAINBOW_BABY then
+        goto ____switch65_case_3
+    elseif ____switch65 == FamiliarVariant.MONGO_BABY then
+        goto ____switch65_case_4
+    elseif ____switch65 == FamiliarVariant.SERAPHIM then
+        goto ____switch65_case_5
+    end
+    goto ____switch65_case_default
+    ::____switch65_case_0::
+    do
+        do
+            local color = Color(0, 0, 0, 1, 1, 1, 1)
+            familiarTear:SetColor(color, 10000, 1000, false, false)
+            familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_SLOW
+            goto ____switch65_end
+        end
+    end
+    ::____switch65_case_1::
+    do
+        do
+            local color = Color(1, 0, 1, 1, 1, 1, 1)
+            familiarTear:SetColor(color, 10000, 1000, false, false)
+            familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_HOMING
+            goto ____switch65_end
+        end
+    end
+    ::____switch65_case_2::
+    do
+        do
+            local color = Color(1, 1, 1, 0.5, 1, 1, 1)
+            familiarTear:SetColor(color, 10000, 1000, false, false)
+            familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_SPECTRAL
+            goto ____switch65_end
+        end
+    end
+    ::____switch65_case_3::
+    do
+        do
+            local color = Color(2, 0, 2, 1, 1, 1, 1)
+            familiarTear:SetColor(color, 10000, 1000, false, false)
+            math.randomseed(
+                g.g:GetFrameCount()
+            )
+            local tearFlag = math.random(1, 60)
+            familiarTear.TearFlags = familiarTear.TearFlags | (1 << tearFlag)
+            goto ____switch65_end
+        end
+    end
+    ::____switch65_case_4::
+    do
+        do
+            __TS__ArrayPush(
+                g.run.room.mongoBabyTears,
+                {
+                    frame = g.g:GetFrameCount() + 3,
+                    familiar = EntityRef(familiar),
+                    velocity = velocity,
+                    damage = damage,
+                    scale = tear.Scale * FAMILIAR_TEAR_SCALE
+                }
+            )
+            goto ____switch65_end
+        end
+    end
+    ::____switch65_case_5::
+    do
+        do
+            familiarTear.CollisionDamage = damage * 1.8953
+            local color = Color(1, 1, 1, 1, 1, 1, 1)
+            familiarTear:SetColor(color, 10000, 1000, false, false)
+            familiarTear.TearFlags = familiarTear.TearFlags | TearFlags.TEAR_HOMING
+            goto ____switch65_end
+        end
+    end
+    ::____switch65_case_default::
+    do
+        do
+            error(
+                "The familiar variant was an unknown value of: " .. tostring(familiar.Variant)
+            )
+        end
+    end
+    ::____switch65_end::
 end
 function ____exports.main(self, tear)
     if ((not g.run.abelDoubleTear) and (not g.run.wizDoubleTear)) and (not g.run.strabismusDoubleTear) then
@@ -3647,14 +3841,16 @@ function ____exports.postNewRoom(self)
     end
     local radius = 66
     local laser = g.p:FireTechXLaser(g.p.Position, g.zeroVector, radius):ToLaser()
-    if laser.Variant ~= 2 then
-        laser.Variant = 2
-        laser.SpriteScale = Vector(0.5, 1)
+    if laser ~= nil then
+        if laser.Variant ~= 2 then
+            laser.Variant = 2
+            laser.SpriteScale = Vector(0.5, 1)
+        end
+        laser.TearFlags = laser.TearFlags | TearFlags.TEAR_CONTINUUM
+        laser.CollisionDamage = laser.CollisionDamage * 0.33
+        local data = laser:GetData()
+        data.ring = true
     end
-    laser.TearFlags = laser.TearFlags | TearFlags.TEAR_CONTINUUM
-    laser.CollisionDamage = laser.CollisionDamage * 0.33
-    local data = laser:GetData()
-    data.ring = true
 end
 function ____exports.postItemPickup(self)
     local item = g.itemConfig:GetCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2)
@@ -4205,8 +4401,10 @@ function ____exports.spawnCurseRoomPedestalItem(self)
         g.r:GetSpawnSeed()
     )
     local collectible = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, subType, centerPos, g.zeroVector, nil):ToPickup()
-    collectible.AutoUpdatePrice = false
-    collectible.Price = -1
+    if collectible ~= nil then
+        collectible.AutoUpdatePrice = false
+        collectible.Price = -1
+    end
 end
 function replaceChallengeRoom(self)
     local roomType = g.r:GetType()
@@ -4330,7 +4528,10 @@ function abel(self)
     end
     local abels = Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ABEL, -1, false, false)
     for ____, abelEntity in ipairs(abels) do
-        abelEntity:ToFamiliar().FireCooldown = 1000000
+        local familiar = abelEntity:ToFamiliar()
+        if familiar ~= nil then
+            familiar.FireCooldown = 1000000
+        end
     end
 end
 function blueMap(self)
@@ -4504,17 +4705,17 @@ function checkVanillaStartingItems(self)
     end
     local schoolbagItem = RacingPlusGlobals.run.schoolbag.item
     if schoolbagItem == CollectibleType.COLLECTIBLE_POOP then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP)
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MOMS_BRA then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED)
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED)
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MONSTER_MANUAL then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED)
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED)
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MEGA_SATANS_BREATH then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE)
+        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE, -1)
     end
     if g.p:HasTrinket(TrinketType.TRINKET_WALNUT) then
         g.p:TryRemoveTrinket(TrinketType.TRINKET_WALNUT)
@@ -4820,11 +5021,13 @@ local ____enums_2Ecustom = require("types.enums.custom")
 local SoundEffectCustom = ____enums_2Ecustom.SoundEffectCustom
 function ____exports.spawnItem(self, position)
     g.run.catalogRNG = misc:incrementRNG(g.run.catalogRNG)
-    local item = g.g:Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, position, g.zeroVector, nil, 0, g.run.catalogRNG):ToPickup()
-    local data = item:GetData()
-    data.catalogItem = true
-    item.AutoUpdatePrice = false
-    item.Price = CATALOG_ITEM_PRICE
+    local spawnedItem = g.g:Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, position, g.zeroVector, nil, 0, g.run.catalogRNG):ToPickup()
+    if spawnedItem ~= nil then
+        local data = spawnedItem:GetData()
+        data.catalogItem = true
+        spawnedItem.AutoUpdatePrice = false
+        spawnedItem.Price = CATALOG_ITEM_PRICE
+    end
 end
 function ____exports.inIllegalRoomType(self)
     local roomType = g.r:GetType()
@@ -4916,10 +5119,12 @@ function collectibleCheckDouble(self, pickup)
         local position = g.r:FindFreePickupSpawnPosition(pickup.Position, 1, true)
         g.run.randomSeed = misc:incrementRNG(g.run.randomSeed)
         local pedestal = g.g:Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, position, g.zeroVector, nil, 0, g.run.randomSeed):ToPickup()
-        pedestal.Price = pickup.Price
-        pedestal.TheresOptionsPickup = pickup.TheresOptionsPickup
-        pedestal.State = CollectibleState.DUPLICATED
-        g.run.room.doubleItemsFrame = gameFrameCount
+        if pedestal ~= nil then
+            pedestal.Price = pickup.Price
+            pedestal.TheresOptionsPickup = pickup.TheresOptionsPickup
+            pedestal.State = CollectibleState.DUPLICATED
+            g.run.room.doubleItemsFrame = gameFrameCount
+        end
     end
 end
 function ____exports.main(self, pickup)
@@ -5404,19 +5609,27 @@ function checkSetBossItem(self, pedestal)
     if ((((((pedestal.SubType == CollectibleType.COLLECTIBLE_CUBE_OF_MEAT) or (pedestal.SubType == CollectibleType.COLLECTIBLE_LITTLE_CHAD)) or (pedestal.SubType == CollectibleType.COLLECTIBLE_LITTLE_GISH)) or (pedestal.SubType == CollectibleType.COLLECTIBLE_LITTLE_STEVEN)) or (pedestal.SubType == CollectibleType.COLLECTIBLE_PONY)) or (pedestal.SubType == CollectibleType.COLLECTIBLE_WHITE_PONY)) or (pedestal.SubType == CollectibleType.COLLECTIBLE_BALL_OF_BANDAGES) then
         local newEntity = g.g:Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, pedestal.Position, pedestal.Velocity, pedestal.Parent, 0, pedestal.InitSeed)
         local newPedestal = newEntity:ToPickup()
-        newPedestal.TheresOptionsPickup = pedestal.TheresOptionsPickup
+        if newPedestal ~= nil then
+            newPedestal.TheresOptionsPickup = pedestal.TheresOptionsPickup
+        end
         pedestal:Remove()
     end
 end
 ____exports.default = function()
     local pedestals = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, -1, false, false)
     for ____, pedestal in ipairs(pedestals) do
-        local pickup = pedestal:ToPickup()
-        if (pickup.SubType ~= CollectibleType.COLLECTIBLE_NULL) and (pickup.State ~= CollectibleState.NORMAL) then
-            checkDDPrice(nil, pickup)
-            checkShopPrice(nil, pickup)
-            checkSetBossItem(nil, pickup)
+        do
+            local pickup = pedestal:ToPickup()
+            if pickup == nil then
+                goto __continue3
+            end
+            if (pickup.SubType ~= CollectibleType.COLLECTIBLE_NULL) and (pickup.State ~= CollectibleState.NORMAL) then
+                checkDDPrice(nil, pickup)
+                checkShopPrice(nil, pickup)
+                checkSetBossItem(nil, pickup)
+            end
         end
+        ::__continue3::
     end
 end
 return ____exports
@@ -5645,9 +5858,11 @@ function mongoBaby(self)
             local tear = g.run.room.mongoBabyTears[i + 1]
             if gameFrameCount >= tear.frame then
                 local familiarTear = Isaac.Spawn(EntityType.ENTITY_TEAR, 0, 0, tear.familiar.Position, tear.velocity, nil):ToTear()
-                familiarTear.Scale = tear.scale
-                familiarTear.CollisionDamage = tear.damage
-                __TS__ArraySplice(g.run.room.mongoBabyTears, i, 1)
+                if familiarTear ~= nil then
+                    familiarTear.Scale = tear.scale
+                    familiarTear.CollisionDamage = tear.damage
+                    __TS__ArraySplice(g.run.room.mongoBabyTears, i, 1)
+                end
             end
             i = i - 1
         end
@@ -5801,16 +6016,18 @@ function checkPillTimer(self)
             g.run.pills.bladderInfection = 0
         else
             local creep = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_LEMON_MISHAP, 0, g.p.Position, g.zeroVector, g.p):ToEffect()
-            creep.Scale = 2
-            creep.SpriteScale = Vector(2, 2)
-            math.randomseed(creep.InitSeed)
-            creep:GetSprite():Play(
-                "BiggestBlood0" .. tostring(
-                    math.random(6)
-                ),
-                true
-            )
-            creep:Update()
+            if creep ~= nil then
+                creep.Scale = 2
+                creep.SpriteScale = Vector(2, 2)
+                math.randomseed(creep.InitSeed)
+                creep:GetSprite():Play(
+                    "BiggestBlood0" .. tostring(
+                        math.random(6)
+                    ),
+                    true
+                )
+                creep:Update()
+            end
         end
     end
     if g.run.pills.scorchedEarth > 0 then
@@ -6180,17 +6397,23 @@ function deleteNearestHeart(self)
     local nearestPickup = nil
     local nearestPickupDistance = nil
     for ____, heart in ipairs(hearts) do
-        local pickup = heart:ToPickup()
-        if ((((pickup.FrameCount <= 1) and (pickup.SpawnerType == EntityType.ENTITY_PLAYER)) and (pickup.Touched == false)) and (pickup.Price == 0)) and (pickup.State ~= 1) then
-            local distanceToPlayer = g.p.Position:Distance(pickup.Position)
-            if (nearestPickup == nil) or (nearestPickupDistance == nil) then
-                nearestPickup = pickup
-                nearestPickupDistance = distanceToPlayer
-            elseif distanceToPlayer < nearestPickupDistance then
-                nearestPickup = pickup
-                nearestPickupDistance = distanceToPlayer
+        do
+            local pickup = heart:ToPickup()
+            if pickup == nil then
+                goto __continue12
+            end
+            if ((((pickup.FrameCount <= 1) and (pickup.SpawnerType == EntityType.ENTITY_PLAYER)) and (pickup.Touched == false)) and (pickup.Price == 0)) and (pickup.State ~= 1) then
+                local distanceToPlayer = g.p.Position:Distance(pickup.Position)
+                if (nearestPickup == nil) or (nearestPickupDistance == nil) then
+                    nearestPickup = pickup
+                    nearestPickupDistance = distanceToPlayer
+                elseif distanceToPlayer < nearestPickupDistance then
+                    nearestPickup = pickup
+                    nearestPickupDistance = distanceToPlayer
+                end
             end
         end
+        ::__continue12::
     end
     if nearestPickup ~= nil then
         nearestPickup.State = 1
@@ -6205,7 +6428,9 @@ function ____exports.magician(self)
     for ____, entity in ipairs(lasers) do
         if entity.SpawnerType == EntityType.ENTITY_PLAYER then
             local laser = entity:ToLaser()
-            laser.TearFlags = laser.TearFlags | TearFlags.TEAR_HOMING
+            if laser ~= nil then
+                laser.TearFlags = laser.TearFlags | TearFlags.TEAR_HOMING
+            end
         end
     end
 end
@@ -6583,44 +6808,6 @@ function ____exports.unlock(self)
 end
 return ____exports
 end,
-["overwriteError"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
-require("lualib_bundle");
-local ____exports = {}
-____exports.default = function()
-    if ___LUA_ERROR_BACKUP == nil then
-        ___LUA_ERROR_BACKUP = error
-    end
-    error = function(err)
-        if err == "" then
-            Isaac.DebugString("Lua error (with a blank error message)")
-        else
-            Isaac.DebugString("Lua error: " .. err)
-        end
-        if debug ~= nil then
-            local tracebackLines = __TS__StringSplit(
-                debug.traceback(),
-                "\n"
-            )
-            do
-                local i = 0
-                while i < #tracebackLines do
-                    do
-                        if (i == 0) or (i == 1) then
-                            goto __continue8
-                        end
-                        local line = tracebackLines[i + 1]
-                        Isaac.DebugString(line)
-                    end
-                    ::__continue8::
-                    i = i + 1
-                end
-            end
-        end
-        ___LUA_ERROR_BACKUP(nil)
-    end
-end
-return ____exports
-end,
 ["main"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
 local entityTakeDmg = require("callbacks.entityTakeDmg")
@@ -6659,14 +6846,14 @@ local useItem = require("callbacks.useItem")
 local usePill = require("callbacks.usePill")
 local ____constants = require("constants")
 local VERSION = ____constants.VERSION
+local ____isaacScriptInit = require("isaacScriptInit")
+local isaacScriptInit = ____isaacScriptInit.default
 local catalog = require("items.catalog")
-local ____overwriteError = require("overwriteError")
-local overwriteError = ____overwriteError.default
 local ____enums_2Ecustom = require("types.enums.custom")
 local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
 local EffectVariantCustom = ____enums_2Ecustom.EffectVariantCustom
 local PillEffectCustom = ____enums_2Ecustom.PillEffectCustom
-overwriteError(nil)
+isaacScriptInit(nil)
 local RPRebalanced = RegisterMod("Racing+ Rebalanced", 1)
 RacingPlusRebalancedVersion = VERSION
 RPRebalanced:AddCallback(ModCallbacks.MC_NPC_UPDATE, NPCUpdate.main)
@@ -6693,7 +6880,7 @@ RPRebalanced:AddCallback(ModCallbacks.MC_POST_BOMB_UPDATE, postBombUpdate.main)
 RPRebalanced:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, postFireTear.main)
 RPRebalanced:AddCallback(ModCallbacks.MC_GET_PILL_COLOR, getPillColor.main)
 RPRebalanced:AddCallback(ModCallbacks.MC_GET_PILL_EFFECT, getPillEffect.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.bookOfRevelations, 999)
+RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.bookOfRevelations, CollectibleType.COLLECTIBLE_BOOK_REVELATIONS)
 RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.theNail, CollectibleType.COLLECTIBLE_THE_NAIL)
 RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.monstrosTooth, CollectibleType.COLLECTIBLE_MONSTROS_TOOTH)
 RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.bookOfSecrets, CollectibleType.COLLECTIBLE_BOOK_OF_SECRETS)

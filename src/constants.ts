@@ -1,6 +1,7 @@
 import { CollectibleTypeCustom } from "./types/enums.custom";
 
-export const VERSION = "v1.0.14";
+// The version is updated automatically by the "release.py" script
+export const VERSION = "v1.1.0";
 
 export const FAMILIAR_TEAR_DAMAGE = 0.33;
 export const FAMILIAR_TEAR_SCALE = 0.5;

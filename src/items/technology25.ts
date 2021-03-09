@@ -11,15 +11,16 @@ export function postNewRoom(): void {
   const laser = g.p
     .FireTechXLaser(g.p.Position, g.zeroVector, radius)
     .ToLaser();
-
-  if (laser.Variant !== 2) {
-    laser.Variant = 2;
-    laser.SpriteScale = Vector(0.5, 1);
+  if (laser !== null) {
+    if (laser.Variant !== 2) {
+      laser.Variant = 2;
+      laser.SpriteScale = Vector(0.5, 1);
+    }
+    laser.TearFlags |= TearFlags.TEAR_CONTINUUM;
+    laser.CollisionDamage *= 0.33;
+    const data = laser.GetData();
+    data.ring = true;
   }
-  laser.TearFlags |= TearFlags.TEAR_CONTINUUM;
-  laser.CollisionDamage *= 0.33;
-  const data = laser.GetData();
-  data.ring = true;
 }
 
 export function postItemPickup(): void {

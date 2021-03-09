@@ -84,31 +84,36 @@ function checkVanillaStartingItems() {
   const schoolbagItem = RacingPlusGlobals.run.schoolbag.item;
   if (schoolbagItem === CollectibleType.COLLECTIBLE_POOP) {
     // 36
-    RacingPlusSchoolbag.Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP);
+    RacingPlusSchoolbag.Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP, -1);
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_MOMS_BRA) {
     // 39
     RacingPlusSchoolbag.Put(
       CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED,
+      -1,
     );
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD) {
     // 42
     RacingPlusSchoolbag.Put(
       CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED,
+      -1,
     );
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_MONSTER_MANUAL) {
     // 123
     RacingPlusSchoolbag.Put(
       CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED,
+      -1,
     );
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS) {
     // 288
     RacingPlusSchoolbag.Put(
       CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED,
+      -1,
     );
   } else if (schoolbagItem === CollectibleType.COLLECTIBLE_MEGA_SATANS_BREATH) {
     // 441
     RacingPlusSchoolbag.Put(
       CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE,
+      -1,
     );
   }
 

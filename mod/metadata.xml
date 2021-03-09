@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-    <name>Racing+ Rebalanced</name>
-    <directory>racing+_rebalanced</directory>
-    <id>2263635610</id>
-    <description>[h1][b]Racing+ Rebalanced
+  <name>Racing+ Rebalanced</name>
+  <directory>racing+_rebalanced</directory>
+  <id>2263635610</id>
+  <description>[h1][b]Racing+ Rebalanced
 A rebalancing mod for The Binding of Isaac: Afterbirth+[/b][/h1]
 
 What is this mod? Read the documentation here: https://github.com/Zamiell/racing_plus_rebalanced/blob/main/CHANGES.md
 
 For technical support or general questions, please [b]do not post a comment here[/b]. Instead, post in the Racing+ general chat on the Isaac racing &amp;amp; speedrunning Discord server: https://discord.gg/JzbhWQb</description>
-    <version>v1.0.14</version>
-    <visibility>Public</visibility>
-    <tag id="Lua"/>
-    <tag id="Items"/>
-    <tag id="Trinkets"/>
-    <tag id="Pills"/>
+  <version>v1.0.14</version>
+  <visibility>Public</visibility>
+  <tag id="Lua"/>
+  <tag id="Items"/>
+  <tag id="Trinkets"/>
+  <tag id="Pills"/>
 </metadata>

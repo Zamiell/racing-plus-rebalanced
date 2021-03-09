@@ -7,11 +7,11 @@
     "lib": ["ESNext"],
     "moduleResolution": "Node",
     "types": ["isaac-typescript-definitions"],
-    "strict": true,
     "rootDir": "./src",
 
     // We want the compiler to be as strict as possible to catch all the things
     // By default, these flags are false
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
@@ -24,9 +24,7 @@
 
   "tstl": {
     "luaTarget": "5.3",
-    "luaBundle": "./mod/main.lua",
+    "luaBundle": "./mod/main.lua", // Will bundle all output Lua files into a single bundle file
     "luaBundleEntry": "./src/main.ts",
-    // Setting "sourceMapTraceback" equal to true causing the following error:
-    // unexpected symbol near '{'
   },
 }

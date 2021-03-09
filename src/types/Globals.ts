@@ -8,7 +8,10 @@ export default class Globals {
   g = Game();
   l = Game().GetLevel();
   r = Game().GetRoom();
-  p = Isaac.GetPlayer(0); // This is set in the PostPlayerInit callback
+  // "Isaac.GetPlayer()" will return nil if called from the main menu
+  // We use the function instead of setting it to null so that the type is set correctly
+  // This is reset in the PostPlayerInit callback
+  p = Isaac.GetPlayer(0);
   seeds = Game().GetSeeds();
   itemPool = Game().GetItemPool();
   itemConfig = Isaac.GetItemConfig();

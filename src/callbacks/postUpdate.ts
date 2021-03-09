@@ -343,9 +343,11 @@ function mongoBaby() {
         tear.velocity,
         null,
       ).ToTear();
-      familiarTear.Scale = tear.scale;
-      familiarTear.CollisionDamage = tear.damage;
-      g.run.room.mongoBabyTears.splice(i, 1);
+      if (familiarTear !== null) {
+        familiarTear.Scale = tear.scale;
+        familiarTear.CollisionDamage = tear.damage;
+        g.run.room.mongoBabyTears.splice(i, 1);
+      }
     }
   }
 }
@@ -605,11 +607,14 @@ function checkPillTimer() {
         g.zeroVector,
         g.p,
       ).ToEffect();
-      creep.Scale = 2;
-      creep.SpriteScale = Vector(2, 2);
-      math.randomseed(creep.InitSeed);
-      creep.GetSprite().Play(`BiggestBlood0${math.random(6)}`, true);
-      creep.Update();
+
+      if (creep !== null) {
+        creep.Scale = 2;
+        creep.SpriteScale = Vector(2, 2);
+        math.randomseed(creep.InitSeed);
+        creep.GetSprite().Play(`BiggestBlood0${math.random(6)}`, true);
+        creep.Update();
+      }
     }
   }
 
