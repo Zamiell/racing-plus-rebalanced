@@ -24,7 +24,7 @@
 
   "tstl": {
     "luaTarget": "5.3",
-    "luaBundle": "./mod/main.lua", // Will bundle all output Lua files into a single bundle file
+    "luaBundle": "./mod/main.lua", // Will bundle all output Lua files into a single file
     "luaBundleEntry": "./src/main.ts",
   },
 }

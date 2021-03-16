@@ -18,13 +18,12 @@ export function main(saveState: boolean): void {
     return;
   }
 
-  if (RacingPlusGlobals === null) {
+  if (!g.racingPlusEnabled) {
     return;
   }
 
   // Reset all run-based variables
-  g.run = new GlobalsRun();
-  g.run.init(startSeed);
+  g.run = new GlobalsRun(startSeed);
 
   checkVanillaStartingItems();
   addStartingItems();

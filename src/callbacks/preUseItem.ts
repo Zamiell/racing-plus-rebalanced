@@ -30,8 +30,8 @@ export function isaacsTears(): boolean {
 // CollectibleType.COLLECTIBLE_VOID (477)
 export function voidItem(): boolean {
   const megaBlasts = Isaac.FindByType(
-    EntityType.ENTITY_PICKUP, // 5
-    PickupVariant.PICKUP_COLLECTIBLE, // 100
+    EntityType.ENTITY_PICKUP,
+    PickupVariant.PICKUP_COLLECTIBLE,
     CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE,
     false,
     false,

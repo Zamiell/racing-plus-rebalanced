@@ -75,7 +75,7 @@ function technology25(laser: EntityLaser) {
   }
 
   const data = laser.GetData();
-  if (data === null || data.ring !== true) {
+  if (data.ring !== true) {
     return;
   }
 

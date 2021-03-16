@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "./constants";
 import g from "./globals";
 import * as misc from "./misc";
 import { SlotVariantCustom } from "./types/enums.custom";
@@ -58,7 +59,7 @@ slotRewardFunctionMap.set(
       EffectVariant.HEAVEN_LIGHT_DOOR,
       0,
       slot.Position,
-      g.zeroVector,
+      ZERO_VECTOR,
       slot,
     );
 
@@ -71,8 +72,8 @@ slotRewardFunctionMap.set(
 
 function spawnCoin(slot: Entity) {
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP, // 5
-    PickupVariant.PICKUP_COIN, // 20
+    EntityType.ENTITY_PICKUP,
+    PickupVariant.PICKUP_COIN,
     0,
     slot.Position,
     RandomVector().__mul(3),

@@ -23,15 +23,12 @@ export function newLevel(): void {
   // Racing+ has a feature to remove duplicate rooms,
   // so it may reseed the floor immediately upon reach it
   // If so, then we don't want to do anything, since this isn't really a new level
-  if (gameFrameCount !== 0 && gameFrameCount === g.run.currentFloorFrame) {
+  if (gameFrameCount !== 0 && gameFrameCount === g.run.level.stageFrame) {
     return;
   }
 
   // Set the new floor
-  g.run.currentFloor = stage;
-  g.run.currentFloorType = stageType;
-  g.run.currentFloorFrame = gameFrameCount;
-  g.run.level = new GlobalsRunLevel();
+  g.run.level = new GlobalsRunLevel(stage, stageType, gameFrameCount);
 
   // Reset the RNG of some items that should be seeded per floor
   const stageSeed = g.seeds.GetStageSeed(stage);

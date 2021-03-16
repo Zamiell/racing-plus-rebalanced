@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
 import {
@@ -19,7 +20,7 @@ export default function entityTakeDmgPlayer(
 
   if (
     damageSource.Type === EntityType.ENTITY_FAMILIAR &&
-    (damageSource.Variant === FamiliarVariant.BLUE_FLY ||
+    (damageSource.Variant === FamiliarVariant.BLUE_FLY || // 43
       damageSource.Variant === FamiliarVariant.BBF || // 58
       damageSource.Variant === FamiliarVariant.BOBS_BRAIN) // 59
   ) {
@@ -149,7 +150,7 @@ function myShadow() {
       EntityType.ENTITY_CHARGER,
       0,
       position,
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
       1,
       0,
@@ -182,7 +183,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_HEART, // 10
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -196,7 +197,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_COIN, // 20
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -210,7 +211,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_KEY, // 30
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -224,7 +225,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_BOMB, // 40
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -238,7 +239,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_CHEST, // 50
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -252,7 +253,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_GRAB_BAG, // 69
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -266,7 +267,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_LIL_BATTERY, // 90
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -281,7 +282,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_PILL, // 70
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -295,7 +296,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_TAROTCARD, // 300
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -309,7 +310,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_TRINKET, // 350
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -323,7 +324,7 @@ function fannyPackImproved(player: EntityPlayer) {
         EntityType.ENTITY_PICKUP,
         PickupVariant.PICKUP_COLLECTIBLE, // 100
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.fannyPackRNG,
@@ -361,10 +362,10 @@ function walnut(player: EntityPlayer, damageFlags: int) {
       startSeed,
     );
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP, // 5
-      PickupVariant.PICKUP_COLLECTIBLE, // 100
+      EntityType.ENTITY_PICKUP,
+      PickupVariant.PICKUP_COLLECTIBLE,
       position,
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
       subType,
       startSeed,

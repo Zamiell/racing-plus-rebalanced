@@ -1,4 +1,8 @@
-import { CATALOG_ILLEGAL_ROOM_TYPES, CATALOG_ITEM_PRICE } from "../constants";
+import {
+  CATALOG_ILLEGAL_ROOM_TYPES,
+  CATALOG_ITEM_PRICE,
+  ZERO_VECTOR,
+} from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
 import { SoundEffectCustom } from "../types/enums.custom";
@@ -15,10 +19,10 @@ export function spawnItem(position: Vector): void {
   g.run.catalogRNG = misc.incrementRNG(g.run.catalogRNG);
   const spawnedItem = g.g
     .Spawn(
-      EntityType.ENTITY_PICKUP, // 5
-      PickupVariant.PICKUP_COLLECTIBLE, // 100
+      EntityType.ENTITY_PICKUP,
+      PickupVariant.PICKUP_COLLECTIBLE,
       position,
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
       0, // Random item
       g.run.catalogRNG,

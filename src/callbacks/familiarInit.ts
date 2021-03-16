@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 
 // FamiliarVariant.LITTLE_CHUBBY (3)
@@ -28,7 +29,7 @@ export function deadBird(familiar: EntityFamiliar): void {
       familiar.Type,
       familiar.Variant,
       g.p.Position,
-      g.zeroVector,
+      ZERO_VECTOR,
       g.p,
       familiar.SubType,
       familiar.InitSeed,

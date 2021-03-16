@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as catalog from "../items/catalog";
 import * as misc from "../misc";
@@ -15,7 +16,7 @@ function checkTouched(pickup: EntityPickup) {
   const data = pickup.GetData();
 
   // Keep track of pickups that are touched
-  if (sprite.IsPlaying("Collect") && data.touched === null) {
+  if (sprite.IsPlaying("Collect") && data.touched === undefined) {
     data.touched = true;
     Isaac.DebugString(
       `Touched pickup. ${pickup.Type}.${pickup.Variant}.${pickup.SubType} (RPR)`,
@@ -48,7 +49,7 @@ function touchedEtherealPenny(pickup: EntityPickup) {
     EntityType.ENTITY_PICKUP,
     PickupVariant.PICKUP_HEART,
     position,
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
     HeartSubType.HEART_HALF_SOUL,
     g.run.etherealPennyRNG,
@@ -96,17 +97,17 @@ export function pill(pickup: EntityPickup): void {
 function heartRelic(pickup: EntityPickup) {
   // Replace soul hearts from The Relic with half soul hearts (5.10.8)
   if (
-    pickup.SubType === HeartSubType.HEART_SOUL && // 3
-    pickup.SpawnerType === EntityType.ENTITY_FAMILIAR && // 3
-    pickup.SpawnerVariant === FamiliarVariant.RELIC // 23
+    pickup.SubType === HeartSubType.HEART_SOUL &&
+    pickup.SpawnerType === EntityType.ENTITY_FAMILIAR &&
+    pickup.SpawnerVariant === FamiliarVariant.RELIC
   ) {
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP, // 5
-      PickupVariant.PICKUP_HEART, // 10
+      EntityType.ENTITY_PICKUP,
+      PickupVariant.PICKUP_HEART,
       pickup.Position,
       pickup.Velocity,
       pickup.SpawnerEntity,
-      HeartSubType.HEART_HALF_SOUL, // 8
+      HeartSubType.HEART_HALF_SOUL,
       pickup.InitSeed,
     );
     pickup.Remove();
@@ -121,9 +122,9 @@ function heartCheckDDReroll(pickup: EntityPickup) {
 
   if (
     pickup.FrameCount === 1 &&
-    pickup.SubType === HeartSubType.HEART_FULL && // 1
+    pickup.SubType === HeartSubType.HEART_FULL &&
     pickup.Price === 3 &&
-    roomType === RoomType.ROOM_CURSE // 22
+    roomType === RoomType.ROOM_CURSE
   ) {
     postNewRoom.spawnCurseRoomPedestalItem();
     pickup.Remove();
@@ -135,7 +136,7 @@ function heartCheckDDReroll(pickup: EntityPickup) {
 function heartCheckCatalogReroll(pickup: EntityPickup) {
   if (
     pickup.FrameCount === 1 &&
-    pickup.SubType === HeartSubType.HEART_FULL && // 1
+    pickup.SubType === HeartSubType.HEART_FULL &&
     pickup.Price === 3 &&
     !catalog.inIllegalRoomType()
   ) {
@@ -170,10 +171,10 @@ function collectibleCheckDouble(pickup: EntityPickup) {
     g.run.randomSeed = misc.incrementRNG(g.run.randomSeed);
     const pedestal = g.g
       .Spawn(
-        EntityType.ENTITY_PICKUP, // 5
-        PickupVariant.PICKUP_COLLECTIBLE, // 100
+        EntityType.ENTITY_PICKUP,
+        PickupVariant.PICKUP_COLLECTIBLE,
         position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.run.randomSeed,

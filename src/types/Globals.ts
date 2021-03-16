@@ -1,9 +1,6 @@
 import GlobalsRun from "./GlobalsRun";
 
 export default class Globals {
-  // Check for Racing+
-  racingPlusEnabled = RacingPlusGlobals !== null;
-
   // Cached API functions
   g = Game();
   l = Game().GetLevel();
@@ -16,8 +13,10 @@ export default class Globals {
   itemPool = Game().GetItemPool();
   itemConfig = Isaac.GetItemConfig();
   sfx = SFXManager();
-  zeroVector = Vector(0, 0);
+
+  // Check for Racing+
+  racingPlusEnabled = RacingPlusGlobals !== undefined;
 
   // Variables reset at the beginning of every run
-  run = new GlobalsRun();
+  run = new GlobalsRun(0);
 }

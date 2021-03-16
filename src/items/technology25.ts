@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import { CollectibleTypeCustom } from "../types/enums.custom";
 
@@ -8,9 +9,7 @@ export function postNewRoom(): void {
 
   // Spawn a laser ring around the player
   const radius = 66; // Copied from Samael's Tech X ability
-  const laser = g.p
-    .FireTechXLaser(g.p.Position, g.zeroVector, radius)
-    .ToLaser();
+  const laser = g.p.FireTechXLaser(g.p.Position, ZERO_VECTOR, radius).ToLaser();
   if (laser !== null) {
     if (laser.Variant !== 2) {
       laser.Variant = 2;

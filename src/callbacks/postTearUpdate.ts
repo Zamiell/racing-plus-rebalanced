@@ -1,4 +1,4 @@
-import { FAMILIAR_TEAR_DAMAGE } from "../constants";
+import { FAMILIAR_TEAR_DAMAGE, ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import { CollectibleTypeCustom } from "../types/enums.custom";
 
@@ -129,7 +129,7 @@ function fireMindImproved(tear: EntityTear) {
     EffectVariant.HOT_BOMB_FIRE,
     0,
     tear.Position,
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
   fire.SpriteScale = Vector(0.5, 0.5);

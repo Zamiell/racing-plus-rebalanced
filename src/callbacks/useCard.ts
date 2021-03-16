@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
 import * as path from "../path";
@@ -12,8 +13,8 @@ export function magician(): void {
   // The Technology 2.5 laser was spawned when we entered the room
   // We need to update the laser ring to account for now having homing
   const lasers = Isaac.FindByType(
-    EntityType.ENTITY_LASER, // 7
-    LaserVariant.LASER_THIN_RED, // 2
+    EntityType.ENTITY_LASER,
+    LaserVariant.LASER_THIN_RED,
     -1,
     false,
     false,
@@ -64,7 +65,7 @@ export function lovers(): void {
     PickupVariant.PICKUP_BED,
     0,
     g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true),
-    g.zeroVector,
+    ZERO_VECTOR,
     g.p,
   );
 }
@@ -148,7 +149,7 @@ export function wheelOfFortune(): void {
         EffectVariant.POOF01,
         3, // A subtype of 3 makes a bigger poof
         slot.Position,
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
       );
       slot.Remove();
@@ -165,10 +166,12 @@ export function sun(): void {
   for (let i = 0; i < rooms.Size; i++) {
     // This is 0 indexed
     const roomDesc = rooms.Get(i);
-    const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-    // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-    const room = g.l.GetRoomByIdx(roomIndexSafe);
-    room.DisplayFlags = 0;
+    if (roomDesc !== null) {
+      const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
+      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
+      const room = g.l.GetRoomByIdx(roomIndexSafe);
+      room.DisplayFlags = 0;
+    }
   }
 
   // Reveal 3 random rooms
@@ -185,10 +188,12 @@ export function sun(): void {
 
   for (const randomIndex of randomIndexes) {
     const roomDesc = rooms.Get(randomIndex);
-    const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-    // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-    const room = g.l.GetRoomByIdx(roomIndexSafe);
-    room.DisplayFlags = 5;
+    if (roomDesc !== null) {
+      const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
+      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
+      const room = g.l.GetRoomByIdx(roomIndexSafe);
+      room.DisplayFlags = 5;
+    }
   }
 
   g.l.UpdateVisibility();
@@ -208,6 +213,10 @@ export function world(): void {
   for (let i = 0; i < rooms.Size; i++) {
     // This is 0 indexed
     const roomDesc = rooms.Get(i);
+    if (roomDesc === null) {
+      continue;
+    }
+
     const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
     const roomData = roomDesc.Data;
     const roomType = roomData.Type;
@@ -231,10 +240,12 @@ export function ansuz(): void {
   for (let i = 0; i < rooms.Size; i++) {
     // This is 0 indexed
     const roomDesc = rooms.Get(i);
-    const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-    // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-    const room = g.l.GetRoomByIdx(roomIndexSafe);
-    room.DisplayFlags &= ~(1 << 2);
+    if (roomDesc !== null) {
+      const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
+      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
+      const room = g.l.GetRoomByIdx(roomIndexSafe);
+      room.DisplayFlags &= ~(1 << 2);
+    }
   }
 
   g.l.UpdateVisibility();

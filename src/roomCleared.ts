@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "./constants";
 import g from "./globals";
 
 export function main(): void {
@@ -19,19 +20,19 @@ function chargedBaby() {
   g.run.chargedBabyCounters = 0;
 
   const chargedBabies = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR, // 3
-    FamiliarVariant.CHARGED_BABY, // 86
+    EntityType.ENTITY_FAMILIAR,
+    FamiliarVariant.CHARGED_BABY,
     -1,
     false,
     false,
   );
   for (const chargedBabyEntity of chargedBabies) {
     Isaac.Spawn(
-      EntityType.ENTITY_PICKUP, // 5
-      PickupVariant.PICKUP_LIL_BATTERY, // 90
+      EntityType.ENTITY_PICKUP,
+      PickupVariant.PICKUP_LIL_BATTERY,
       0,
       chargedBabyEntity.Position,
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
     );
   }

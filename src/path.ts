@@ -28,6 +28,9 @@ export function findMidBoss(percent: int): int {
   for (let i = 0; i < rooms.Size; i++) {
     // This is 0 indexed
     const roomDesc = rooms.Get(i);
+    if (roomDesc === null) {
+      continue;
+    }
     const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
     const roomData = roomDesc.Data;
     const roomType = roomData.Type;

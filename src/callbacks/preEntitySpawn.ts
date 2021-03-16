@@ -31,21 +31,34 @@ function collectible(
   initSeed: int,
 ): [int, int, int, int] | null {
   let replacedSubType;
-  if (subType === CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD) {
+  switch (subType) {
     // 42
-    // Replace Bob's Rotten Head (from Sloth) with Bob's Rotten Head (Improved)
-    replacedSubType =
-      CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED;
-  } else if (subType === CollectibleType.COLLECTIBLE_DEAD_CAT) {
+    case CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD: {
+      // Replace Bob's Rotten Head (from Sloth) with Bob's Rotten Head (Improved)
+      replacedSubType =
+        CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED;
+      break;
+    }
+
     // 81
-    // Replace Dead Cat (from Super Pride) with 1up!
-    // (since Dead Cat is supposed to be removed from the game)
-    replacedSubType = CollectibleType.COLLECTIBLE_ONE_UP;
-  } else if (subType === CollectibleType.COLLECTIBLE_BUCKET_LARD) {
+    case CollectibleType.COLLECTIBLE_DEAD_CAT: {
+      // Replace Dead Cat (from Super Pride) with 1up!
+      // (since Dead Cat is supposed to be removed from the game)
+      replacedSubType = CollectibleType.COLLECTIBLE_ONE_UP;
+      break;
+    }
+
     // 129
-    // Replace Bucket of Lard (from Super Gluttony) with Super Bandage
-    // (since Bucket of Lard is supposed to be removed from the game)
-    replacedSubType = CollectibleType.COLLECTIBLE_SUPER_BANDAGE;
+    case CollectibleType.COLLECTIBLE_BUCKET_LARD: {
+      // Replace Bucket of Lard (from Super Gluttony) with Super Bandage
+      // (since Bucket of Lard is supposed to be removed from the game)
+      replacedSubType = CollectibleType.COLLECTIBLE_SUPER_BANDAGE;
+      break;
+    }
+
+    default: {
+      break;
+    }
   }
 
   if (replacedSubType !== undefined) {

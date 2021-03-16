@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
 import { CreepSubTypeCustom } from "../types/enums.custom";
@@ -66,10 +67,10 @@ const dicePipFunctions = [
       g.r.GetSpawnSeed(),
     );
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP, // 5
-      PickupVariant.PICKUP_COLLECTIBLE, // 100
+      EntityType.ENTITY_PICKUP,
+      PickupVariant.PICKUP_COLLECTIBLE,
       g.r.GetCenterPos(),
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
       subType,
       roomSeed,

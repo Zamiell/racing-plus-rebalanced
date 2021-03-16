@@ -117,7 +117,7 @@ function getPrice(pickup: EntityPickup) {
   const shopPrice = SHOP_PRICES.get(pickup.SubType);
   if (shopPrice === undefined) {
     const data = pickup.GetData();
-    if (data.catalogItem) {
+    if (data.catalogItem !== undefined) {
       price = CATALOG_ITEM_PRICE;
     } else {
       price = 15; // Default price

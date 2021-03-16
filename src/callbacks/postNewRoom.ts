@@ -1,4 +1,4 @@
-import { POKE_GO_EXCEPTION_ENTITIES } from "../constants";
+import { POKE_GO_EXCEPTION_ENTITIES, ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as technology25 from "../items/technology25";
 import * as misc from "../misc";
@@ -26,8 +26,8 @@ export function main(): void {
   // (naturally, PostNewRoom gets called before the PostNewLevel && PostGameStarted callbacks)
   if (
     gameFrameCount === 0 ||
-    g.run.currentFloor !== stage ||
-    g.run.currentFloorType !== stageType
+    g.run.level.stage !== stage ||
+    g.run.level.stageType !== stageType
   ) {
     return;
   }
@@ -36,8 +36,10 @@ export function main(): void {
 }
 
 export function newRoom(): void {
-  g.run.currentRoomClearState = g.r.IsClear();
-  g.run.room = new GlobalsRunRoom();
+  // Local variables
+  const roomClear = g.r.IsClear();
+
+  g.run.room = new GlobalsRunRoom(roomClear);
 
   checkDressingMachine(); // Start room
   checkShopMachine(); // 2
@@ -108,10 +110,10 @@ function checkShopMachine() {
     case 1: {
       // Spawn a Restock Machine (33% chance)
       g.g.Spawn(
-        EntityType.ENTITY_SLOT, // 6
-        SlotVariant.SHOP_RESTOCK_MACHINE, // 10
+        EntityType.ENTITY_SLOT,
+        SlotVariant.SHOP_RESTOCK_MACHINE,
         Vector(200, 160),
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.r.GetSpawnSeed(),
@@ -122,10 +124,10 @@ function checkShopMachine() {
     case 2: {
       // Spawn a Transmutation Machine (33% chance)
       g.g.Spawn(
-        EntityType.ENTITY_SLOT, // 6
-        SlotVariantCustom.TRANSMUTATION_MACHINE, // 13
+        EntityType.ENTITY_SLOT,
+        SlotVariantCustom.TRANSMUTATION_MACHINE,
         Vector(200, 160),
-        g.zeroVector,
+        ZERO_VECTOR,
         null,
         0,
         g.r.GetSpawnSeed(),
@@ -165,38 +167,38 @@ function replaceArcade() {
   misc.removeAllEntities();
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT, // 6
-    SlotVariant.BEGGAR, // 4
+    EntityType.ENTITY_SLOT,
+    SlotVariant.BEGGAR,
     0,
     misc.gridToPos(2, 1),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT, // 6
-    SlotVariant.BLOOD_DONATION_MACHINE, // 2
+    EntityType.ENTITY_SLOT,
+    SlotVariant.BLOOD_DONATION_MACHINE,
     0,
     misc.gridToPos(10, 1),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT, // 6
-    SlotVariantCustom.BOMB_DONATION_MACHINE, // 14
+    EntityType.ENTITY_SLOT,
+    SlotVariantCustom.BOMB_DONATION_MACHINE,
     0,
     misc.gridToPos(2, 5),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT, // 6
-    SlotVariantCustom.KEY_DONATION_MACHINE, // 15
+    EntityType.ENTITY_SLOT,
+    SlotVariantCustom.KEY_DONATION_MACHINE,
     0,
     misc.gridToPos(10, 5),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
 
@@ -206,22 +208,22 @@ function replaceArcade() {
   }
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT, // 6
-    SlotVariantCustom.ROULETTE_TABLE, // 16
+    EntityType.ENTITY_SLOT,
+    SlotVariantCustom.ROULETTE_TABLE,
     0,
     roulettePosition,
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
 
   // On Womb 2, also spawn a Holy Machine
   if (stage === 8) {
     Isaac.Spawn(
-      EntityType.ENTITY_SLOT, // 6
-      SlotVariantCustom.HOLY_MACHINE, // 17
+      EntityType.ENTITY_SLOT,
+      SlotVariantCustom.HOLY_MACHINE,
       0,
       misc.gridToPos(8, 3),
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
     );
   }
@@ -262,7 +264,7 @@ export function spawnCurseRoomPedestalItem(): void {
     PickupVariant.PICKUP_COLLECTIBLE,
     subType,
     centerPos,
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   ).ToPickup();
   if (collectible !== null) {
@@ -291,16 +293,16 @@ function replaceChallengeRoom() {
 
   // Get a new item from the Treasure Room pool
   const subType = g.itemPool.GetCollectible(
-    ItemPoolType.POOL_TREASURE, // 0
+    ItemPoolType.POOL_TREASURE,
     true,
     g.r.GetSpawnSeed(),
   );
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP, // 5
-    PickupVariant.PICKUP_COLLECTIBLE, // 100
+    EntityType.ENTITY_PICKUP,
+    PickupVariant.PICKUP_COLLECTIBLE,
     subType,
     g.r.GetCenterPos(),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   ).ToPickup();
 }
@@ -314,8 +316,8 @@ function replaceRedChestDD() {
   const isFirstVisit = g.r.IsFirstVisit();
 
   if (
-    roomType !== RoomType.ROOM_DEVIL || // 14
-    roomVariant !== 18 || // The devil room with the 10 Red Chests is18.length
+    roomType !== RoomType.ROOM_DEVIL ||
+    roomVariant !== 18 || // The devil room with the 10 Red Chests is #18
     !isFirstVisit
   ) {
     return;
@@ -327,11 +329,11 @@ function replaceRedChestDD() {
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP, // 5
-    PickupVariant.PICKUP_SHOPITEM, // 150
+    EntityType.ENTITY_PICKUP,
+    PickupVariant.PICKUP_SHOPITEM,
     0,
     misc.gridToPos(6, 4),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
   // (we do not care about the seed because it will be replaced on the next frame)
@@ -348,7 +350,6 @@ function replaceChestRoom() {
   const numKeys = g.p.GetNumKeys();
 
   if (roomType !== RoomType.ROOM_CHEST) {
-    // 20
     return;
   }
 
@@ -381,12 +382,12 @@ function replaceChestRoom() {
     const rotatedVelocity = velocity.Rotated(degrees);
     seed = misc.incrementRNG(seed);
 
-    let variant = PickupVariant.PICKUP_LOCKEDCHEST; // 60
+    let variant = PickupVariant.PICKUP_LOCKEDCHEST;
     if (i >= numKeys) {
-      variant = PickupVariant.PICKUP_CHEST; // 50
+      variant = PickupVariant.PICKUP_CHEST;
     }
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP, // 5
+      EntityType.ENTITY_PICKUP,
       variant,
       centerPos,
       rotatedVelocity,
@@ -426,7 +427,7 @@ function replaceDiceRoom() {
     EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM,
     dicePip, // Use a subtype corresponding to the random dice pip chosen
     g.r.GetCenterPos(),
-    g.zeroVector,
+    ZERO_VECTOR,
     null,
   );
 
@@ -445,8 +446,8 @@ function abel() {
 
   // Disable the vanilla shooting behavior
   const abels = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR, // 3
-    FamiliarVariant.ABEL, // 8
+    EntityType.ENTITY_FAMILIAR,
+    FamiliarVariant.ABEL,
     -1,
     false,
     false,

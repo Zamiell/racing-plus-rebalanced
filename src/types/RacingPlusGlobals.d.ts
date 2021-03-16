@@ -7,6 +7,8 @@ declare const RacingPlusGlobals: {
     restart: boolean;
     schoolbag: {
       item: int;
+      charge: int;
+      chargeBattery: int;
     };
     streakFrame: int;
     streakIgnore: boolean;

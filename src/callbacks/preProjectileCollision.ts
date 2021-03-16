@@ -11,8 +11,8 @@ export function main(
 
 function fartingBaby(projectile: EntityProjectile, collider: Entity) {
   if (
-    collider.Type !== EntityType.ENTITY_FAMILIAR || // 3
-    collider.Variant !== FamiliarVariant.FARTING_BABY // 95
+    collider.Type !== EntityType.ENTITY_FAMILIAR ||
+    collider.Variant !== FamiliarVariant.FARTING_BABY
   ) {
     return;
   }

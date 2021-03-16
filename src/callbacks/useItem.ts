@@ -146,7 +146,7 @@ export function clockworkAssembly(): boolean {
   // Spawn a Restock Machine (6.10)
   g.run.spawningRestock = true;
   RacingPlusGlobals.run.streakIgnore = true; // We need to ignore the Wheel of Fortune text
-  g.p.UseCard(Card.CARD_WHEEL_OF_FORTUNE); // 11
+  g.p.UseCard(Card.CARD_WHEEL_OF_FORTUNE);
 
   return true;
 }

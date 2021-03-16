@@ -14,7 +14,7 @@ export function postItemPickup(): void {
   // Technology grants 2 lasers, but only if they do not have a powerful other item
   if (!hasPowerfulItem()) {
     g.run.technologyAdded2020 = true;
-    g.p.AddCollectible(CollectibleType.COLLECTIBLE_20_20, 0, false); // 245
+    g.p.AddCollectible(CollectibleType.COLLECTIBLE_20_20, 0, false);
     Isaac.DebugString("Removing collectible 245 (20/20)");
   }
 }

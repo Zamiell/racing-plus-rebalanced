@@ -80,6 +80,6 @@ slotRewardTouchedMap.set(SlotVariantCustom.HOLY_MACHINE, (slot: Entity) => {
 });
 
 function touchSuccess(sprite: Sprite) {
-  g.sfx.Play(SoundEffect.SOUND_COIN_SLOT, 1, 0, false, 1); // 24
+  g.sfx.Play(SoundEffect.SOUND_COIN_SLOT, 1, 0, false, 1);
   sprite.Play("Initiate", true);
 }

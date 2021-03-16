@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as technology from "../items/technology";
 import * as misc from "../misc";
@@ -96,10 +97,10 @@ function checkRoomCleared() {
   const roomClear = g.r.IsClear();
 
   // Check the clear status of the room and compare it to what it was a frame ago
-  if (roomClear === g.run.currentRoomClearState) {
+  if (roomClear === g.run.room.clearState) {
     return;
   }
-  g.run.currentRoomClearState = roomClear;
+  g.run.room.clearState = roomClear;
   if (!roomClear) {
     return;
   }
@@ -138,7 +139,7 @@ function checkItemPickup() {
   }
 
   // The item queue has one or more items in it
-  if (g.run.pickingUpItem === 0) {
+  if (g.run.pickingUpItem === 0 && g.p.QueuedItem.Item !== null) {
     // Record the queued item for later
     g.run.pickingUpItem = g.p.QueuedItem.Item.ID;
     g.run.pickingUpItemRoom = roomIndex;
@@ -368,14 +369,14 @@ function fartingBaby() {
         EffectVariant.ROCK_EXPLOSION,
         0,
         shockwave.position,
-        g.zeroVector,
+        ZERO_VECTOR,
         g.p,
       );
 
       const index = g.r.GetGridIndex(shockwave.position);
       g.r.DestroyGrid(index, true);
 
-      g.sfx.Play(SoundEffect.SOUND_ROCK_CRUMBLE, 0.5, 0, false, 1); // 137
+      g.sfx.Play(SoundEffect.SOUND_ROCK_CRUMBLE, 0.5, 0, false, 1);
       // (if the sound effect plays at full volume, it starts to get annoying)
 
       // Make the shockwave deal damage to NPCs
@@ -501,7 +502,7 @@ function adrenalineImproved() {
   }
 
   if (g.run.health.changedOnThisFrame) {
-    g.p.AddCacheFlags(CacheFlag.CACHE_DAMAGE); // 1
+    g.p.AddCacheFlags(CacheFlag.CACHE_DAMAGE);
     g.p.EvaluateItems();
   }
 }
@@ -604,7 +605,7 @@ function checkPillTimer() {
         EffectVariant.PLAYER_CREEP_LEMON_MISHAP,
         0,
         g.p.Position,
-        g.zeroVector,
+        ZERO_VECTOR,
         g.p,
       ).ToEffect();
 
@@ -626,7 +627,7 @@ function checkPillTimer() {
       EffectVariant.HOT_BOMB_FIRE,
       0,
       g.r.GetRandomPosition(1),
-      g.zeroVector,
+      ZERO_VECTOR,
       null,
     );
   }

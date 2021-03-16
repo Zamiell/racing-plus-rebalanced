@@ -1,3 +1,4 @@
+import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as pills from "../pills";
 import * as postNewRoom from "./postNewRoom";
@@ -57,11 +58,11 @@ export function boneAffinity(pillEffect: int): void {
 
   for (let i = 0; i < numBones; i++) {
     Isaac.Spawn(
-      EntityType.ENTITY_FAMILIAR, // 3
-      FamiliarVariant.BONE_ORBITAL, // 128
+      EntityType.ENTITY_FAMILIAR,
+      FamiliarVariant.BONE_ORBITAL,
       0,
       g.p.Position,
-      g.zeroVector,
+      ZERO_VECTOR,
       g.p,
     );
   }

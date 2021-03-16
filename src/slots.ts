@@ -19,8 +19,8 @@ export function postUpdate(): void {
         if (rewardFunction !== undefined) {
           const success = rewardFunction(slot);
           if (success) {
-            g.sfx.Play(SoundEffect.SOUND_BLOODBANK_SPAWN, 1, 0, false, 1); // 175
-            g.sfx.Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false, 1); // 255
+            g.sfx.Play(SoundEffect.SOUND_BLOODBANK_SPAWN, 1, 0, false, 1);
+            g.sfx.Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false, 1);
           }
         }
       }

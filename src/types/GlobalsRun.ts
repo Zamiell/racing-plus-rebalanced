@@ -11,14 +11,12 @@ export default class GlobalsRun {
   tearCounter = 0;
 
   // Tracking per level
-  currentFloor = 0;
-  currentFloorType = 0;
-  currentFloorFrame = 0;
-  level = new GlobalsRunLevel();
+  // We start at 0 instead of 1 so that we can trigger the PostNewRoom callback after the
+  // PostNewLevel callback
+  level = new GlobalsRunLevel(0, 0, 0);
 
   // Tracking per room
-  currentRoomClearState = true;
-  room = new GlobalsRunRoom();
+  room = new GlobalsRunRoom(true);
 
   // Miscellaneous variables
   pickingUpItem = 0; // Equal to the ID of the currently queued item
@@ -109,7 +107,7 @@ export default class GlobalsRun {
   // Transformations
   transformations = new Map<PlayerForm, boolean>();
 
-  init(startSeed: int): void {
+  constructor(startSeed: int) {
     this.randomSeed = startSeed;
     this.rouletteTableRNG = startSeed;
     this.fannyPackRNG = startSeed; // For Fanny Pack (204)
