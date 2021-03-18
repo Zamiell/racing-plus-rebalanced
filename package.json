@@ -20,6 +20,6 @@
   "license": "GPL-3.0",
   "author": "Zamiell",
   "dependencies": {
-    "isaacscript": "^1.0.44"
+    "isaacscript": "^1.0.50"
   }
 }

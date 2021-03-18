@@ -1,6 +1,6 @@
 import { CollectibleTypeCustom } from "./types/enums.custom";
 
-// The version is updated automatically by the "release.py" script
+// The version is updated automatically by IsaacScript
 export const VERSION = "v1.1.0";
 
 export const ZERO_VECTOR = Vector(0, 0);

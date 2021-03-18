@@ -2131,7 +2131,6 @@ ____exports.default = (function()
     local Globals = ____exports.default
     Globals.name = "Globals"
     function Globals.prototype.____constructor(self)
-        self.racingPlusEnabled = RacingPlusGlobals ~= nil
         self.g = Game(nil)
         self.l = Game(nil):GetLevel()
         self.r = Game(nil):GetRoom()
@@ -2140,6 +2139,7 @@ ____exports.default = (function()
         self.itemPool = Game(nil):GetItemPool()
         self.itemConfig = Isaac.GetItemConfig()
         self.sfx = SFXManager(nil)
+        self.racingPlusEnabled = RacingPlusGlobals ~= nil
         self.run = __TS__New(GlobalsRun, 0)
     end
     return Globals
@@ -2169,39 +2169,43 @@ end,
 ["isaacScriptInit"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 require("lualib_bundle");
 local ____exports = {}
-local overwriteError
+local overwriteError, isaacScriptError
 function overwriteError(self)
     if ___LUA_ERROR_BACKUP == nil then
         ___LUA_ERROR_BACKUP = error
     end
-    error = function(____, err, _level)
-        if err == "" then
-            Isaac.DebugString("Lua error (with a blank error message)")
-        else
-            Isaac.DebugString("Lua error: " .. err)
-        end
-        if debug ~= nil then
-            local tracebackLines = __TS__StringSplit(
-                debug.traceback(),
-                "\n"
-            )
-            do
-                local i = 0
-                while i < #tracebackLines do
-                    do
-                        if (i == 0) or (i == 1) then
-                            goto __continue9
-                        end
-                        local line = tracebackLines[i + 1]
-                        Isaac.DebugString(line)
+    error = isaacScriptError
+end
+function isaacScriptError(err, _level)
+    local msg
+    if (err == nil) or (err == "") then
+        msg = "Lua error (with a blank error message)"
+    else
+        msg = "Lua error: " .. err
+    end
+    Isaac.DebugString(msg)
+    Isaac.ConsoleOutput(msg)
+    if debug ~= nil then
+        local tracebackLines = __TS__StringSplit(
+            debug.traceback(),
+            "\n"
+        )
+        do
+            local i = 0
+            while i < #tracebackLines do
+                do
+                    if (i == 0) or (i == 1) then
+                        goto __continue9
                     end
-                    ::__continue9::
-                    i = i + 1
+                    local line = tracebackLines[i + 1]
+                    Isaac.DebugString(line)
                 end
+                ::__continue9::
+                i = i + 1
             end
         end
-        ___LUA_ERROR_BACKUP(nil, "")
     end
+    ___LUA_ERROR_BACKUP("(See above error messages.)")
 end
 function ____exports.default(self)
     overwriteError(nil)
