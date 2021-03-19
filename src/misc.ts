@@ -51,7 +51,7 @@ export function getRoomIndex(): int {
 }
 
 // This function is from Kilburn
-export function getTotalItemCount(): int {
+export function getNumTotalCollectibles(): int {
   let id = CollectibleType.NUM_COLLECTIBLES - 1; // Start at the last vanilla ID
   let step = 16;
   while (step > 0) {
@@ -78,6 +78,14 @@ export function gridToPos(origX: int, origY: int): Vector {
 
 export function hasFlag(flags: int, flag: int): boolean {
   return (flags & flag) !== 0;
+}
+
+export function hasNoHealth(): boolean {
+  return (
+    g.p.GetHearts() === 0 &&
+    g.p.GetSoulHearts() === 0 &&
+    g.p.GetBoneHearts() === 0
+  );
 }
 
 export function incrementRNG(seed: int): int {
@@ -107,12 +115,15 @@ export function killIfNoHealth(): void {
   }
 }
 
-export function hasNoHealth(): boolean {
-  return (
-    g.p.GetHearts() === 0 &&
-    g.p.GetSoulHearts() === 0 &&
-    g.p.GetBoneHearts() === 0
-  );
+export function openAllDoors(): void {
+  for (let i = 0; i <= 7; i++) {
+    const door = g.r.GetDoor(i);
+    if (door !== null) {
+      // If we try to open a hidden secret room door (or super secret room door),
+      // then nothing will happen
+      door.Open();
+    }
+  }
 }
 
 export function removeAllEntities(): void {
@@ -160,7 +171,7 @@ export function removeSpecificEntities(
   }
 }
 
-export function setHealth(
+function setHealth(
   hearts: int,
   maxHearts: int,
   soulHearts: int,

@@ -19,4 +19,6 @@ export default class Globals {
 
   // Variables reset at the beginning of every run
   run = new GlobalsRun(0);
+
+  numTotalCollectibles = 0;
 }

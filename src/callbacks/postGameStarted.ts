@@ -25,6 +25,12 @@ export function main(saveState: boolean): void {
   // Reset all run-based variables
   g.run = new GlobalsRun(startSeed);
 
+  // Cache the total number of collectibles
+  // (this has to be done after all of the mods are finished loading)
+  if (g.numTotalCollectibles === 0) {
+    g.numTotalCollectibles = misc.getNumTotalCollectibles();
+  }
+
   checkVanillaStartingItems();
   addStartingItems();
   trinkets();
@@ -69,7 +75,7 @@ function checkVanillaStartingItems() {
     }
   }
 
-  for (let i = 1; i <= misc.getTotalItemCount(); i++) {
+  for (let i = 1; i <= g.numTotalCollectibles; i++) {
     if (g.p.HasCollectible(i)) {
       // Check to see if we need to do something specific after this item is added to our inventory
       const postItemPickupFunction = postItemPickup.functionMap.get(i);

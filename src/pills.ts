@@ -1,7 +1,7 @@
 import g from "./globals";
 import { PillEffectCustom } from "./types/enums.custom";
 
-export const DURATION = 600; // 20 seconds
+const DURATION = 600; // 20 seconds
 
 export const COLORS = [
   PillColor.PILL_BLUE_BLUE, // 1

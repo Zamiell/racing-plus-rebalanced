@@ -1960,7 +1960,6 @@ ____exports.VERSION = "v1.1.0"
 ____exports.ZERO_VECTOR = Vector(0, 0)
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
 ____exports.FAMILIAR_TEAR_SCALE = 0.5
-____exports.ITEM_STARTS = {{CollectibleType.COLLECTIBLE_MOMS_KNIFE}, {CollectibleType.COLLECTIBLE_IPECAC}, {CollectibleType.COLLECTIBLE_TECH_X}, {CollectibleType.COLLECTIBLE_EPIC_FETUS}, {CollectibleType.COLLECTIBLE_MAXS_HEAD}, {CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM}, {CollectibleType.COLLECTIBLE_DR_FETUS}, {CollectibleType.COLLECTIBLE_TECHNOLOGY}, {CollectibleType.COLLECTIBLE_POLYPHEMUS}, {CollectibleType.COLLECTIBLE_TECH_5}, {CollectibleType.COLLECTIBLE_20_20}, {CollectibleType.COLLECTIBLE_PROPTOSIS}, {CollectibleType.COLLECTIBLE_ISAACS_HEART}, {CollectibleType.COLLECTIBLE_JUDAS_SHADOW}, {CollectibleType.COLLECTIBLE_BRIMSTONE}, {CollectibleType.COLLECTIBLE_MAW_OF_VOID}, {CollectibleType.COLLECTIBLE_INCUBUS}, {CollectibleType.COLLECTIBLE_SACRED_HEART}, {CollectibleType.COLLECTIBLE_GODHEAD}, {CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT}, {CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_SAD_ONION}, {CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_APPLE}, {CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleType.COLLECTIBLE_THERES_OPTIONS}, {CollectibleType.COLLECTIBLE_POINTY_RIB, CollectibleType.COLLECTIBLE_POINTY_RIB}, {CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_STEVEN, CollectibleType.COLLECTIBLE_SAD_ONION}}
 ____exports.REMOVED_TRINKETS = {TrinketType.TRINKET_PURPLE_HEART, TrinketType.TRINKET_ROSARY_BEAD, TrinketType.TRINKET_CARTRIDGE, TrinketType.TRINKET_PULSE_WORM, TrinketType.TRINKET_MOMS_TOENAIL, TrinketType.TRINKET_BUTT_PENNY, TrinketType.TRINKET_MYSTERIOUS_CANDY, TrinketType.TRINKET_HOOK_WORM, TrinketType.TRINKET_BROKEN_ANKH, TrinketType.TRINKET_UMBILICAL_CORD, TrinketType.TRINKET_CHILDS_HEART, TrinketType.TRINKET_RUSTED_KEY, TrinketType.TRINKET_MATCH_STICK, TrinketType.TRINKET_LUCKY_TOE, TrinketType.TRINKET_CURSED_SKULL, TrinketType.TRINKET_ISAACS_FORK, TrinketType.TRINKET_SOUL, TrinketType.TRINKET_EVES_BIRD_FOOT, TrinketType.TRINKET_SHINY_ROCK, TrinketType.TRINKET_RAINBOW_WORM, TrinketType.TRINKET_TAPE_WORM, TrinketType.TRINKET_LAZY_WORM, TrinketType.TRINKET_CRACKED_DICE, TrinketType.TRINKET_FADED_POLAROID, TrinketType.TRINKET_BOBS_BLADDER, TrinketType.TRINKET_STUD_FINDER, TrinketType.TRINKET_ERROR, TrinketType.TRINKET_POKER_CHIP, TrinketType.TRINKET_BLISTER, TrinketType.TRINKET_SECOND_HAND, TrinketType.TRINKET_BLACK_FEATHER, TrinketType.TRINKET_MOMS_LOCKET, TrinketType.TRINKET_BROWN_CAP, TrinketType.TRINKET_USED_DIAPER, TrinketType.TRINKET_OUROBOROS_WORM, TrinketType.TRINKET_TONSIL, TrinketType.TRINKET_NOSE_GOBLIN, TrinketType.TRINKET_EQUALITY, TrinketType.TRINKET_BAG_LUNCH, TrinketType.TRINKET_LOST_CORK, TrinketType.TRINKET_CROW_HEART, TrinketType.TRINKET_DUCT_TAPE, TrinketType.TRINKET_LOCUST_OF_WRATH, TrinketType.TRINKET_BAT_WING, TrinketType.TRINKET_STEM_CELL, TrinketType.TRINKET_WOODEN_CROSS}
 ____exports.TWO_HEART_ITEMS = {CollectibleType.COLLECTIBLE_MAXS_HEAD, CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM, CollectibleType.COLLECTIBLE_DR_FETUS, CollectibleType.COLLECTIBLE_TECHNOLOGY, CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, CollectibleType.COLLECTIBLE_MOMS_KNIFE, CollectibleType.COLLECTIBLE_BRIMSTONE, CollectibleType.COLLECTIBLE_IPECAC, CollectibleType.COLLECTIBLE_EPIC_FETUS, CollectibleType.COLLECTIBLE_POLYPHEMUS, CollectibleType.COLLECTIBLE_SACRED_HEART, CollectibleType.COLLECTIBLE_CRICKETS_BODY, CollectibleType.COLLECTIBLE_MONSTROS_LUNG, CollectibleType.COLLECTIBLE_DEATHS_TOUCH, CollectibleType.COLLECTIBLE_TECH_5, CollectibleType.COLLECTIBLE_20_20, CollectibleType.COLLECTIBLE_PROPTOSIS, CollectibleType.COLLECTIBLE_LIL_BRIMSTONE, CollectibleType.COLLECTIBLE_ISAACS_HEART, CollectibleType.COLLECTIBLE_JUDAS_SHADOW, CollectibleType.COLLECTIBLE_GODHEAD, CollectibleType.COLLECTIBLE_INCUBUS, CollectibleType.COLLECTIBLE_DEAD_EYE, CollectibleType.COLLECTIBLE_TECH_X, CollectibleType.COLLECTIBLE_MAW_OF_VOID, CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT, CollectibleType.COLLECTIBLE_JACOBS_LADDER, CollectibleTypeCustom.COLLECTIBLE_MUTANT_SPIDER_INNER_EYE, CollectibleType.COLLECTIBLE_PYRO, CollectibleType.COLLECTIBLE_ABADDON, CollectibleType.COLLECTIBLE_TINY_PLANET, CollectibleType.COLLECTIBLE_PURITY, CollectibleType.COLLECTIBLE_SUCCUBUS, CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5}
 ____exports.SHOP_PRICES = __TS__New(Map, {{CollectibleType.COLLECTIBLE_COMPASS, 15}, {CollectibleType.COLLECTIBLE_TREASURE_MAP, 15}, {CollectibleType.COLLECTIBLE_BLUE_MAP, 15}, {CollectibleType.COLLECTIBLE_BOOK_OF_SECRETS, 15}, {CollectibleType.COLLECTIBLE_TELEPORT, 15}, {CollectibleType.COLLECTIBLE_DADS_KEY, 15}, {CollectibleType.COLLECTIBLE_BFFS, 15}, {CollectibleType.COLLECTIBLE_THERES_OPTIONS, 15}, {CollectibleType.COLLECTIBLE_UNDEFINED, 15}, {CollectibleType.COLLECTIBLE_DIPLOPIA, 15}, {CollectibleTypeCustom.COLLECTIBLE_CLOCKWORK_ASSEMBLY, 15}, {CollectibleTypeCustom.COLLECTIBLE_CATALOG, 15}, {CollectibleType.COLLECTIBLE_TRANSCENDENCE, 10}, {CollectibleType.COLLECTIBLE_STEAM_SALE, 10}, {CollectibleType.COLLECTIBLE_BLANK_CARD, 10}, {CollectibleType.COLLECTIBLE_BLUE_BOX, 10}, {CollectibleType.COLLECTIBLE_UNICORN_STUMP, 10}, {CollectibleType.COLLECTIBLE_PLACEBO, 10}, {CollectibleType.COLLECTIBLE_CHARGED_BABY, 10}, {CollectibleType.COLLECTIBLE_RESTOCK, 10}, {CollectibleType.COLLECTIBLE_VENTRICLE_RAZOR, 10}, {CollectibleType.COLLECTIBLE_VOID, 10}, {CollectibleType.COLLECTIBLE_PAUSE, 10}, {CollectibleType.COLLECTIBLE_POTATO_PEELER, 10}, {CollectibleType.COLLECTIBLE_EDENS_SOUL, 10}, {CollectibleType.COLLECTIBLE_MYSTERY_GIFT, 10}, {CollectibleType.COLLECTIBLE_MOVING_BOX, 10}, {CollectibleType.COLLECTIBLE_MR_ME, 10}, {CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR, 10}, {CollectibleType.COLLECTIBLE_BOOK_OF_SHADOWS, 5}, {CollectibleType.COLLECTIBLE_BATTERY, 5}, {CollectibleType.COLLECTIBLE_PHD, 5}, {CollectibleType.COLLECTIBLE_XRAY_VISION, 5}, {CollectibleType.COLLECTIBLE_DECK_OF_CARDS, 5}, {CollectibleType.COLLECTIBLE_SPELUNKER_HAT, 5}, {CollectibleType.COLLECTIBLE_MOMS_BOTTLE_PILLS, 5}, {CollectibleType.COLLECTIBLE_NINE_VOLT, 5}, {CollectibleType.COLLECTIBLE_HABIT, 5}, {CollectibleType.COLLECTIBLE_SHARP_PLUG, 5}, {CollectibleType.COLLECTIBLE_PIGGY_BANK, 5}, {CollectibleType.COLLECTIBLE_CONTRACT_FROM_BELOW, 5}, {CollectibleType.COLLECTIBLE_HIVE_MIND, 5}, {CollectibleType.COLLECTIBLE_STARTER_DECK, 5}, {CollectibleType.COLLECTIBLE_LITTLE_BAGGY, 5}, {CollectibleType.COLLECTIBLE_HOW_TO_JUMP, 5}, {CollectibleType.COLLECTIBLE_MORE_OPTIONS, 5}, {CollectibleType.COLLECTIBLE_SACK_HEAD, 5}, {CollectibleType.COLLECTIBLE_MOMS_BOX, 5}, {CollectibleType.COLLECTIBLE_POLYDACTYLY, 5}, {CollectibleType.COLLECTIBLE_BELLY_BUTTON, 5}, {CollectibleType.COLLECTIBLE_D1, 5}, {CollectibleType.COLLECTIBLE_SMELTER, 5}, {CollectibleType.COLLECTIBLE_COMPOST, 5}, {CollectibleType.COLLECTIBLE_YO_LISTEN, 5}, {CollectibleType.COLLECTIBLE_COUPON, 5}, {CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED, 5}, {CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION, 5}})
@@ -2141,6 +2140,7 @@ ____exports.default = (function()
         self.sfx = SFXManager(nil)
         self.racingPlusEnabled = RacingPlusGlobals ~= nil
         self.run = __TS__New(GlobalsRun, 0)
+        self.numTotalCollectibles = 0
     end
     return Globals
 end)()
@@ -2242,9 +2242,6 @@ end,
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-function ____exports.hasNoHealth(self)
-    return ((g.p:GetHearts() == 0) and (g.p:GetSoulHearts() == 0)) and (g.p:GetBoneHearts() == 0)
-end
 function ____exports.getItemMaxCharges(self, collectibleType)
     if collectibleType == 0 then
         return 0
@@ -2280,7 +2277,7 @@ function ____exports.getRoomIndex(self)
     end
     return roomIndex
 end
-function ____exports.getTotalItemCount(self)
+function ____exports.getNumTotalCollectibles(self)
     local id = CollectibleType.NUM_COLLECTIBLES - 1
     local step = 16
     while step > 0 do
@@ -2306,6 +2303,9 @@ end
 function ____exports.hasFlag(self, flags, flag)
     return (flags & flag) ~= 0
 end
+function ____exports.hasNoHealth(self)
+    return ((g.p:GetHearts() == 0) and (g.p:GetSoulHearts() == 0)) and (g.p:GetBoneHearts() == 0)
+end
 function ____exports.incrementRNG(self, seed)
     local rng = RNG()
     rng:SetSeed(seed, 35)
@@ -2319,6 +2319,18 @@ end
 function ____exports.killIfNoHealth(self)
     if ____exports.hasNoHealth(nil) then
         g.p:Kill()
+    end
+end
+function ____exports.openAllDoors(self)
+    do
+        local i = 0
+        while i <= 7 do
+            local door = g.r:GetDoor(i)
+            if door ~= nil then
+                door:Open()
+            end
+            i = i + 1
+        end
     end
 end
 function ____exports.removeAllEntities(self)
@@ -2352,7 +2364,7 @@ function ____exports.removeSpecificEntities(self, entityType, variant)
         entity:Remove()
     end
 end
-function ____exports.setHealth(self, hearts, maxHearts, soulHearts, blackHearts, boneHearts)
+local function setHealth(self, hearts, maxHearts, soulHearts, blackHearts, boneHearts)
     g.p:AddMaxHearts(-24, true)
     g.p:AddSoulHearts(-24)
     g.p:AddBoneHearts(-24)
@@ -2382,7 +2394,7 @@ function ____exports.setHealthFromLastFrame(self)
         return
     end
     g.run.health.restoredLastHealthOnThisFrame = true
-    ____exports.setHealth(nil, g.run.lastHealth.hearts, g.run.lastHealth.maxHearts, g.run.lastHealth.soulHearts, g.run.lastHealth.blackHearts, g.run.lastHealth.boneHearts)
+    setHealth(nil, g.run.lastHealth.hearts, g.run.lastHealth.maxHearts, g.run.lastHealth.soulHearts, g.run.lastHealth.blackHearts, g.run.lastHealth.boneHearts)
 end
 return ____exports
 end,
@@ -3103,7 +3115,7 @@ local ____globals = require("globals")
 local g = ____globals.default
 local ____enums_2Ecustom = require("types.enums.custom")
 local PillEffectCustom = ____enums_2Ecustom.PillEffectCustom
-____exports.DURATION = 600
+local DURATION = 600
 ____exports.COLORS = {PillColor.PILL_BLUE_BLUE, PillColor.PILL_ORANGE_ORANGE, PillColor.PILL_WHITE_WHITE, PillColor.PILL_REDDOTS_RED}
 ____exports.EFFECTS = {PillEffect.PILLEFFECT_BALLS_OF_STEEL, PillEffect.PILLEFFECT_HEALTH_UP, PillEffect.PILLEFFECT_PRETTY_FLY, PillEffect.PILLEFFECT_SPEED_UP, PillEffect.PILLEFFECT_TEARS_UP, PillEffect.PILLEFFECT_48HOUR_ENERGY, PillEffect.PILLEFFECT_SEE_FOREVER, PillEffectCustom.PILLEFFECT_DAMAGE_UP, PillEffectCustom.PILLEFFECT_TEAR_DELAY_DOWN, PillEffectCustom.PILLEFFECT_DEAL_AFFINITY, PillEffectCustom.PILLEFFECT_BONE_AFFINITY, PillEffectCustom.PILLEFFECT_RESTOCK, PillEffectCustom.PILLEFFECT_GOLDEN_DUMP, PillEffectCustom.PILLEFFECT_SUPER_SADNESS, PillEffectCustom.PILLEFFECT_INVINCIBILITY, PillEffectCustom.PILLEFFECT_REALLY_BAD_GAS, PillEffectCustom.PILLEFFECT_GLIMPSE, PillEffectCustom.PILLEFFECT_AETHER, PillEffectCustom.PILLEFFECT_WALLS_HAVE_EYES, PillEffectCustom.PILLEFFECT_BLADDER_INFECTION, PillEffectCustom.PILLEFFECT_SCORCHED_EARTH}
 ____exports.WALL_COORDINATES = __TS__New(
@@ -3167,7 +3179,7 @@ function ____exports.animateHappy(self)
     g.sfx:Play(SoundEffect.SOUND_POWERUP_SPEWER, 1, 0, false, 1)
 end
 function ____exports.getDuration(self)
-    local duration = ____exports.DURATION
+    local duration = DURATION
     if g.p:HasCollectible(CollectibleType.COLLECTIBLE_PHD) then
         duration = duration * 2
     end
@@ -4701,7 +4713,7 @@ function checkVanillaStartingItems(self)
     end
     do
         local i = 1
-        while i <= misc:getTotalItemCount() do
+        while i <= g.numTotalCollectibles do
             if g.p:HasCollectible(i) then
                 local postItemPickupFunction = postItemPickup.functionMap:get(i)
                 if postItemPickupFunction ~= nil then
@@ -4790,6 +4802,9 @@ function ____exports.main(self, saveState)
         return
     end
     g.run = __TS__New(GlobalsRun, startSeed)
+    if g.numTotalCollectibles == 0 then
+        g.numTotalCollectibles = misc:getNumTotalCollectibles()
+    end
     checkVanillaStartingItems(nil)
     addStartingItems(nil)
     trinkets(nil)
@@ -5833,16 +5848,7 @@ function tinyPlanet(self)
     end
     g.run.room.softlock = true
     g.r:SetClear(true)
-    do
-        local i = 0
-        while i <= 7 do
-            local door = g.r:GetDoor(i)
-            if door ~= nil then
-                door:Open()
-            end
-            i = i + 1
-        end
-    end
+    misc:openAllDoors()
 end
 function isaacsHeart(self)
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART) then
