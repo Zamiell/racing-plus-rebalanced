@@ -30,7 +30,7 @@ function collectible(
   spawner: Entity,
   initSeed: int,
 ): [int, int, int, int] | null {
-  let replacedSubType;
+  let replacedSubType: int | undefined;
   switch (subType) {
     // 42
     case CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD: {

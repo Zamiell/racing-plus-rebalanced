@@ -109,41 +109,62 @@ function checkRoomCleared() {
 }
 
 function checkItemPickup() {
-  // Local variables
-  const roomIndex = misc.getRoomIndex();
-
-  // Only run the below code once per item
   if (g.p.IsItemQueueEmpty()) {
-    if (g.run.pickingUpItem !== 0) {
-      // Check to see if we need to do something specific after this item is added to our inventory
-      if (
-        g.run.pickingUpItemType === ItemType.ITEM_PASSIVE || // 1
-        g.run.pickingUpItemType === ItemType.ITEM_ACTIVE || // 3
-        g.run.pickingUpItemType === ItemType.ITEM_FAMILIAR // 4
-      ) {
-        const postItemFunction = postItemPickup.functionMap.get(
-          g.run.pickingUpItem,
-        );
-        if (postItemFunction !== undefined) {
-          postItemFunction();
-        }
-      }
+    checkItemPickupQueueEmpty();
+  } else {
+    checkItemPickupQueueNotEmpty();
+  }
+}
 
-      // We have successfully picked up a new item, so clear the existing values
-      g.run.pickingUpItem = 0;
-      g.run.pickingUpItemRoom = 0;
-      g.run.pickingUpItemType = ItemType.ITEM_NULL;
-    }
-
+function checkItemPickupQueueEmpty() {
+  // Check to see if we were picking up something on the previous frame
+  if (g.run.pickingUpItem === CollectibleType.COLLECTIBLE_NULL) {
     return;
   }
 
-  // The item queue has one or more items in it
-  if (g.run.pickingUpItem === 0 && g.p.QueuedItem.Item !== null) {
-    // Record the queued item for later
-    g.run.pickingUpItem = g.p.QueuedItem.Item.ID;
-    g.run.pickingUpItemRoom = roomIndex;
-    g.run.pickingUpItemType = g.p.QueuedItem.Item.Type;
+  // We just finished putting an item into our inventory
+  // (e.g. the animation where Isaac holds the item over his head just finished)
+  // Check to see if we need to do something specific after this item is added to our inventory
+  if (
+    g.run.pickingUpItemType === ItemType.ITEM_PASSIVE || // 1
+    g.run.pickingUpItemType === ItemType.ITEM_ACTIVE || // 3
+    g.run.pickingUpItemType === ItemType.ITEM_FAMILIAR // 4
+  ) {
+    postNewItem();
+  }
+
+  // Mark that we are no longer picking up anything anymore
+  g.run.pickingUpItem = CollectibleType.COLLECTIBLE_NULL;
+  g.run.pickingUpItemRoom = 0;
+  g.run.pickingUpItemType = ItemType.ITEM_NULL;
+}
+
+function checkItemPickupQueueNotEmpty() {
+  // Local variables
+  const roomIndex = misc.getRoomIndex();
+
+  // We are currently in the animation where Isaac holds an item over his head
+  if (g.run.pickingUpItem !== CollectibleType.COLLECTIBLE_NULL) {
+    // We have already marked down which item is being held, so do nothing
+    return;
+  }
+
+  if (g.p.QueuedItem.Item === null) {
+    // We are currently picking up an item, but QueuedItem is null
+    // This should never happen
+    return;
+  }
+
+  // Record which item we are picking up
+  g.run.pickingUpItem = g.p.QueuedItem.Item.ID;
+  g.run.pickingUpItemRoom = roomIndex;
+  g.run.pickingUpItemType = g.p.QueuedItem.Item.Type;
+}
+
+function postNewItem() {
+  const postItemFunction = postItemPickup.functionMap.get(g.run.pickingUpItem);
+  if (postItemFunction !== undefined) {
+    postItemFunction();
   }
 }
 
@@ -605,8 +626,11 @@ function checkPillTimer() {
       if (creep !== null) {
         creep.Scale = 2;
         creep.SpriteScale = Vector(2, 2);
+        const randomNumberBetween1And6 = math.random(6);
         math.randomseed(creep.InitSeed);
-        creep.GetSprite().Play(`BiggestBlood0${math.random(6)}`, true);
+        creep
+          .GetSprite()
+          .Play(`BiggestBlood0${randomNumberBetween1And6}`, true);
         creep.Update();
       }
     }

@@ -111,7 +111,7 @@ function deleteNearestHeart() {
 
 // Card.CARD_WHEEL_OF_FORTUNE (11)
 export function wheelOfFortune(): void {
-  let slotVariant;
+  let slotVariant: int;
   if (g.run.spawningRestock) {
     g.run.spawningRestock = false;
     slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE;
@@ -177,7 +177,7 @@ export function sun(): void {
   // Reveal 3 random rooms
   const randomIndexes: int[] = [];
   do {
-    let randomIndex;
+    let randomIndex: int;
     do {
       g.run.sunCardRNG = misc.incrementRNG(g.run.sunCardRNG);
       math.randomseed(g.run.sunCardRNG);

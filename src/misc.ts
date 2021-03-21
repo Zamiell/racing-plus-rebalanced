@@ -16,8 +16,8 @@ export function getRandomOffsetPosition(
   math.randomseed(seed);
   const offsetDirection = math.random(1, 4);
 
-  let offsetX;
-  let offsetY;
+  let offsetX: int;
+  let offsetY: int;
   if (offsetDirection === 1) {
     // Bottom right
     offsetX = offsetSize;
@@ -177,7 +177,7 @@ function setHealth(
   soulHearts: int,
   blackHearts: int,
   boneHearts: int,
-): void {
+) {
   g.p.AddMaxHearts(-24, true); // Remove all hearts
   g.p.AddSoulHearts(-24);
   g.p.AddBoneHearts(-24);

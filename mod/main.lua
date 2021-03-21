@@ -3255,7 +3255,6 @@ end
 return ____exports
 end,
 ["callbacks.postEffectUpdate"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
-require("lualib_bundle");
 local ____exports = {}
 local ____constants = require("constants")
 local ZERO_VECTOR = ____constants.ZERO_VECTOR
@@ -3311,14 +3310,9 @@ dicePipFunctions = {
         local effectDescription = "Spawn a random item from one of the six item pools"
         local roomSeed = g.r:GetSpawnSeed()
         math.randomseed(roomSeed)
-        local randomMapIndex = math.random(1, 6)
-        local itemPoolTypeMap = __TS__New(Map, {{1, ItemPoolType.POOL_TREASURE}, {2, ItemPoolType.POOL_SHOP}, {3, ItemPoolType.POOL_BOSS}, {4, ItemPoolType.POOL_DEVIL}, {5, ItemPoolType.POOL_ANGEL}, {6, ItemPoolType.POOL_LIBRARY}})
-        local itemPoolType = itemPoolTypeMap:get(randomMapIndex)
-        if itemPoolType == nil then
-            error(
-                ("Unknown map index of " .. tostring(randomMapIndex)) .. "."
-            )
-        end
+        local itemPoolTypes = {ItemPoolType.POOL_TREASURE, ItemPoolType.POOL_SHOP, ItemPoolType.POOL_BOSS, ItemPoolType.POOL_DEVIL, ItemPoolType.POOL_ANGEL, ItemPoolType.POOL_LIBRARY}
+        local randomIndex = math.random(0, #itemPoolTypes - 1)
+        local itemPoolType = itemPoolTypes[randomIndex + 1]
         local subType = g.itemPool:GetCollectible(
             itemPoolType,
             true,
@@ -4288,16 +4282,16 @@ function checkShopMachine(self)
     misc:removeSpecificEntities(EntityType.ENTITY_SLOT, 10)
     math.randomseed(roomSeed)
     local machine = math.random(1, 3)
-    local ____switch10 = machine
-    if ____switch10 == 1 then
-        goto ____switch10_case_0
-    elseif ____switch10 == 2 then
-        goto ____switch10_case_1
-    elseif ____switch10 == 3 then
-        goto ____switch10_case_2
+    local ____switch11 = machine
+    if ____switch11 == 1 then
+        goto ____switch11_case_0
+    elseif ____switch11 == 2 then
+        goto ____switch11_case_1
+    elseif ____switch11 == 3 then
+        goto ____switch11_case_2
     end
-    goto ____switch10_case_default
-    ::____switch10_case_0::
+    goto ____switch11_case_default
+    ::____switch11_case_0::
     do
         do
             g.g:Spawn(
@@ -4309,10 +4303,10 @@ function checkShopMachine(self)
                 0,
                 g.r:GetSpawnSeed()
             )
-            goto ____switch10_end
+            goto ____switch11_end
         end
     end
-    ::____switch10_case_1::
+    ::____switch11_case_1::
     do
         do
             g.g:Spawn(
@@ -4324,16 +4318,16 @@ function checkShopMachine(self)
                 0,
                 g.r:GetSpawnSeed()
             )
-            goto ____switch10_end
+            goto ____switch11_end
         end
     end
-    ::____switch10_case_2::
+    ::____switch11_case_2::
     do
         do
-            goto ____switch10_end
+            goto ____switch11_end
         end
     end
-    ::____switch10_case_default::
+    ::____switch11_case_default::
     do
         do
             error(
@@ -4341,7 +4335,7 @@ function checkShopMachine(self)
             )
         end
     end
-    ::____switch10_end::
+    ::____switch11_end::
 end
 function replaceArcade(self)
     local stage = g.l:GetStage()
@@ -4618,7 +4612,10 @@ end
 function ____exports.main(self)
     g.l = g.g:GetLevel()
     g.r = g.g:GetRoom()
-    g.p = g.g:GetPlayer(0)
+    local player = Isaac.GetPlayer(0)
+    if player ~= nil then
+        g.p = player
+    end
     g.seeds = g.g:GetSeeds()
     g.itemPool = g.g:GetItemPool()
     local gameFrameCount = g.g:GetFrameCount()
@@ -5221,7 +5218,10 @@ end
 function ____exports.main(self)
     g.l = g.g:GetLevel()
     g.r = g.g:GetRoom()
-    g.p = g.g:GetPlayer(0)
+    local player = Isaac.GetPlayer(0)
+    if player ~= nil then
+        g.p = player
+    end
     g.seeds = g.g:GetSeeds()
     g.itemPool = g.g:GetItemPool()
     checkRacingPlus(nil)
@@ -5681,7 +5681,7 @@ local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
 local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
 local ____postUpdateCollectible = require("callbacks.postUpdateCollectible")
 local postUpdateCollectible = ____postUpdateCollectible.default
-local recordLastFireDirection, recordHealth, checkRoomCleared, checkItemPickup, checkTransformations, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
+local recordLastFireDirection, recordHealth, checkRoomCleared, checkItemPickup, checkItemPickupQueueEmpty, checkItemPickupQueueNotEmpty, postNewItem, checkTransformations, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
 function recordLastFireDirection(self)
     local fireDirection = g.p:GetFireDirection()
     if fireDirection ~= Direction.NO_DIRECTION then
@@ -5734,25 +5734,39 @@ function checkRoomCleared(self)
     roomCleared:main()
 end
 function checkItemPickup(self)
-    local roomIndex = misc:getRoomIndex()
     if g.p:IsItemQueueEmpty() then
-        if g.run.pickingUpItem ~= 0 then
-            if ((g.run.pickingUpItemType == ItemType.ITEM_PASSIVE) or (g.run.pickingUpItemType == ItemType.ITEM_ACTIVE)) or (g.run.pickingUpItemType == ItemType.ITEM_FAMILIAR) then
-                local postItemFunction = postItemPickup.functionMap:get(g.run.pickingUpItem)
-                if postItemFunction ~= nil then
-                    postItemFunction(nil)
-                end
-            end
-            g.run.pickingUpItem = 0
-            g.run.pickingUpItemRoom = 0
-            g.run.pickingUpItemType = ItemType.ITEM_NULL
-        end
+        checkItemPickupQueueEmpty(nil)
+    else
+        checkItemPickupQueueNotEmpty(nil)
+    end
+end
+function checkItemPickupQueueEmpty(self)
+    if g.run.pickingUpItem == CollectibleType.COLLECTIBLE_NULL then
         return
     end
-    if (g.run.pickingUpItem == 0) and (g.p.QueuedItem.Item ~= nil) then
-        g.run.pickingUpItem = g.p.QueuedItem.Item.ID
-        g.run.pickingUpItemRoom = roomIndex
-        g.run.pickingUpItemType = g.p.QueuedItem.Item.Type
+    if ((g.run.pickingUpItemType == ItemType.ITEM_PASSIVE) or (g.run.pickingUpItemType == ItemType.ITEM_ACTIVE)) or (g.run.pickingUpItemType == ItemType.ITEM_FAMILIAR) then
+        postNewItem(nil)
+    end
+    g.run.pickingUpItem = CollectibleType.COLLECTIBLE_NULL
+    g.run.pickingUpItemRoom = 0
+    g.run.pickingUpItemType = ItemType.ITEM_NULL
+end
+function checkItemPickupQueueNotEmpty(self)
+    local roomIndex = misc:getRoomIndex()
+    if g.run.pickingUpItem ~= CollectibleType.COLLECTIBLE_NULL then
+        return
+    end
+    if g.p.QueuedItem.Item == nil then
+        return
+    end
+    g.run.pickingUpItem = g.p.QueuedItem.Item.ID
+    g.run.pickingUpItemRoom = roomIndex
+    g.run.pickingUpItemType = g.p.QueuedItem.Item.Type
+end
+function postNewItem(self)
+    local postItemFunction = postItemPickup.functionMap:get(g.run.pickingUpItem)
+    if postItemFunction ~= nil then
+        postItemFunction(nil)
     end
 end
 function checkTransformations(self)
@@ -6042,11 +6056,10 @@ function checkPillTimer(self)
             if creep ~= nil then
                 creep.Scale = 2
                 creep.SpriteScale = Vector(2, 2)
+                local randomNumberBetween1And6 = math.random(6)
                 math.randomseed(creep.InitSeed)
                 creep:GetSprite():Play(
-                    "BiggestBlood0" .. tostring(
-                        math.random(6)
-                    ),
+                    "BiggestBlood0" .. tostring(randomNumberBetween1And6),
                     true
                 )
                 creep:Update()
@@ -6736,6 +6749,7 @@ end
 return ____exports
 end,
 ["callbacks.usePill"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+require("lualib_bundle");
 local ____exports = {}
 local ____constants = require("constants")
 local ZERO_VECTOR = ____constants.ZERO_VECTOR
@@ -6746,13 +6760,15 @@ local postNewRoom = require("callbacks.postNewRoom")
 local animateUse
 function animateUse(self, thisPillEffect)
     local thisPillColor
-    g.run.pills.effects:forEach(
-        function(____, pillEffect, pillColor)
-            if pillEffect == thisPillEffect then
-                thisPillColor = pillColor
-            end
+    for ____, ____value in __TS__Iterator(g.run.pills.effects) do
+        local pillColor
+        pillColor = ____value[1]
+        local pillEffect
+        pillEffect = ____value[2]
+        if pillEffect == thisPillEffect then
+            thisPillColor = pillColor
         end
-    )
+    end
     if thisPillColor == nil then
         thisPillColor = PillColor.PILL_BLUE_BLUE
     end

@@ -24,7 +24,7 @@ export function findMidBoss(percent: int): int {
 
   // Make an entry for each room on the floor
   // (to both the grid and the roomData)
-  let bossRoomIndex;
+  let bossRoomIndex: int | undefined;
   for (let i = 0; i < rooms.Size; i++) {
     // This is 0 indexed
     const roomDesc = rooms.Get(i);

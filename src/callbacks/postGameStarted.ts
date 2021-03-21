@@ -184,7 +184,7 @@ function initPills() {
   let seed = g.seeds.GetStartSeed();
   const chosenEffectIndexes: int[] = [];
   for (const pillColor of pills.COLORS) {
-    let randomEffectIndex;
+    let randomEffectIndex: int;
     do {
       seed = misc.incrementRNG(seed);
       math.randomseed(seed);

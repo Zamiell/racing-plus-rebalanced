@@ -183,12 +183,12 @@ export function unlock(): void {
 
 function animateUse(thisPillEffect: PillEffect) {
   // Get the color of this effect
-  let thisPillColor;
-  g.run.pills.effects.forEach((pillEffect, pillColor) => {
+  let thisPillColor: int | undefined;
+  for (const [pillColor, pillEffect] of g.run.pills.effects) {
     if (pillEffect === thisPillEffect) {
       thisPillColor = pillColor;
     }
-  });
+  }
   if (thisPillColor === undefined) {
     thisPillColor = PillColor.PILL_BLUE_BLUE;
   }

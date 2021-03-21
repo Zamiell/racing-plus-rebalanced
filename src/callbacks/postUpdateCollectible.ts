@@ -112,7 +112,7 @@ function getPrice(pickup: EntityPickup) {
     return PickupPrice.PRICE_FREE;
   }
 
-  let price;
+  let price: int;
 
   const shopPrice = SHOP_PRICES.get(pickup.SubType);
   if (shopPrice === undefined) {

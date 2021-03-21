@@ -47,19 +47,16 @@ const dicePipFunctions = [
     const roomSeed = g.r.GetSpawnSeed();
 
     math.randomseed(roomSeed);
-    const randomMapIndex = math.random(1, 6);
-    const itemPoolTypeMap = new Map([
-      [1, ItemPoolType.POOL_TREASURE], // 0
-      [2, ItemPoolType.POOL_SHOP], // 1
-      [3, ItemPoolType.POOL_BOSS], // 2
-      [4, ItemPoolType.POOL_DEVIL], // 3
-      [5, ItemPoolType.POOL_ANGEL], // 4
-      [6, ItemPoolType.POOL_LIBRARY], // 6
-    ]);
-    const itemPoolType = itemPoolTypeMap.get(randomMapIndex);
-    if (itemPoolType === undefined) {
-      error(`Unknown map index of ${randomMapIndex}.`);
-    }
+    const itemPoolTypes = [
+      ItemPoolType.POOL_TREASURE, // 0
+      ItemPoolType.POOL_SHOP, // 1
+      ItemPoolType.POOL_BOSS, // 2
+      ItemPoolType.POOL_DEVIL, // 3
+      ItemPoolType.POOL_ANGEL, // 4
+      ItemPoolType.POOL_LIBRARY, // 6
+    ];
+    const randomIndex = math.random(0, itemPoolTypes.length - 1);
+    const itemPoolType = itemPoolTypes[randomIndex];
 
     const subType = g.itemPool.GetCollectible(
       itemPoolType,
