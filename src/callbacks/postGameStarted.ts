@@ -3,10 +3,7 @@ import g from "../globals";
 import * as misc from "../misc";
 import * as pills from "../pills";
 import * as postItemPickup from "../postItemPickup";
-import {
-  CollectibleTypeCustom,
-  TrinketTypeCustom,
-} from "../types/enums.custom";
+import { CollectibleTypeCustom, TrinketTypeCustom } from "../types/enums";
 import GlobalsRun from "../types/GlobalsRun";
 import * as postNewLevel from "./postNewLevel";
 

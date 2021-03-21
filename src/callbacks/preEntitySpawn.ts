@@ -1,8 +1,5 @@
 import g from "../globals";
-import {
-  CollectibleTypeCustom,
-  PickupVariantCustom,
-} from "../types/enums.custom";
+import { CollectibleTypeCustom, PickupVariantCustom } from "../types/enums";
 
 export function main(
   entityType: int,

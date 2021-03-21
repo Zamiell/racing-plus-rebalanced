@@ -1,7 +1,7 @@
 import g from "../globals";
 import * as misc from "../misc";
 import * as postItemPickup from "../postItemPickup";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 export function main(collectibleType: CollectibleType): boolean {
   // Buff 9-Volt

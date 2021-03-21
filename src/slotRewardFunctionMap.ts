@@ -1,7 +1,7 @@
 import { ZERO_VECTOR } from "./constants";
 import g from "./globals";
 import * as misc from "./misc";
-import { SlotVariantCustom } from "./types/enums.custom";
+import { SlotVariantCustom } from "./types/enums";
 
 const slotRewardFunctionMap = new Map<int, (slot: Entity) => boolean>();
 export default slotRewardFunctionMap;

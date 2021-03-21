@@ -5,7 +5,7 @@ import {
   CollectibleTypeCustom,
   SoundEffectCustom,
   TrinketTypeCustom,
-} from "../types/enums.custom";
+} from "../types/enums";
 
 export default function entityTakeDmgPlayer(
   player: EntityPlayer,

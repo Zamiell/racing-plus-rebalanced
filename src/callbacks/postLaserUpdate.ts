@@ -1,7 +1,7 @@
 import { FAMILIAR_TEAR_DAMAGE } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 export function main(laser: EntityLaser): void {
   // Items

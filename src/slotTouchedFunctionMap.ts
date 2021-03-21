@@ -1,5 +1,5 @@
 import g from "./globals";
-import { SlotVariantCustom } from "./types/enums.custom";
+import { SlotVariantCustom } from "./types/enums";
 
 const slotRewardTouchedMap = new Map<int, (slot: Entity) => void>();
 export default slotRewardTouchedMap;

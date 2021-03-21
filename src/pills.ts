@@ -1,5 +1,5 @@
 import g from "./globals";
-import { PillEffectCustom } from "./types/enums.custom";
+import { PillEffectCustom } from "./types/enums";
 
 const DURATION = 600; // 20 seconds
 

@@ -2,7 +2,7 @@ import { FAMILIAR_TEAR_DAMAGE, FAMILIAR_TEAR_SCALE } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
 import * as pills from "../pills";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 export function main(tear: EntityTear): void {
   if (

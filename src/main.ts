@@ -39,7 +39,7 @@ import {
   CollectibleTypeCustom,
   EffectVariantCustom,
   PillEffectCustom,
-} from "./types/enums.custom";
+} from "./types/enums";
 
 // Initialize some IsaacScript-specific functions
 isaacScriptInit();

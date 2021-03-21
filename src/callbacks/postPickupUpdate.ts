@@ -3,7 +3,7 @@ import g from "../globals";
 import * as catalog from "../items/catalog";
 import * as misc from "../misc";
 import { COLORS } from "../pills";
-import { CollectibleState, TrinketTypeCustom } from "../types/enums.custom";
+import { CollectibleState, TrinketTypeCustom } from "../types/enums";
 import * as postNewRoom from "./postNewRoom";
 
 export function main(pickup: EntityPickup): void {

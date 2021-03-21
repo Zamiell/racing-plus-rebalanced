@@ -1,6 +1,6 @@
 import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 export function postNewRoom(): void {
   if (!g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5)) {

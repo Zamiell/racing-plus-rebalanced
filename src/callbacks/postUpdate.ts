@@ -5,10 +5,7 @@ import * as misc from "../misc";
 import * as postItemPickup from "../postItemPickup";
 import * as roomCleared from "../roomCleared";
 import * as slots from "../slots";
-import {
-  CollectibleTypeCustom,
-  TrinketTypeCustom,
-} from "../types/enums.custom";
+import { CollectibleTypeCustom, TrinketTypeCustom } from "../types/enums";
 import postUpdateCollectible from "./postUpdateCollectible";
 
 export function main(): void {

@@ -1,5 +1,5 @@
 import g from "../globals";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 // CollectibleType.COLLECTIBLE_ISAACS_TEARS (323)
 export function isaacsTears(): boolean {

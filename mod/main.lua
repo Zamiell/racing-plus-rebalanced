@@ -1832,7 +1832,7 @@ function __TS__TypeOf(value)
 end
 
 end,
-["types.enums.custom"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+["types.enums"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
 ____exports.PickupVariantCustom = PickupVariantCustom or ({})
 ____exports.PickupVariantCustom.INVISIBLE_PICKUP = Isaac.GetEntityVariantByName("Invisible Pickup")
@@ -1954,8 +1954,8 @@ end,
 ["constants"] = function() --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 require("lualib_bundle");
 local ____exports = {}
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 ____exports.VERSION = "v1.1.0"
 ____exports.ZERO_VECTOR = Vector(0, 0)
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
@@ -2405,10 +2405,10 @@ local ZERO_VECTOR = ____constants.ZERO_VECTOR
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local SoundEffectCustom = ____enums_2Ecustom.SoundEffectCustom
-local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
+local SoundEffectCustom = ____enums.SoundEffectCustom
+local TrinketTypeCustom = ____enums.TrinketTypeCustom
 local theWafer, infestation, theBlackBean, spiderBaby, piggyBank, techX, myShadow, fannyPackImproved, walnut
 function theWafer(self, player)
     if g.run.waferCounters == 0 then
@@ -2682,8 +2682,8 @@ end,
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local TINY_PLANET_EXCEPTION_ITEMS, damageItems, damageTrinkets, damagePills, damageGlobalPenalty, fireDelayItems, fireDelayPills, shotSpeedItems, speedItems, luckItems, hasTinyPlanetExceptionItem
 function damageItems(self, player)
     if player:HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) then
@@ -3113,8 +3113,8 @@ require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local PillEffectCustom = ____enums_2Ecustom.PillEffectCustom
+local ____enums = require("types.enums")
+local PillEffectCustom = ____enums.PillEffectCustom
 local DURATION = 600
 ____exports.COLORS = {PillColor.PILL_BLUE_BLUE, PillColor.PILL_ORANGE_ORANGE, PillColor.PILL_WHITE_WHITE, PillColor.PILL_REDDOTS_RED}
 ____exports.EFFECTS = {PillEffect.PILLEFFECT_BALLS_OF_STEEL, PillEffect.PILLEFFECT_HEALTH_UP, PillEffect.PILLEFFECT_PRETTY_FLY, PillEffect.PILLEFFECT_SPEED_UP, PillEffect.PILLEFFECT_TEARS_UP, PillEffect.PILLEFFECT_48HOUR_ENERGY, PillEffect.PILLEFFECT_SEE_FOREVER, PillEffectCustom.PILLEFFECT_DAMAGE_UP, PillEffectCustom.PILLEFFECT_TEAR_DELAY_DOWN, PillEffectCustom.PILLEFFECT_DEAL_AFFINITY, PillEffectCustom.PILLEFFECT_BONE_AFFINITY, PillEffectCustom.PILLEFFECT_RESTOCK, PillEffectCustom.PILLEFFECT_GOLDEN_DUMP, PillEffectCustom.PILLEFFECT_SUPER_SADNESS, PillEffectCustom.PILLEFFECT_INVINCIBILITY, PillEffectCustom.PILLEFFECT_REALLY_BAD_GAS, PillEffectCustom.PILLEFFECT_GLIMPSE, PillEffectCustom.PILLEFFECT_AETHER, PillEffectCustom.PILLEFFECT_WALLS_HAVE_EYES, PillEffectCustom.PILLEFFECT_BLADDER_INFECTION, PillEffectCustom.PILLEFFECT_SCORCHED_EARTH}
@@ -3261,8 +3261,8 @@ local ZERO_VECTOR = ____constants.ZERO_VECTOR
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CreepSubTypeCustom = ____enums_2Ecustom.CreepSubTypeCustom
+local ____enums = require("types.enums")
+local CreepSubTypeCustom = ____enums.CreepSubTypeCustom
 local dicePipFunctions, spawnPickupsInCircle
 function spawnPickupsInCircle(self, numToSpawn, pickupVariant, pickupSubType)
     local velocityMultiplier = 4
@@ -3371,8 +3371,8 @@ local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
 local pills = require("pills")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local momsContacts, abel, tinyPlanet, isaacsHeart, theWiz, fireMind, strabismus, u235, pillAether, pillWallsHaveEyes, removeFear, familiars, spawnTearWithIncreasedDmg
 function momsContacts(self, tear)
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_CONTACTS) then
@@ -3849,8 +3849,8 @@ local ____constants = require("constants")
 local ZERO_VECTOR = ____constants.ZERO_VECTOR
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 function ____exports.postNewRoom(self)
     if not g.p:HasCollectible(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5) then
         return
@@ -3885,8 +3885,8 @@ local g = ____globals.default
 local technology = require("items.technology")
 local technology25 = require("items.technology25")
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local holyPoop, fannyPackImproved, fireMindImproved, holyMantleNerfed, adrenalineCustom
 function ____exports.blueMap(self)
     local bossIndex = g.l:QueryRoomTypeIndex(
@@ -4235,10 +4235,10 @@ local ____globals = require("globals")
 local g = ____globals.default
 local technology25 = require("items.technology25")
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local EffectVariantCustom = ____enums_2Ecustom.EffectVariantCustom
-local SlotVariantCustom = ____enums_2Ecustom.SlotVariantCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
+local EffectVariantCustom = ____enums.EffectVariantCustom
+local SlotVariantCustom = ____enums.SlotVariantCustom
 local ____GlobalsRunRoom = require("types.GlobalsRunRoom")
 local GlobalsRunRoom = ____GlobalsRunRoom.default
 local checkDressingMachine, checkShopMachine, replaceArcade, replaceCurseRoom, replaceChallengeRoom, replaceRedChestDD, replaceChestRoom, replaceDiceRoom, abel, blueMap, holyMantle, pokeGoImproved
@@ -4633,8 +4633,8 @@ require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local ____GlobalsRunLevel = require("types.GlobalsRunLevel")
 local GlobalsRunLevel = ____GlobalsRunLevel.default
 local postNewRoom = require("callbacks.postNewRoom")
@@ -4688,9 +4688,9 @@ local g = ____globals.default
 local misc = require("misc")
 local pills = require("pills")
 local postItemPickup = require("postItemPickup")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
+local TrinketTypeCustom = ____enums.TrinketTypeCustom
 local ____GlobalsRun = require("types.GlobalsRun")
 local GlobalsRun = ____GlobalsRun.default
 local postNewLevel = require("callbacks.postNewLevel")
@@ -4878,8 +4878,8 @@ local FAMILIAR_TEAR_DAMAGE = ____constants.FAMILIAR_TEAR_DAMAGE
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local lilBrimstone, isaacsHeart, mawOfTheVoid, technology25, familiarLaser, friendlyFade
 function lilBrimstone(self, laser)
     if ((laser.FrameCount == 0) and (laser.SpawnerType == EntityType.ENTITY_FAMILIAR)) and (laser.SpawnerVariant == FamiliarVariant.LIL_BRIMSTONE) then
@@ -5037,8 +5037,8 @@ local ZERO_VECTOR = ____constants.ZERO_VECTOR
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local SoundEffectCustom = ____enums_2Ecustom.SoundEffectCustom
+local ____enums = require("types.enums")
+local SoundEffectCustom = ____enums.SoundEffectCustom
 function ____exports.spawnItem(self, position)
     g.run.catalogRNG = misc:incrementRNG(g.run.catalogRNG)
     local spawnedItem = g.g:Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, position, ZERO_VECTOR, nil, 0, g.run.catalogRNG):ToPickup()
@@ -5081,9 +5081,9 @@ local catalog = require("items.catalog")
 local misc = require("misc")
 local ____pills = require("pills")
 local COLORS = ____pills.COLORS
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleState = ____enums_2Ecustom.CollectibleState
-local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
+local ____enums = require("types.enums")
+local CollectibleState = ____enums.CollectibleState
+local TrinketTypeCustom = ____enums.TrinketTypeCustom
 local postNewRoom = require("callbacks.postNewRoom")
 local checkTouched, touched, touchedEtherealPenny, heartRelic, heartCheckDDReroll, heartCheckCatalogReroll, collectibleCheckDouble
 function checkTouched(self, pickup)
@@ -5235,8 +5235,8 @@ local FAMILIAR_TEAR_DAMAGE = ____constants.FAMILIAR_TEAR_DAMAGE
 local ZERO_VECTOR = ____constants.ZERO_VECTOR
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local bobsRottenHead, demonBaby, abel, tinyPlanet, explosivo, lilMonstro, fireMindImproved
 function bobsRottenHead(self, tear)
     if (tear.Variant == TearVariant.BOBS_HEAD) and (tear.FrameCount == 1) then
@@ -5353,8 +5353,8 @@ local ZERO_VECTOR = ____constants.ZERO_VECTOR
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local ____enums_2Ecustom = require("types.enums.custom")
-local SlotVariantCustom = ____enums_2Ecustom.SlotVariantCustom
+local ____enums = require("types.enums")
+local SlotVariantCustom = ____enums.SlotVariantCustom
 local spawnCoin, spawn3Coins
 function spawnCoin(self, slot)
     Isaac.Spawn(
@@ -5422,8 +5422,8 @@ require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local SlotVariantCustom = ____enums_2Ecustom.SlotVariantCustom
+local ____enums = require("types.enums")
+local SlotVariantCustom = ____enums.SlotVariantCustom
 local touchSuccess
 function touchSuccess(self, sprite)
     g.sfx:Play(SoundEffect.SOUND_COIN_SLOT, 1, 0, false, 1)
@@ -5566,8 +5566,8 @@ local SHOP_PRICES = ____constants.SHOP_PRICES
 local TWO_HEART_ITEMS = ____constants.TWO_HEART_ITEMS
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleState = ____enums_2Ecustom.CollectibleState
+local ____enums = require("types.enums")
+local CollectibleState = ____enums.CollectibleState
 local checkDDPrice, getDDPrice, checkShopPrice, getPrice, checkSetBossItem
 function checkDDPrice(self, pickup)
     local roomType = g.r:GetType()
@@ -5676,9 +5676,9 @@ local misc = require("misc")
 local postItemPickup = require("postItemPickup")
 local roomCleared = require("roomCleared")
 local slots = require("slots")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local TrinketTypeCustom = ____enums_2Ecustom.TrinketTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
+local TrinketTypeCustom = ____enums.TrinketTypeCustom
 local ____postUpdateCollectible = require("callbacks.postUpdateCollectible")
 local postUpdateCollectible = ____postUpdateCollectible.default
 local recordLastFireDirection, recordHealth, checkRoomCleared, checkItemPickup, checkItemPickupQueueEmpty, checkItemPickupQueueNotEmpty, postNewItem, checkTransformations, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
@@ -6115,9 +6115,9 @@ end,
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local PickupVariantCustom = ____enums_2Ecustom.PickupVariantCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
+local PickupVariantCustom = ____enums.PickupVariantCustom
 local collectible
 function collectible(self, subType, position, velocity, spawner, initSeed)
     local replacedSubType
@@ -6250,8 +6250,8 @@ end,
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 function ____exports.isaacsTears(self)
     local vel = Vector(10, 0)
     do
@@ -6463,8 +6463,8 @@ local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
 local path = require("path")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local deleteNearestHeart
 function deleteNearestHeart(self)
     local hearts = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_FULL, false, false)
@@ -6655,8 +6655,8 @@ local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
 local postItemPickup = require("postItemPickup")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 function ____exports.main(self, collectibleType)
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_NINE_VOLT) then
         return true
@@ -6940,10 +6940,10 @@ local VERSION = ____constants.VERSION
 local ____isaacScriptInit = require("isaacScriptInit")
 local isaacScriptInit = ____isaacScriptInit.default
 local catalog = require("items.catalog")
-local ____enums_2Ecustom = require("types.enums.custom")
-local CollectibleTypeCustom = ____enums_2Ecustom.CollectibleTypeCustom
-local EffectVariantCustom = ____enums_2Ecustom.EffectVariantCustom
-local PillEffectCustom = ____enums_2Ecustom.PillEffectCustom
+local ____enums = require("types.enums")
+local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
+local EffectVariantCustom = ____enums.EffectVariantCustom
+local PillEffectCustom = ____enums.PillEffectCustom
 isaacScriptInit(nil)
 local RPRebalanced = RegisterMod("Racing+ Rebalanced", 1)
 RacingPlusRebalancedVersion = VERSION

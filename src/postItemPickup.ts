@@ -3,7 +3,7 @@ import g from "./globals";
 import * as technology from "./items/technology";
 import * as technology25 from "./items/technology25";
 import * as misc from "./misc";
-import { CollectibleTypeCustom } from "./types/enums.custom";
+import { CollectibleTypeCustom } from "./types/enums";
 
 export const functionMap = new Map<int, () => void>();
 

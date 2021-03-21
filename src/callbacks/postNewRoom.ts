@@ -6,7 +6,7 @@ import {
   CollectibleTypeCustom,
   EffectVariantCustom,
   SlotVariantCustom,
-} from "../types/enums.custom";
+} from "../types/enums";
 import GlobalsRunRoom from "../types/GlobalsRunRoom";
 
 export function main(): void {

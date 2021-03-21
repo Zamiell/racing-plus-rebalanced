@@ -5,7 +5,7 @@ import {
 } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
-import { SoundEffectCustom } from "../types/enums.custom";
+import { SoundEffectCustom } from "../types/enums";
 
 // ModCallbacks.MC_USE_ITEM (3)
 export function useItem(): boolean {

@@ -1,7 +1,7 @@
 import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
-import { CreepSubTypeCustom } from "../types/enums.custom";
+import { CreepSubTypeCustom } from "../types/enums";
 
 // EffectVariant.BLUE_FLAME (10)
 export function blueFlame(effect: EntityEffect): void {

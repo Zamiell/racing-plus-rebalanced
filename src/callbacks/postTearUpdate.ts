@@ -1,6 +1,6 @@
 import { FAMILIAR_TEAR_DAMAGE, ZERO_VECTOR } from "../constants";
 import g from "../globals";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 export function main(tear: EntityTear): void {
   bobsRottenHead(tear); // 42

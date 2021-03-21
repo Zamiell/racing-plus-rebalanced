@@ -1,5 +1,5 @@
 import g from "../globals";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 const TINY_PLANET_EXCEPTION_ITEMS = [
   CollectibleType.COLLECTIBLE_EPIC_FETUS, // 168

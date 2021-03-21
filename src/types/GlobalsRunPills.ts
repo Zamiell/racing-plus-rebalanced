@@ -1,4 +1,4 @@
-import { PillEffectCustom } from "./enums.custom";
+import { PillEffectCustom } from "./enums";
 
 export default interface GlobalsRunPills {
   // The randomly selected pill effects for this run

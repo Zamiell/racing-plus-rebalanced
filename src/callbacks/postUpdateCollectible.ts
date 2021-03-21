@@ -1,6 +1,6 @@
 import { CATALOG_ITEM_PRICE, SHOP_PRICES, TWO_HEART_ITEMS } from "../constants";
 import g from "../globals";
-import { CollectibleState, CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleState, CollectibleTypeCustom } from "../types/enums";
 
 export default (): void => {
   const pedestals = Isaac.FindByType(

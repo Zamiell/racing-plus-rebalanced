@@ -2,7 +2,7 @@ import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
 import * as path from "../path";
-import { CollectibleTypeCustom } from "../types/enums.custom";
+import { CollectibleTypeCustom } from "../types/enums";
 
 // Card.CARD_MAGICIAN (2)
 export function magician(): void {
