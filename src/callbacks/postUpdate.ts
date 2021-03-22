@@ -237,6 +237,7 @@ function nineVolt() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
   const activeItem = g.p.GetActiveItem();
+  const activeItemMaxCharges = misc.getItemMaxCharges(activeItem);
 
   if (g.run.nineVoltFrame === 0 || gameFrameCount <= g.run.nineVoltFrame) {
     return;
@@ -246,11 +247,10 @@ function nineVolt() {
   if (activeItem === 0) {
     return;
   }
-  const maxCharges = misc.getItemMaxCharges(activeItem);
   let charge = g.p.GetActiveCharge();
   charge += 1;
-  if (charge > maxCharges) {
-    charge = maxCharges;
+  if (charge > activeItemMaxCharges) {
+    charge = activeItemMaxCharges;
   }
   g.p.SetActiveCharge(charge);
 }

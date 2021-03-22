@@ -11,6 +11,12 @@ export function main(saveState: boolean): void {
   // Local variables
   const startSeed = g.seeds.GetStartSeed();
 
+  // Cache the total number of collectibles
+  // (this has to be done after all of the mods are finished loading)
+  if (g.numTotalCollectibles === 0) {
+    g.numTotalCollectibles = misc.getNumTotalCollectibles();
+  }
+
   if (saveState) {
     return;
   }
@@ -21,12 +27,6 @@ export function main(saveState: boolean): void {
 
   // Reset all run-based variables
   g.run = new GlobalsRun(startSeed);
-
-  // Cache the total number of collectibles
-  // (this has to be done after all of the mods are finished loading)
-  if (g.numTotalCollectibles === 0) {
-    g.numTotalCollectibles = misc.getNumTotalCollectibles();
-  }
 
   checkVanillaStartingItems();
   addStartingItems();

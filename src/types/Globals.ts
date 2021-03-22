@@ -15,12 +15,11 @@ export default class Globals {
   itemPool = Game().GetItemPool();
   itemConfig = Isaac.GetItemConfig();
   sfx = SFXManager();
+  numTotalCollectibles = 0; // This is initialized in the PostGameStarted callback
 
   // Check for Racing+
   racingPlusEnabled = RacingPlusGlobals !== undefined;
 
   // Variables reset at the beginning of every run
   run = new GlobalsRun(0);
-
-  numTotalCollectibles = 0;
 }
