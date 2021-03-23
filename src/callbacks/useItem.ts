@@ -153,7 +153,7 @@ export function clockworkAssembly(): boolean {
 
 // CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION
 export function chargingStation(): boolean {
-  if (RacingPlusSchoolbag.IsItemFullyCharged()) {
+  if (RacingPlusSchoolbag.isItemFullyCharged()) {
     return false;
   }
 
@@ -163,7 +163,7 @@ export function chargingStation(): boolean {
   }
 
   g.p.AddCoins(-1);
-  RacingPlusSchoolbag.AddCharge(true);
+  RacingPlusSchoolbag.addCharge(true);
   g.p.AnimateCollectible(
     CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION,
     "UseItem",

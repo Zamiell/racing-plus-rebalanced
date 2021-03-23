@@ -2138,9 +2138,9 @@ ____exports.default = (function()
         self.itemPool = Game(nil):GetItemPool()
         self.itemConfig = Isaac.GetItemConfig()
         self.sfx = SFXManager(nil)
+        self.numTotalCollectibles = 0
         self.racingPlusEnabled = RacingPlusGlobals ~= nil
         self.run = __TS__New(GlobalsRun, 0)
-        self.numTotalCollectibles = 0
     end
     return Globals
 end)()
@@ -2357,6 +2357,12 @@ function ____exports.removeAllGridEntities(self)
             i = i + 1
         end
     end
+end
+function ____exports.removeItemFromItemTracker(self, collectibleType)
+    local itemConfig = g.itemConfig:GetCollectible(collectibleType)
+    Isaac.DebugString(
+        ((("Removing collectible " .. tostring(collectibleType)) .. " (") .. itemConfig.Name) .. ")"
+    )
 end
 function ____exports.removeSpecificEntities(self, entityType, variant)
     local entities = Isaac.FindByType(entityType, variant, -1, false, false)
@@ -3819,6 +3825,7 @@ local ____constants = require("constants")
 local TECHNOLOGY_EXCEPTION_ITEMS = ____constants.TECHNOLOGY_EXCEPTION_ITEMS
 local ____globals = require("globals")
 local g = ____globals.default
+local misc = require("misc")
 local hasPowerfulItem
 function hasPowerfulItem(self)
     for ____, item in ipairs(TECHNOLOGY_EXCEPTION_ITEMS) do
@@ -3838,7 +3845,7 @@ function ____exports.postItemPickup(self)
     if not hasPowerfulItem(nil) then
         g.run.technologyAdded2020 = true
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_20_20, 0, false)
-        Isaac.DebugString("Removing collectible 245 (20/20)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_20_20)
     end
 end
 return ____exports
@@ -3919,7 +3926,7 @@ function holyMantleNerfed(self)
     g.run.holyMantle = true
     g.p:AddCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE, 0, false)
     g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
-    Isaac.DebugString("Removing collectible 313 (Holy Mantle)")
+    misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
     local effects = g.p:GetEffects()
     if not effects:HasCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE) then
         effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE, false)
@@ -3930,7 +3937,7 @@ end
 function adrenalineCustom(self)
     g.p:AddCollectible(CollectibleType.COLLECTIBLE_ADDERLINE, 0, false)
     g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_ADDERLINE)
-    Isaac.DebugString("Removing collectible 493 (Adrenaline)")
+    misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ADDERLINE)
     local item = g.itemConfig:GetCollectible(CollectibleType.COLLECTIBLE_ADDERLINE)
     g.p:AddCostume(item, false)
 end
@@ -3964,7 +3971,7 @@ ____exports.functionMap:set(
             local i = 0
             while i < 2 do
                 g.p:AddCollectible(CollectibleType.COLLECTIBLE_LITTLE_CHUBBY, 0, false)
-                Isaac.DebugString("Removing collectible 88 (Little Chubby)")
+                misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LITTLE_CHUBBY)
                 i = i + 1
             end
         end
@@ -4002,7 +4009,7 @@ ____exports.functionMap:set(
     CollectibleType.COLLECTIBLE_TECHNOLOGY_2,
     function()
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2)
-        Isaac.DebugString("Removing collectible 152 (Technology 2)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_TECHNOLOGY_2)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5, 0, false)
         technology25:postItemPickup()
     end
@@ -4018,7 +4025,7 @@ ____exports.functionMap:set(
     CollectibleType.COLLECTIBLE_FANNY_PACK,
     function()
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_FANNY_PACK)
-        Isaac.DebugString("Removing collectible 204 (Fanny Pack)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_FANNY_PACK)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED, 0, false)
         fannyPackImproved(nil)
     end
@@ -4045,7 +4052,7 @@ ____exports.functionMap:set(
             return
         end
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND)
-        Isaac.DebugString("Removing collectible 204 (Fire Mind)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_FIRE_MIND)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED, 0, false)
         fireMindImproved(nil)
     end
@@ -4057,7 +4064,7 @@ ____exports.functionMap:set(
             local i = 0
             while i < 4 do
                 g.p:AddCollectible(CollectibleType.COLLECTIBLE_LEECH, 0, false)
-                Isaac.DebugString("Removing collectible 270 (Leech)")
+                misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LEECH)
                 i = i + 1
             end
         end
@@ -4079,7 +4086,7 @@ ____exports.functionMap:set(
             local i = 0
             while i < 2 do
                 g.p:AddCollectible(CollectibleType.COLLECTIBLE_LIL_HAUNT, 0, false)
-                Isaac.DebugString("Removing collectible 277 (Lil Haunt)")
+                misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LIL_HAUNT)
                 i = i + 1
             end
         end
@@ -4092,7 +4099,7 @@ ____exports.functionMap:set(
             local i = 0
             while i < 9 do
                 g.p:AddCollectible(CollectibleType.COLLECTIBLE_SISSY_LONGLEGS, 0, false)
-                Isaac.DebugString("Removing collectible 280 (Sissy Longlegs)")
+                misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_SISSY_LONGLEGS)
                 i = i + 1
             end
         end
@@ -4109,7 +4116,7 @@ ____exports.functionMap:set(
     CollectibleType.COLLECTIBLE_HOLY_MANTLE,
     function()
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
-        Isaac.DebugString("Removing collectible 313 (Holy Mantle)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_HOLY_MANTLE)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED, 0, false)
         holyMantleNerfed(nil)
     end
@@ -4119,7 +4126,7 @@ ____exports.functionMap:set(
     function()
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_MR_DOLLY)
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_SAD_ONION, 0, false)
-        Isaac.DebugString("Removing collectible 1 (Sad Onion)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_SAD_ONION)
     end
 )
 ____exports.functionMap:set(
@@ -4129,7 +4136,7 @@ ____exports.functionMap:set(
             local i = 0
             while i < 4 do
                 g.p:AddCollectible(CollectibleType.COLLECTIBLE_LIL_GURDY, 0, false)
-                Isaac.DebugString("Removing collectible 384 (Lil Gurdy)")
+                misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LIL_GURDY)
                 i = i + 1
             end
         end
@@ -4155,7 +4162,7 @@ ____exports.functionMap:set(
             local i = 0
             while i < 2 do
                 g.p:AddCollectible(CollectibleType.COLLECTIBLE_BIG_CHUBBY, 0, false)
-                Isaac.DebugString("Removing collectible 473 (Big Chubby)")
+                misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BIG_CHUBBY)
                 i = i + 1
             end
         end
@@ -4165,7 +4172,7 @@ ____exports.functionMap:set(
     CollectibleType.COLLECTIBLE_ADDERLINE,
     function()
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_ADDERLINE)
-        Isaac.DebugString("Removing collectible 493 (Adrenaline)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ADDERLINE)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_ADRENALINE_IMPROVED, 0, false)
         adrenalineCustom(nil)
     end
@@ -4174,7 +4181,7 @@ ____exports.functionMap:set(
     CollectibleType.COLLECTIBLE_POKE_GO,
     function()
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_POKE_GO)
-        Isaac.DebugString("Removing collectible 505 (Poke Go)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_POKE_GO)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_POKE_GO_IMPROVED, 0, false)
     end
 )
@@ -4207,8 +4214,8 @@ ____exports.functionMap:set(
     function()
         local activeCharge = g.p:GetActiveCharge()
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, 0, false)
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS)
         g.p:AddCollectible(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED, activeCharge, false)
-        Isaac.DebugString("Removing collectible 288 (Box of Spiders)")
     end
 )
 ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED, holyMantleNerfed)
@@ -4219,7 +4226,7 @@ ____exports.functionMap:set(
         g.p:AddCostume(item, false)
         g.p:RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_MR_DOLLY_NERFED)
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_SAD_ONION, 0, false)
-        Isaac.DebugString("Removing collectible 1 (Sad Onion)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_SAD_ONION)
     end
 )
 ____exports.functionMap:set(CollectibleTypeCustom.COLLECTIBLE_ADRENALINE_IMPROVED, adrenalineCustom)
@@ -4633,6 +4640,7 @@ require("lualib_bundle");
 local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
+local misc = require("misc")
 local ____enums = require("types.enums")
 local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 local ____GlobalsRunLevel = require("types.GlobalsRunLevel")
@@ -4660,7 +4668,7 @@ function theWafer(self)
     g.run.waferCounters = 2
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_WAFER) then
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_WAFER, 0, false)
-        Isaac.DebugString("Removing collectible 108 (The Wafer)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_WAFER)
     end
 end
 function holyMantleNerfed(self)
@@ -4699,9 +4707,9 @@ function checkVanillaStartingItems(self)
     if g.p:HasCollectible(CollectibleType.COLLECTIBLE_DUALITY) then
         if (Isaac.GetChallenge() == Challenge.CHALLENGE_NULL) and g.seeds:IsCustomRun() then
             g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_DUALITY)
+            misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_DUALITY)
             g.p:AddCollectible(CollectibleType.COLLECTIBLE_SAD_ONION, 0, false)
             Isaac.DebugString("Eden has started with Duality; removing it.")
-            Isaac.DebugString("Removing collectible 498 (Duality)")
         else
             RacingPlusGlobals.run.restart = true
             Isaac.DebugString("Restarting because Eden started with Duality.")
@@ -4722,17 +4730,17 @@ function checkVanillaStartingItems(self)
     end
     local schoolbagItem = RacingPlusGlobals.run.schoolbag.item
     if schoolbagItem == CollectibleType.COLLECTIBLE_POOP then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP, -1)
+        RacingPlusSchoolbag:put(CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MOMS_BRA then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED, -1)
+        RacingPlusSchoolbag:put(CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED, -1)
+        RacingPlusSchoolbag:put(CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MONSTER_MANUAL then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED, -1)
+        RacingPlusSchoolbag:put(CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED, -1)
+        RacingPlusSchoolbag:put(CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED, -1)
     elseif schoolbagItem == CollectibleType.COLLECTIBLE_MEGA_SATANS_BREATH then
-        RacingPlusSchoolbag:Put(CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE, -1)
+        RacingPlusSchoolbag:put(CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE, -1)
     end
     if g.p:HasTrinket(TrinketType.TRINKET_WALNUT) then
         g.p:TryRemoveTrinket(TrinketType.TRINKET_WALNUT)
@@ -4747,7 +4755,7 @@ function addStartingItems(self)
     if not g.p:HasCollectible(CollectibleType.COLLECTIBLE_DUALITY) then
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_DUALITY, 0, false)
     end
-    Isaac.DebugString("Removing collectible 498 (Duality)")
+    misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_DUALITY)
     g.p:RemoveCostume(
         g.itemConfig:GetCollectible(CollectibleType.COLLECTIBLE_DUALITY)
     )
@@ -4756,7 +4764,7 @@ function addStartingItems(self)
     if character == PlayerType.PLAYER_LILITH then
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_INCUBUS, 0, false)
         g.itemPool:RemoveCollectible(CollectibleType.COLLECTIBLE_INCUBUS)
-        Isaac.DebugString("Removing collectible 360 (Incubus)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_INCUBUS)
         RacingPlusGlobals.run.extraIncubus = true
     end
 end
@@ -4792,6 +4800,9 @@ function initPills(self)
 end
 function ____exports.main(self, saveState)
     local startSeed = g.seeds:GetStartSeed()
+    if g.numTotalCollectibles == 0 then
+        g.numTotalCollectibles = misc:getNumTotalCollectibles()
+    end
     if saveState then
         return
     end
@@ -4799,9 +4810,6 @@ function ____exports.main(self, saveState)
         return
     end
     g.run = __TS__New(GlobalsRun, startSeed)
-    if g.numTotalCollectibles == 0 then
-        g.numTotalCollectibles = misc:getNumTotalCollectibles()
-    end
     checkVanillaStartingItems(nil)
     addStartingItems(nil)
     trinkets(nil)
@@ -5820,6 +5828,7 @@ end
 function nineVolt(self)
     local gameFrameCount = g.g:GetFrameCount()
     local activeItem = g.p:GetActiveItem()
+    local activeItemMaxCharges = misc:getItemMaxCharges(activeItem)
     if (g.run.nineVoltFrame == 0) or (gameFrameCount <= g.run.nineVoltFrame) then
         return
     end
@@ -5827,11 +5836,10 @@ function nineVolt(self)
     if activeItem == 0 then
         return
     end
-    local maxCharges = misc:getItemMaxCharges(activeItem)
     local charge = g.p:GetActiveCharge()
     charge = charge + 1
-    if charge > maxCharges then
-        charge = maxCharges
+    if charge > activeItemMaxCharges then
+        charge = activeItemMaxCharges
     end
     g.p:SetActiveCharge(charge)
 end
@@ -5870,11 +5878,11 @@ function isaacsHeart(self)
     end
     if g.p:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)
-        Isaac.DebugString("Removing collectible 118 (Brimstone)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BRIMSTONE)
     end
     if g.p:HasCollectible(CollectibleType.COLLECTIBLE_ANTI_GRAVITY) then
         g.p:RemoveCollectible(CollectibleType.COLLECTIBLE_ANTI_GRAVITY)
-        Isaac.DebugString("Removing collectible 222 (Anti-Gravity)")
+        misc:removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ANTI_GRAVITY)
     end
 end
 function judasShadow(self)
@@ -5971,9 +5979,7 @@ function fireMindImproved(self)
     end
     if not misc:isOnTearBuild() then
         g.p:RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)
-        Isaac.DebugString(
-            ("Removing collectible " .. tostring(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)) .. " (Fire Mind Improved)"
-        )
+        misc:removeItemFromItemTracker(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)
         g.p:AddCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND, 0, false)
     end
 end
@@ -6733,7 +6739,7 @@ function ____exports.clockworkAssembly(self)
     return true
 end
 function ____exports.chargingStation(self)
-    if RacingPlusSchoolbag:IsItemFullyCharged() then
+    if RacingPlusSchoolbag:isItemFullyCharged() then
         return false
     end
     local coins = g.p:GetNumCoins()
@@ -6741,7 +6747,7 @@ function ____exports.chargingStation(self)
         return false
     end
     g.p:AddCoins(-1)
-    RacingPlusSchoolbag:AddCharge(true)
+    RacingPlusSchoolbag:addCharge(true)
     g.p:AnimateCollectible(CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION, "UseItem", "PlayerPickup")
     g.sfx:Play(SoundEffect.SOUND_BEEP, 1, 0, false, 1)
     return true
