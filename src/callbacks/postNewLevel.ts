@@ -1,4 +1,5 @@
 import g from "../globals";
+import * as misc from "../misc";
 import { CollectibleTypeCustom } from "../types/enums";
 import GlobalsRunLevel from "../types/GlobalsRunLevel";
 import * as postNewRoom from "./postNewRoom";
@@ -51,7 +52,7 @@ function theWafer() {
   g.run.waferCounters = 2;
   if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_WAFER)) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_WAFER, 0, false);
-    Isaac.DebugString("Removing collectible 108 (The Wafer)"); // Remove it from the item tracker
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_WAFER);
   }
 }
 

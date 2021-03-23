@@ -1,4 +1,5 @@
 import g from "./globals";
+import { CollectibleTypeCustom } from "./types/enums";
 
 export function getItemMaxCharges(collectibleType: CollectibleType): int {
   if (collectibleType === 0) {
@@ -159,6 +160,15 @@ export function removeAllGridEntities(): void {
       }
     }
   }
+}
+
+export function removeItemFromItemTracker(
+  collectibleType: CollectibleType | CollectibleTypeCustom,
+): void {
+  const itemConfig = g.itemConfig.GetCollectible(collectibleType);
+  Isaac.DebugString(
+    `Removing collectible ${collectibleType} (${itemConfig.Name})`,
+  );
 }
 
 export function removeSpecificEntities(

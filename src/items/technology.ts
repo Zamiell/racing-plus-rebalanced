@@ -1,5 +1,6 @@
 import { TECHNOLOGY_EXCEPTION_ITEMS } from "../constants";
 import g from "../globals";
+import * as misc from "../misc";
 
 export function postUpdate(): void {
   // Technology grants 2 lasers, but only if they do not have a powerful other item
@@ -15,7 +16,7 @@ export function postItemPickup(): void {
   if (!hasPowerfulItem()) {
     g.run.technologyAdded2020 = true;
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_20_20, 0, false);
-    Isaac.DebugString("Removing collectible 245 (20/20)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_20_20);
   }
 }
 

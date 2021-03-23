@@ -62,9 +62,9 @@ function checkVanillaStartingItems() {
       // Instead, just take away the Duality && give them the Sad Onion as a replacement for the
       // passive item
       g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_DUALITY);
+      misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_DUALITY);
       g.p.AddCollectible(CollectibleType.COLLECTIBLE_SAD_ONION, 0, false);
       Isaac.DebugString("Eden has started with Duality; removing it.");
-      Isaac.DebugString("Removing collectible 498 (Duality)");
     } else {
       RacingPlusGlobals.run.restart = true;
       Isaac.DebugString("Restarting because Eden started with Duality.");
@@ -142,7 +142,7 @@ function addStartingItems() {
   if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_DUALITY)) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_DUALITY, 0, false);
   }
-  Isaac.DebugString("Removing collectible 498 (Duality)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_DUALITY);
   g.p.RemoveCostume(
     g.itemConfig.GetCollectible(CollectibleType.COLLECTIBLE_DUALITY),
   );
@@ -152,7 +152,7 @@ function addStartingItems() {
   if (character === PlayerType.PLAYER_LILITH) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_INCUBUS, 0, false);
     g.itemPool.RemoveCollectible(CollectibleType.COLLECTIBLE_INCUBUS);
-    Isaac.DebugString("Removing collectible 360 (Incubus)"); // Don't show it on the item tracker
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_INCUBUS);
 
     // If we switch characters, we want to remove the extra Incubus
     RacingPlusGlobals.run.extraIncubus = true;

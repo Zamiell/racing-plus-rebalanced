@@ -316,12 +316,12 @@ function isaacsHeart() {
 
   if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)) {
     g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE);
-    Isaac.DebugString("Removing collectible 118 (Brimstone)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BRIMSTONE);
   }
 
   if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_ANTI_GRAVITY)) {
     g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_ANTI_GRAVITY);
-    Isaac.DebugString("Removing collectible 222 (Anti-Gravity)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ANTI_GRAVITY);
   }
 }
 
@@ -478,8 +478,8 @@ function fireMindImproved() {
   if (!misc.isOnTearBuild()) {
     // Remove the custom Fire Mind item and give back the normal one
     g.p.RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED);
-    Isaac.DebugString(
-      `Removing collectible ${CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED} (Fire Mind Improved)`,
+    misc.removeItemFromItemTracker(
+      CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED,
     );
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND, 0, false);
   }

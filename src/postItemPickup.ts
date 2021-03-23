@@ -41,7 +41,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_LITTLE_CHUBBY, () => {
   // For 3 in total
   for (let i = 0; i < 2; i++) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_LITTLE_CHUBBY, 0, false);
-    Isaac.DebugString("Removing collectible 88 (Little Chubby)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LITTLE_CHUBBY);
   }
 });
 
@@ -73,7 +73,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_BRIMSTONE, () => {
 // 152
 functionMap.set(CollectibleType.COLLECTIBLE_TECHNOLOGY_2, () => {
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2);
-  Isaac.DebugString("Removing collectible 152 (Technology 2)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_TECHNOLOGY_2);
   g.p.AddCollectible(
     CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5,
     0,
@@ -92,7 +92,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_SACRED_HEART, () => {
 // 204
 functionMap.set(CollectibleType.COLLECTIBLE_FANNY_PACK, () => {
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_FANNY_PACK);
-  Isaac.DebugString("Removing collectible 204 (Fanny Pack)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_FANNY_PACK);
   g.p.AddCollectible(
     CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED,
     0,
@@ -140,7 +140,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_FIRE_MIND, () => {
   }
 
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND);
-  Isaac.DebugString("Removing collectible 204 (Fire Mind)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_FIRE_MIND);
   g.p.AddCollectible(
     CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED,
     0,
@@ -154,7 +154,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_LEECH, () => {
   // For 5 in total
   for (let i = 0; i < 4; i++) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_LEECH, 0, false);
-    Isaac.DebugString("Removing collectible 270 (Leech)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LEECH);
   }
 });
 
@@ -171,7 +171,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_LIL_HAUNT, () => {
   // For 3 in total
   for (let i = 0; i < 2; i++) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_LIL_HAUNT, 0, false);
-    Isaac.DebugString("Removing collectible 277 (Lil Haunt)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LIL_HAUNT);
   }
 });
 
@@ -180,7 +180,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_SISSY_LONGLEGS, () => {
   // For 10 in total
   for (let i = 0; i < 9; i++) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_SISSY_LONGLEGS, 0, false);
-    Isaac.DebugString("Removing collectible 280 (Sissy Longlegs)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_SISSY_LONGLEGS);
   }
 });
 
@@ -194,7 +194,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_CAPRICORN, () => {
 // 313
 functionMap.set(CollectibleType.COLLECTIBLE_HOLY_MANTLE, () => {
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE);
-  Isaac.DebugString("Removing collectible 313 (Holy Mantle)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_HOLY_MANTLE);
 
   g.p.AddCollectible(
     CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED,
@@ -209,7 +209,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_MR_DOLLY, () => {
   // Replace it with a Sad Onion behind the scenes
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_MR_DOLLY);
   g.p.AddCollectible(CollectibleType.COLLECTIBLE_SAD_ONION, 0, false);
-  Isaac.DebugString("Removing collectible 1 (Sad Onion)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_SAD_ONION);
 });
 
 // 384
@@ -217,7 +217,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_LIL_GURDY, () => {
   // For 5 in total
   for (let i = 0; i < 4; i++) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_LIL_GURDY, 0, false);
-    Isaac.DebugString("Removing collectible 384 (Lil Gurdy)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_LIL_GURDY);
   }
 });
 
@@ -242,14 +242,14 @@ functionMap.set(CollectibleType.COLLECTIBLE_BIG_CHUBBY, () => {
   // For 3 in total
   for (let i = 0; i < 2; i++) {
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_BIG_CHUBBY, 0, false);
-    Isaac.DebugString("Removing collectible 473 (Big Chubby)");
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BIG_CHUBBY);
   }
 });
 
 // 493
 functionMap.set(CollectibleType.COLLECTIBLE_ADDERLINE, () => {
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_ADDERLINE);
-  Isaac.DebugString("Removing collectible 493 (Adrenaline)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ADDERLINE);
 
   g.p.AddCollectible(
     CollectibleTypeCustom.COLLECTIBLE_ADRENALINE_IMPROVED,
@@ -262,7 +262,7 @@ functionMap.set(CollectibleType.COLLECTIBLE_ADDERLINE, () => {
 // 505
 functionMap.set(CollectibleType.COLLECTIBLE_POKE_GO, () => {
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_POKE_GO);
-  Isaac.DebugString("Removing collectible 505 (Poke Go)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_POKE_GO);
   g.p.AddCollectible(
     CollectibleTypeCustom.COLLECTIBLE_POKE_GO_IMPROVED,
     0,
@@ -341,12 +341,12 @@ functionMap.set(
     // Spider Baby transformation
     const activeCharge = g.p.GetActiveCharge();
     g.p.AddCollectible(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS, 0, false);
+    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS);
     g.p.AddCollectible(
       CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED,
       activeCharge,
       false,
     );
-    Isaac.DebugString("Removing collectible 288 (Box of Spiders)");
   },
 );
 
@@ -362,7 +362,7 @@ function holyMantleNerfed() {
   // transformation
   g.p.AddCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE, 0, false);
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_HOLY_MANTLE);
-  Isaac.DebugString("Removing collectible 313 (Holy Mantle)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_HOLY_MANTLE);
 
   const effects = g.p.GetEffects();
   if (!effects.HasCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE)) {
@@ -390,7 +390,7 @@ functionMap.set(CollectibleTypeCustom.COLLECTIBLE_MR_DOLLY_NERFED, () => {
   // Replace it with a Sad Onion behind the scenes
   g.p.RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_MR_DOLLY_NERFED);
   g.p.AddCollectible(CollectibleType.COLLECTIBLE_SAD_ONION, 0, false);
-  Isaac.DebugString("Removing collectible 1 (Sad Onion)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_SAD_ONION);
 });
 
 // Replacing 493
@@ -403,7 +403,7 @@ function adrenalineCustom() {
   // transformation
   g.p.AddCollectible(CollectibleType.COLLECTIBLE_ADDERLINE, 0, false);
   g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_ADDERLINE);
-  Isaac.DebugString("Removing collectible 493 (Adrenaline)");
+  misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ADDERLINE);
 
   const item = g.itemConfig.GetCollectible(
     CollectibleType.COLLECTIBLE_ADDERLINE,
