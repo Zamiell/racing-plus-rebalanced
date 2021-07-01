@@ -1,7 +1,11 @@
 import g from "../globals";
 import * as pills from "../pills";
+import { PillEffectCustom } from "../types/enums";
 
-export function main(pillEffect: int, pillColor: int): int | null {
+export function main(
+  pillEffect: PillEffect,
+  pillColor: PillColor,
+): PillEffect | PillEffectCustom {
   // If we give ourselves a pill via the console,
   // it may not necessarily match the 4 normal pill colors
   // (since pills given in this manner to not execute the GetPillColor callback)
