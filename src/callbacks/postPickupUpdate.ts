@@ -31,32 +31,32 @@ function touched(pickup: EntityPickup) {
 
 function touchedEtherealPenny(pickup: EntityPickup) {
   if (
-    pickup.Variant !== PickupVariant.PICKUP_COIN ||
-    !g.p.HasTrinket(TrinketTypeCustom.TRINKET_ETHEREAL_PENNY)
+    pickup.Variant !== PickupVariant.COIN ||
+    !g.p.HasTrinket(TrinketTypeCustom.ETHEREAL_PENNY)
   ) {
     return;
   }
 
   // 20% chance for a half soul heart
-  g.run.etherealPennyRNG = misc.incrementRNG(g.run.etherealPennyRNG);
-  math.randomseed(g.run.etherealPennyRNG);
+  g.run.etherealPennySeed = misc.incrementRNG(g.run.etherealPennySeed);
+  math.randomseed(g.run.etherealPennySeed);
   const slotChoice = math.random(1, 5);
   if (slotChoice !== 1) {
     return;
   }
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
   g.g.Spawn(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_HEART,
+    EntityType.PICKUP,
+    PickupVariant.HEART,
     position,
     ZERO_VECTOR,
     null,
     HeartSubType.HEART_HALF_SOUL,
-    g.run.etherealPennyRNG,
+    g.run.etherealPennySeed,
   );
 }
 
-// PickupVariant.PICKUP_HEART (10)
+// PickupVariant.HEART (10)
 export function heart(pickup: EntityPickup): void {
   // Items
   heartRelic(pickup); // 98
@@ -66,11 +66,11 @@ export function heart(pickup: EntityPickup): void {
   heartCheckCatalogReroll(pickup);
 }
 
-// PickupVariant.PICKUP_PILL (70)
+// PickupVariant.PILL (70)
 export function pill(pickup: EntityPickup): void {
   // Sometimes, pills can spawn from sources that will not go through the GetPillColor callback
-  // (e.g. champions)
-  // We need to delete and replace these pills with pills that have the correct pill color
+  // (e.g. champions) We need to delete and replace these pills with pills that have the correct
+  // pill color
   if (COLORS.includes(pickup.SubType)) {
     return;
   }
@@ -93,17 +93,17 @@ export function pill(pickup: EntityPickup): void {
   );
 }
 
-// CollectibleType.COLLECTIBLE_RELIC (98)
+// CollectibleType.RELIC (98)
 function heartRelic(pickup: EntityPickup) {
   // Replace soul hearts from The Relic with half soul hearts (5.10.8)
   if (
     pickup.SubType === HeartSubType.HEART_SOUL &&
-    pickup.SpawnerType === EntityType.ENTITY_FAMILIAR &&
+    pickup.SpawnerType === EntityType.FAMILIAR &&
     pickup.SpawnerVariant === FamiliarVariant.RELIC
   ) {
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_HEART,
+      EntityType.PICKUP,
+      PickupVariant.HEART,
       pickup.Position,
       pickup.Velocity,
       pickup.SpawnerEntity,
@@ -114,8 +114,8 @@ function heartRelic(pickup: EntityPickup) {
   }
 }
 
-// For some reason, items rerolled in Curse Rooms change to red hearts
-// Delete them and respawn another pedestal item
+// For some reason, items rerolled in Curse Rooms change to red hearts Delete them and respawn
+// another pedestal item
 function heartCheckDDReroll(pickup: EntityPickup) {
   // Local variables
   const roomType = g.r.GetType();
@@ -124,15 +124,15 @@ function heartCheckDDReroll(pickup: EntityPickup) {
     pickup.FrameCount === 1 &&
     pickup.SubType === HeartSubType.HEART_FULL &&
     pickup.Price === 3 &&
-    roomType === RoomType.ROOM_CURSE
+    roomType === RoomType.CURSE
   ) {
     postNewRoom.spawnCurseRoomPedestalItem();
     pickup.Remove();
   }
 }
 
-// For some reason, rolled Catalog items change to red hearts
-// Delete them and respawn another pedestal item
+// For some reason, rolled Catalog items change to red hearts Delete them and respawn another
+// pedestal item
 function heartCheckCatalogReroll(pickup: EntityPickup) {
   if (
     pickup.FrameCount === 1 &&
@@ -145,7 +145,7 @@ function heartCheckCatalogReroll(pickup: EntityPickup) {
   }
 }
 
-// PickupVariant.PICKUP_COLLECTIBLE (100)
+// PickupVariant.COLLECTIBLE (100)
 export function collectible(pickup: EntityPickup): void {
   collectibleCheckDouble(pickup);
 }
@@ -155,13 +155,13 @@ function collectibleCheckDouble(pickup: EntityPickup) {
     return;
   }
 
-  // Double every pedestal item that spawns
-  // (we can't do this in the MC_POST_PICKUP_INIT callback because the position is not set)
+  // Double every pedestal item that spawns (we can't do this in the MC_POST_PICKUP_INIT callback
+  // because the position is not set)
   const gameFrameCount = g.g.GetFrameCount();
   if (
     g.r.IsFirstVisit() &&
-    // Frame 0 does not work
-    // Frame 1 works but we need to wait an extra frame for Racing+ to replace the pedestal
+    // Frame 0 does not work Frame 1 works but we need to wait an extra frame for Racing+ to replace
+    // the pedestal
     pickup.FrameCount === 2 &&
     pickup.State !== 2 && // We mark a state of 2 to indicate a duplicated pedestal
     (g.run.room.doubleItemsFrame === 0 ||
@@ -171,8 +171,8 @@ function collectibleCheckDouble(pickup: EntityPickup) {
     g.run.randomSeed = misc.incrementRNG(g.run.randomSeed);
     const pedestal = g.g
       .Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_COLLECTIBLE,
+        EntityType.PICKUP,
+        PickupVariant.COLLECTIBLE,
         position,
         ZERO_VECTOR,
         null,

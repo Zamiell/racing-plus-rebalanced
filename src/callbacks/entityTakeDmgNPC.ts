@@ -12,17 +12,16 @@ export default function entityTakeDmgNPC(
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_SPEAR_OF_DESTINY (400)
+// CollectibleType.SPEAR_OF_DESTINY (400)
 function spearOfDestiny(
   npc: EntityNPC,
   damageSource: EntityRef,
   damageCountdownFrames: int,
 ) {
-  // Make the Spear of Destiny do extra damage
-  // (this does not work if we set effect.CollisionDamage in the PostEffectInit callback;
-  // the damage appears to be hard-coded)
+  // Make the Spear of Destiny do extra damage (this does not work if we set effect.CollisionDamage
+  // in the PostEffectInit callback; the damage appears to be hard-coded)
   if (
-    damageSource.Type === EntityType.ENTITY_EFFECT &&
+    damageSource.Type === EntityType.EFFECT &&
     damageSource.Variant === EffectVariant.SPEAR_OF_DESTINY
   ) {
     const damage = g.p.Damage * 3;

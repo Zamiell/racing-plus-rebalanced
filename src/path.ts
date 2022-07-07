@@ -8,7 +8,6 @@ enum GridValue {
 }
 
 export function findMidBoss(percent: int): int {
-  // Local variables
   const startingRoomIndex = g.l.GetStartingRoomIndex();
   const rooms = g.l.GetRooms();
 
@@ -37,13 +36,13 @@ export function findMidBoss(percent: int): int {
     const roomShape = roomData.Shape;
 
     // Record the boss index
-    if (roomType === RoomType.ROOM_BOSS) {
+    if (roomType === RoomType.BOSS) {
       bossRoomIndex = roomIndexSafe;
     }
 
     // There will never be a special room in the path to the boss, so we can ignore special rooms
     // Furthermore, we do not want to account for the Secret Room (e.g. moon strats)
-    if (roomType === RoomType.ROOM_DEFAULT || roomType === RoomType.ROOM_BOSS) {
+    if (roomType === RoomType.DEFAULT || roomType === RoomType.BOSS) {
       // Fill in the grid
       const { x, y } = getCoordsFromGridIndex(roomIndexSafe);
       grid[y][x] = GridValue.ROOM;

@@ -37,9 +37,8 @@ export const EFFECTS = [
   PillEffectCustom.PILLEFFECT_SCORCHED_EARTH,
 ];
 
-// The first number is the starting grid coordinate
-// The second number is the number of times to iterate
-// The third number is the starting grid coordinate for the second wall (for L rooms)
+// The first number is the starting grid coordinate The second number is the number of times to
+// iterate The third number is the starting grid coordinate for the second wall (for L rooms)
 export const WALL_COORDINATES = new Map([
   [
     RoomShape.ROOMSHAPE_1x1, // 1
@@ -155,13 +154,13 @@ export function animateHappy(): void {
   g.p.AnimateHappy();
   const color = Color(0.3, 0.3, 0.3, 1, 1, 1, 1);
   g.p.SetColor(color, 15, 1, true, false);
-  g.sfx.Stop(SoundEffect.SOUND_THUMBSUP);
-  g.sfx.Play(SoundEffect.SOUND_POWERUP_SPEWER, 1, 0, false, 1);
+  sfxManager.Stop(SoundEffect.THUMBSUP);
+  sfxManager.Play(SoundEffect.POWERUP_SPEWER, 1, 0, false, 1);
 }
 
 export function getDuration(): int {
   let duration = DURATION;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     duration *= 2;
   }
 

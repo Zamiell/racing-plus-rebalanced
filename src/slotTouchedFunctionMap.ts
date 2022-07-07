@@ -8,7 +8,7 @@ export default slotRewardTouchedMap;
 slotRewardTouchedMap.set(
   SlotVariantCustom.TRANSMUTATION_MACHINE,
   (slot: Entity) => {
-    g.p.TakeDamage(1, DamageFlag.DAMAGE_RED_HEARTS, EntityRef(slot), 0);
+    g.p.TakeDamage(1, DamageFlag.RED_HEARTS, EntityRef(slot), 0);
     touchSuccess(slot.GetSprite());
   },
 );
@@ -80,6 +80,6 @@ slotRewardTouchedMap.set(SlotVariantCustom.HOLY_MACHINE, (slot: Entity) => {
 });
 
 function touchSuccess(sprite: Sprite) {
-  g.sfx.Play(SoundEffect.SOUND_COIN_SLOT, 1, 0, false, 1);
+  sfxManager.Play(SoundEffect.COIN_SLOT, 1, 0, false, 1);
   sprite.Play("Initiate", true);
 }

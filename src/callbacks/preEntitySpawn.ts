@@ -11,8 +11,8 @@ export function main(
   initSeed: int,
 ): [int, int, int, int] | null {
   if (
-    entityType === EntityType.ENTITY_PICKUP &&
-    variant === PickupVariant.PICKUP_COLLECTIBLE
+    entityType === EntityType.PICKUP &&
+    variant === PickupVariant.COLLECTIBLE
   ) {
     return collectible(subType, position, velocity, spawner, initSeed);
   }
@@ -30,26 +30,25 @@ function collectible(
   let replacedSubType: int | undefined;
   switch (subType) {
     // 42
-    case CollectibleType.COLLECTIBLE_BOBS_ROTTEN_HEAD: {
+    case CollectibleType.BOBS_ROTTEN_HEAD: {
       // Replace Bob's Rotten Head (from Sloth) with Bob's Rotten Head (Improved)
-      replacedSubType =
-        CollectibleTypeCustom.COLLECTIBLE_BOBS_ROTTEN_HEAD_IMPROVED;
+      replacedSubType = CollectibleTypeCustom.BOBS_ROTTEN_HEAD_IMPROVED;
       break;
     }
 
     // 81
-    case CollectibleType.COLLECTIBLE_DEAD_CAT: {
-      // Replace Dead Cat (from Super Pride) with 1up!
-      // (since Dead Cat is supposed to be removed from the game)
-      replacedSubType = CollectibleType.COLLECTIBLE_ONE_UP;
+    case CollectibleType.DEAD_CAT: {
+      // Replace Dead Cat (from Super Pride) with 1up! (since Dead Cat is supposed to be removed
+      // from the game)
+      replacedSubType = CollectibleType.ONE_UP;
       break;
     }
 
     // 129
-    case CollectibleType.COLLECTIBLE_BUCKET_LARD: {
-      // Replace Bucket of Lard (from Super Gluttony) with Super Bandage
-      // (since Bucket of Lard is supposed to be removed from the game)
-      replacedSubType = CollectibleType.COLLECTIBLE_SUPER_BANDAGE;
+    case CollectibleType.BUCKET_LARD: {
+      // Replace Bucket of Lard (from Super Gluttony) with Super Bandage (since Bucket of Lard is
+      // supposed to be removed from the game)
+      replacedSubType = CollectibleType.SUPER_BANDAGE;
       break;
     }
 
@@ -60,8 +59,8 @@ function collectible(
 
   if (replacedSubType !== undefined) {
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_COLLECTIBLE,
+      EntityType.PICKUP,
+      PickupVariant.COLLECTIBLE,
       position,
       velocity,
       spawner,
@@ -69,12 +68,7 @@ function collectible(
       initSeed,
     );
 
-    return [
-      EntityType.ENTITY_PICKUP,
-      PickupVariantCustom.INVISIBLE_PICKUP,
-      0,
-      0,
-    ];
+    return [EntityType.PICKUP, PickupVariantCustom.INVISIBLE_PICKUP, 0, 0];
   }
 
   return null;

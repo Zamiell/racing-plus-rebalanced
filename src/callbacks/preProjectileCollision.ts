@@ -11,7 +11,7 @@ export function main(
 
 function fartingBaby(projectile: EntityProjectile, collider: Entity) {
   if (
-    collider.Type !== EntityType.ENTITY_FAMILIAR ||
+    collider.Type !== EntityType.FAMILIAR ||
     collider.Variant !== FamiliarVariant.FARTING_BABY
   ) {
     return;
@@ -28,6 +28,6 @@ function fartingBaby(projectile: EntityProjectile, collider: Entity) {
   g.run.room.fartingBabyShockwaves.push({
     frame: gameFrameCount,
     position: projectile.Position,
-    velocity: projectile.Velocity.__mul(-2),
+    velocity: projectile.Velocity.mul(-2),
   });
 }

@@ -1,7 +1,7 @@
+import { DiceFloorSubType } from "isaac-typescript-definitions";
 import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
-import { CreepSubTypeCustom } from "../types/enums";
 
 // EffectVariant.BLUE_FLAME (10)
 export function blueFlame(effect: EntityEffect): void {
@@ -10,8 +10,8 @@ export function blueFlame(effect: EntityEffect): void {
     effect.CollisionDamage *= 2; // Increased to 46 (from 23)
   }
 
-  // We can also increase the size of the fire to make it look more impressive
-  // This has to be performed on every frame
+  // We can also increase the size of the fire to make it look more impressive. This has to be
+  // performed on every frame.
   effect.SpriteScale = Vector(1.5, 1.5);
 }
 
@@ -30,14 +30,16 @@ export function diceRoomCustom(effect: EntityEffect): void {
   g.p.AnimateHappy();
   Isaac.DebugString(`Activated a ${effect.SubType}-pip custom dice room.`);
 
-  // An "effect.SubType" of 1 will correspond to a 1-pip dice room, and so forth
-  const streakText = dicePipFunctions[effect.SubType - 1]();
+  // An "effect.SubType" of 1 will correspond to a 1-pip dice room, and so forth.
+  const streakText = dicePipFunctions.get(effect.SubType as DiceFloorSubType);
 
   RacingPlusGlobals.run.streakFrame = Isaac.GetFrameCount();
   RacingPlusGlobals.run.streakText = streakText;
 }
 
-const dicePipFunctions = [
+const dicePipFunctions = new Map<DiceFloorSubType, string>();
+
+[
   // 1
   (): string => {
     const effectDescription =
@@ -48,12 +50,12 @@ const dicePipFunctions = [
 
     math.randomseed(roomSeed);
     const itemPoolTypes = [
-      ItemPoolType.POOL_TREASURE, // 0
-      ItemPoolType.POOL_SHOP, // 1
-      ItemPoolType.POOL_BOSS, // 2
-      ItemPoolType.POOL_DEVIL, // 3
-      ItemPoolType.POOL_ANGEL, // 4
-      ItemPoolType.POOL_LIBRARY, // 6
+      ItemPoolType.TREASURE, // 0
+      ItemPoolType.SHOP, // 1
+      ItemPoolType.BOSS, // 2
+      ItemPoolType.DEVIL, // 3
+      ItemPoolType.ANGEL, // 4
+      ItemPoolType.LIBRARY, // 6
     ];
     const randomIndex = math.random(0, itemPoolTypes.length - 1);
     const itemPoolType = itemPoolTypes[randomIndex];
@@ -64,8 +66,8 @@ const dicePipFunctions = [
       g.r.GetSpawnSeed(),
     );
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_COLLECTIBLE,
+      EntityType.PICKUP,
+      PickupVariant.COLLECTIBLE,
       g.r.GetCenterPos(),
       ZERO_VECTOR,
       null,
@@ -84,29 +86,25 @@ const dicePipFunctions = [
 
   // 3
   (): string => {
-    spawnPickupsInCircle(3, PickupVariant.PICKUP_COIN, CoinSubType.COIN_DIME);
+    spawnPickupsInCircle(3, PickupVariant.COIN, CoinSubType.COIN_DIME);
     return "Spawn 3 dimes";
   },
 
   // 4
   (): string => {
-    spawnPickupsInCircle(
-      3,
-      PickupVariant.PICKUP_HEART,
-      HeartSubType.HEART_SOUL,
-    );
+    spawnPickupsInCircle(3, PickupVariant.HEART, HeartSubType.HEART_SOUL);
     return "Spawn 4 soul hearts";
   },
 
   // 5
   (): string => {
-    spawnPickupsInCircle(10, PickupVariant.PICKUP_TRINKET, 0);
+    spawnPickupsInCircle(10, PickupVariant.TRINKET, 0);
     return "Spawn 10 trinkets";
   },
 
   // 6
   (): string => {
-    spawnPickupsInCircle(10, PickupVariant.PICKUP_TAROTCARD, 0);
+    spawnPickupsInCircle(10, PickupVariant.TAROTCARD, 0);
     return "Spawn 6 cards";
   },
 ];
@@ -129,7 +127,7 @@ function spawnPickupsInCircle(
     seed = misc.incrementRNG(seed);
 
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
+      EntityType.PICKUP,
       pickupVariant,
       centerPos,
       rotatedVelocity,
@@ -149,8 +147,8 @@ export function creepScaling(effect: EntityEffect): void {
   // Make player creep scale with the player's damage
   effect.CollisionDamage = g.p.Damage;
 
-  // All creep ticks once every 10 frames with the exception of PLAYER_CREEP_GREEN,
-  // which ticks every frame, so account for this
+  // All creep ticks once every 10 frames with the exception of PLAYER_CREEP_GREEN, which ticks
+  // every frame, so account for this
   if (effect.Variant === EffectVariant.PLAYER_CREEP_GREEN) {
     effect.CollisionDamage /= 10;
   }

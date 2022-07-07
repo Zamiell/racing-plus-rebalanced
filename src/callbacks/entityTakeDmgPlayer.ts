@@ -1,16 +1,51 @@
-import { ZERO_VECTOR } from "../constants";
-import g from "../globals";
-import * as misc from "../misc";
 import {
-  CollectibleTypeCustom,
-  SoundEffectCustom,
-  TrinketTypeCustom,
-} from "../types/enums";
+  BatterySubType,
+  BombSubType,
+  Card,
+  ChargerSubType,
+  ChargerVariant,
+  ChestSubType,
+  CoinSubType,
+  CollectibleType,
+  DamageFlag,
+  EntityFlag,
+  EntityType,
+  FamiliarVariant,
+  HeartSubType,
+  ItemPoolType,
+  KeySubType,
+  PickupVariant,
+  PillColor,
+  SackSubType,
+  TrinketType,
+} from "isaac-typescript-definitions";
+import {
+  getRandomInt,
+  hasFlag,
+  repeat,
+  sfxManager,
+  spawnBatteryWithSeed,
+  spawnCardWithSeed,
+  spawnCoin,
+  spawnCoinWithSeed,
+  spawnCollectible,
+  spawnHeartWithSeed,
+  spawnKeyWithSeed,
+  spawnNPC,
+  spawnPickupWithSeed,
+  spawnPillWithSeed,
+  spawnSackWithSeed,
+  spawnTrinketWithSeed,
+} from "isaacscript-common";
+import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
+import { SoundEffectCustom } from "../enums/SoundEffectCustom";
+import { TrinketTypeCustom } from "../enums/TrinketTypeCustom";
+import g from "../globals";
 
 export default function entityTakeDmgPlayer(
   player: EntityPlayer,
   damageAmount: float,
-  damageFlags: int,
+  damageFlags: BitFlags<DamageFlag>,
   damageSource: EntityRef,
   damageCountdownFrames: int,
 ): boolean {
@@ -19,10 +54,10 @@ export default function entityTakeDmgPlayer(
   }
 
   if (
-    damageSource.Type === EntityType.ENTITY_FAMILIAR &&
-    (damageSource.Variant === FamiliarVariant.BLUE_FLY || // 43
-      damageSource.Variant === FamiliarVariant.BBF || // 58
-      damageSource.Variant === FamiliarVariant.BOBS_BRAIN) // 59
+    damageSource.Type === EntityType.FAMILIAR &&
+    (damageSource.Variant === (FamiliarVariant.BLUE_FLY as int) || // 43
+      damageSource.Variant === (FamiliarVariant.BBF as int) || // 58
+      damageSource.Variant === (FamiliarVariant.BOBS_BRAIN as int)) // 59
   ) {
     return false;
   }
@@ -43,86 +78,84 @@ export default function entityTakeDmgPlayer(
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_WAFER (108)
+// CollectibleType.WAFER (108)
 function theWafer(player: EntityPlayer) {
   if (g.run.waferCounters === 0) {
     return;
   }
   g.run.waferCounters -= 1;
   if (g.run.waferCounters === 0) {
-    player.RemoveCollectible(CollectibleType.COLLECTIBLE_WAFER);
+    player.RemoveCollectible(CollectibleType.WAFER);
   }
 }
 
-// CollectibleType.COLLECTIBLE_INFESTATION (148)
+// CollectibleType.INFESTATION (148)
 function infestation(player: EntityPlayer) {
-  if (!player.HasCollectible(CollectibleType.COLLECTIBLE_INFESTATION)) {
+  if (!player.HasCollectible(CollectibleType.INFESTATION)) {
     return;
   }
 
-  // The vanilla item spawns 1-3 flies, so we just spawn additional ones
+  // The vanilla item spawns 1-3 flies, so we just spawn additional ones.
   const numFlies = 20;
-  player.AddBlueFlies(numFlies, player.Position, null);
+  player.AddBlueFlies(numFlies, player.Position);
 }
 
-// CollectibleType.COLLECTIBLE_BLACK_BEAN (180)
+// CollectibleType.BLACK_BEAN (180)
 function theBlackBean(player: EntityPlayer) {
-  if (!player.HasCollectible(CollectibleType.COLLECTIBLE_BLACK_BEAN)) {
+  if (!player.HasCollectible(CollectibleType.BLACK_BEAN)) {
     return;
   }
 
   g.run.blackBeanEndFrame = g.g.GetFrameCount() + 300; // 10 seconds
 }
 
-// CollectibleType.COLLECTIBLE_SPIDERBABY (211)
+// CollectibleType.SPIDERBABY (211)
 function spiderBaby(player: EntityPlayer) {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_SPIDERBABY)) {
+  if (!g.p.HasCollectible(CollectibleType.SPIDERBABY)) {
     return;
   }
 
   const numSpiders = 20;
   for (let i = 0; i < numSpiders - 2; i++) {
-    // The vanilla item spawns 2 spiders
+    // The vanilla item spawns 2 spiders.
     const randomPosition = g.r.GetRandomPosition(0);
     player.ThrowBlueSpider(player.Position, randomPosition);
   }
 }
 
-// CollectibleType.COLLECTIBLE_PIGGY_BANK (227)
+// CollectibleType.PIGGY_BANK (227)
 function piggyBank(player: EntityPlayer) {
-  if (!player.HasCollectible(CollectibleType.COLLECTIBLE_PIGGY_BANK)) {
+  if (!player.HasCollectible(CollectibleType.PIGGY_BANK)) {
     return;
   }
 
   for (let i = 0; i < 4; i++) {
-    // 5-6 instead of 1-2
-    g.run.piggyBankRNG = misc.incrementRNG(g.run.piggyBankRNG);
-    g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_COIN,
+    // 5-6 instead of 1-2.
+    g.run.piggyBankRNG.Next();
+    spawnCoin(
+      CoinSubType.NULL,
       g.p.Position,
-      RandomVector().__mul(2.5),
+      RandomVector().mul(2.5),
       g.p,
-      0,
-      g.run.piggyBankRNG,
+      g.run.piggyBankRNG.GetSeed(),
     );
   }
 }
 
-// CollectibleType.COLLECTIBLE_TECH_X (395)
+// CollectibleType.TECH_X (395)
 function techX(
   player: EntityPlayer,
   damageAmount: int,
-  damageFlags: int,
+  damageFlags: BitFlags<DamageFlag>,
   damageSource: EntityRef,
   damageCountdownFrames: int,
 ) {
-  if (!player.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X)) {
+  if (!player.HasCollectible(CollectibleType.TECH_X)) {
     return;
   }
 
-  // There is no need to make the player take double damage with Tech X + Epic Fetus
-  if (player.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS)) {
+  // There is no need to make the player take double damage with Tech X + Epic Fetus.
+  if (player.HasCollectible(CollectibleType.EPIC_FETUS)) {
     return;
   }
 
@@ -136,98 +169,61 @@ function techX(
   g.run.dealingExtraDamage = false;
 }
 
-// CollectibleType.COLLECTIBLE_MY_SHADOW (433)
+// CollectibleType.MY_SHADOW (433)
 function myShadow() {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_MY_SHADOW)) {
+  if (!g.p.HasCollectible(CollectibleType.MY_SHADOW)) {
     return;
   }
 
   const numBlackChargers = 20;
-  for (let i = 1; i < numBlackChargers - 1; i++) {
-    // The vanilla item spawns 1
+
+  // The vanilla item spawns 1.
+  repeat(numBlackChargers - 1, () => {
     const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
-    const charger = g.g.Spawn(
-      EntityType.ENTITY_CHARGER,
-      0,
+    const charger = spawnNPC(
+      EntityType.CHARGER,
+      ChargerVariant.CHARGER,
+      ChargerSubType.CHARGER,
       position,
-      ZERO_VECTOR,
-      null,
-      1,
-      0,
     );
-    charger.AddEntityFlags(EntityFlag.FLAG_CHARM);
-  }
+    charger.AddEntityFlags(EntityFlag.CHARM);
+  });
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED (replacing 204)
+// CollectibleTypeCustom.FANNY_PACK_IMPROVED (replacing 204)
 function fannyPackImproved(player: EntityPlayer) {
-  if (
-    !player.HasCollectible(
-      CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED,
-    )
-  ) {
+  if (!player.HasCollectible(CollectibleTypeCustom.FANNY_PACK_IMPROVED)) {
     return;
   }
 
-  // Spawn a random pickup
-  g.run.fannyPackRNG = misc.incrementRNG(g.run.fannyPackRNG);
-  math.randomseed(g.run.fannyPackRNG);
-  const pickupRoll = math.random(1, 11);
-  g.run.fannyPackRNG = misc.incrementRNG(g.run.fannyPackRNG);
-
+  // Spawn a random pickup.
+  const pickupRoll = getRandomInt(1, 11, g.run.fannyPackRNG);
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
   switch (pickupRoll) {
     case 1: {
       // Random Heart
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_HEART, // 10
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      spawnHeartWithSeed(HeartSubType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 2: {
       // Random Coin
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_COIN, // 20
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      spawnCoinWithSeed(CoinSubType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 3: {
       // Random Key
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_KEY, // 30
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      spawnKeyWithSeed(KeySubType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 4: {
       // Random Bomb
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_BOMB, // 40
+      spawnPickupWithSeed(
+        PickupVariant.BOMB,
+        BombSubType.NULL,
         position,
-        ZERO_VECTOR,
-        null,
-        0,
         g.run.fannyPackRNG,
       );
       break;
@@ -235,141 +231,81 @@ function fannyPackImproved(player: EntityPlayer) {
 
     case 5: {
       // Random Chest
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_CHEST, // 50
+      spawnPickupWithSeed(
+        PickupVariant.CHEST,
+        ChestSubType.OPENED,
         position,
-        ZERO_VECTOR,
-        null,
-        0,
         g.run.fannyPackRNG,
       );
       break;
     }
 
     case 6: {
-      // Sack
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_GRAB_BAG, // 69
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      // Random Sack
+      spawnSackWithSeed(SackSubType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 7: {
-      // Lil' Battery
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_LIL_BATTERY, // 90
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      // Random Battery
+      spawnBatteryWithSeed(BatterySubType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 8: {
-      // Pill
       // Random Pill
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_PILL, // 70
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      spawnPillWithSeed(PillColor.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 9: {
-      // Random Card / Rune
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_TAROTCARD, // 300
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      // Random Card/Rune
+      spawnCardWithSeed(Card.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 10: {
       // Random Trinket
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_TRINKET, // 350
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      spawnTrinketWithSeed(TrinketType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     case 11: {
       // Random Collectible
-      g.g.Spawn(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_COLLECTIBLE, // 100
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.fannyPackRNG,
-      );
+      spawnCollectible(CollectibleType.NULL, position, g.run.fannyPackRNG);
       break;
     }
 
     default: {
-      error(`Unknown pickup case of ${pickupRoll}.`);
+      error(`Unknown pickup case of: ${pickupRoll}`);
     }
   }
 }
 
-// TrinketType.TRINKET_WALNUT (108)
-function walnut(player: EntityPlayer, damageFlags: int) {
+// TrinketType.WALNUT (108)
+function walnut(player: EntityPlayer, damageFlags: BitFlags<DamageFlag>) {
   // Local variables
   const startSeed = g.seeds.GetStartSeed();
 
-  if (!player.HasTrinket(TrinketTypeCustom.TRINKET_WALNUT_IMPROVED)) {
+  if (!player.HasTrinket(TrinketTypeCustom.WALNUT_IMPROVED)) {
     return;
   }
 
-  if (!misc.hasFlag(damageFlags, DamageFlag.DAMAGE_EXPLOSION)) {
+  if (!hasFlag(damageFlags, DamageFlag.EXPLOSION)) {
     return;
   }
 
   g.run.walnutCounters += 1;
   if (g.run.walnutCounters === 3) {
     g.run.walnutCounters = 0;
-    g.p.TryRemoveTrinket(TrinketTypeCustom.TRINKET_WALNUT_IMPROVED);
+    g.p.TryRemoveTrinket(TrinketTypeCustom.WALNUT_IMPROVED);
     const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
-    const subType = g.itemPool.GetCollectible(
-      ItemPoolType.POOL_DEVIL,
+    const collectibleType = g.itemPool.GetCollectible(
+      ItemPoolType.DEVIL,
       true,
       startSeed,
     );
-    g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_COLLECTIBLE,
-      position,
-      ZERO_VECTOR,
-      null,
-      subType,
-      startSeed,
-    );
-    g.sfx.Play(SoundEffectCustom.SOUND_WALNUT, 2, 0, false, 1);
+    spawnCollectible(collectibleType, position, startSeed);
+    sfxManager.Play(SoundEffectCustom.WALNUT, 2, 0, false, 1);
   }
 }

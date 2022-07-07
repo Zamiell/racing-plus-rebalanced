@@ -5,22 +5,22 @@ import * as postNewRoom from "./postNewRoom";
 
 export function damageUp(): void {
   let damageAmount = 2;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     damageAmount *= 2;
   }
   g.run.pills.damageUp += damageAmount;
-  g.p.AddCacheFlags(CacheFlag.CACHE_DAMAGE);
+  g.p.AddCacheFlags(CacheFlag.DAMAGE);
   g.p.EvaluateItems();
   pills.animateHappy();
 }
 
 export function tearDelayDown(): void {
   let delayAmount = 1;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     delayAmount = 2;
   }
   g.run.pills.tearDelayDown += delayAmount;
-  g.p.AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
+  g.p.AddCacheFlags(CacheFlag.FIRE_DELAY);
   g.p.EvaluateItems();
   pills.animateHappy();
 }
@@ -30,8 +30,8 @@ export function dealAffinity(): void {
   const stage = g.l.GetStage();
 
   if (stage === 1 || stage === 2) {
-    // It is impossible to get a Devil Room on the first floor
-    // On the second floor, we already have a 100% chance to get a Devil Room
+    // It is impossible to get a Devil Room on the first floor On the second floor, we already have
+    // a 100% chance to get a Devil Room
     pills.animateHappy();
     return;
   }
@@ -39,7 +39,7 @@ export function dealAffinity(): void {
   // "g.g.GetLastDevilRoomStage()" is bugged and returns userdata instead of an integer
   const lastDevilStage = RacingPlusGlobals.run.lastDDLevel;
   let levelModifier = 1;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     levelModifier = 2;
   }
   let newLastDevilStage = lastDevilStage - levelModifier;
@@ -52,13 +52,13 @@ export function dealAffinity(): void {
 
 export function boneAffinity(pillEffect: int): void {
   let numBones = 10;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     numBones *= 2;
   }
 
   for (let i = 0; i < numBones; i++) {
     Isaac.Spawn(
-      EntityType.ENTITY_FAMILIAR,
+      EntityType.FAMILIAR,
       FamiliarVariant.BONE_ORBITAL,
       0,
       g.p.Position,
@@ -73,12 +73,12 @@ export function boneAffinity(pillEffect: int): void {
 export function restock(pillEffect: int): void {
   // Spawn a Restock Machine
   g.run.spawningRestock = true;
-  g.p.UseCard(Card.CARD_WHEEL_OF_FORTUNE);
+  g.p.UseCard(Card.WHEEL_OF_FORTUNE);
 
   // PHD causes this pill to spawn two Restock Machines
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     g.run.spawningRestock = true;
-    g.p.UseCard(Card.CARD_WHEEL_OF_FORTUNE);
+    g.p.UseCard(Card.WHEEL_OF_FORTUNE);
   }
 
   animateUse(pillEffect);
@@ -88,17 +88,17 @@ export function goldenDump(pillEffect: int): void {
   // Spawn Gold Poop at the player's position
   let position = g.p.Position;
   Isaac.GridSpawn(
-    GridEntityType.GRID_POOP,
+    GridEntityType.POOP,
     PoopVariant.POOP_GOLDEN,
     position,
     false,
   );
 
   // PHD causes this pill to spawn two Gold Poops
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
     Isaac.GridSpawn(
-      GridEntityType.GRID_POOP,
+      GridEntityType.POOP,
       PoopVariant.POOP_GOLDEN,
       position,
       false,
@@ -106,10 +106,9 @@ export function goldenDump(pillEffect: int): void {
   }
 
   // Playing "SOUND_FART" will randomly play one of the three farting sound effects
-  g.sfx.Play(SoundEffect.SOUND_FART, 1, 0, false, 1);
+  sfxManager.Play(SoundEffect.FART, 1, 0, false, 1);
 
-  // Turn the room to gold for fun
-  // This will also make any existing poops in the room turn to gold
+  // Turn the room to gold for fun This will also make any existing poops in the room turn to gold
   g.r.TurnGold();
 
   animateUse(pillEffect);
@@ -124,14 +123,14 @@ export function glimpse(pillEffect: int): void {
 
 export function superSadness(): void {
   g.run.pills.superSadness = g.g.GetFrameCount() + pills.getDuration();
-  g.p.AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
+  g.p.AddCacheFlags(CacheFlag.FIRE_DELAY);
   g.p.EvaluateItems();
   pills.animateHappy();
 }
 
 export function invincibility(): void {
   g.run.pills.invincibility = g.g.GetFrameCount() + pills.getDuration();
-  g.p.AddNullCostume(NullItemID.ID_STATUE);
+  g.p.AddNullCostume(NullItemID.STATUE);
   pills.animateHappy();
 }
 
@@ -157,7 +156,7 @@ export function bladderInfection(pillEffect: int): void {
 
 export function scorchedEarth(pillEffect: int): void {
   let numFires = 80;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     numFires *= 2;
   }
   g.run.pills.scorchedEarth = numFires;
@@ -171,20 +170,14 @@ export function familiarFrenzy(pillEffect: int): void {
 }
 
 export function unlock(): void {
-  g.p.UseActiveItem(
-    CollectibleType.COLLECTIBLE_DADS_KEY,
-    true,
-    false,
-    false,
-    false,
-  );
+  g.p.UseActiveItem(CollectibleType.DADS_KEY, true, false, false, false);
   // (PHD has no effect on this pill)
 }
 
 function animateUse(thisPillEffect: PillEffect) {
   // Get the color of this effect
   let thisPillColor: int | undefined;
-  for (const [pillColor, pillEffect] of g.run.pills.effects) {
+  for (const [pillColor, pillEffect] of g.run.pills.effects.entries()) {
     if (pillEffect === thisPillEffect) {
       thisPillColor = pillColor;
     }
@@ -195,6 +188,6 @@ function animateUse(thisPillEffect: PillEffect) {
 
   g.p.AnimatePill(thisPillColor, "UseItem");
 
-  const pillName = g.itemConfig.GetPillEffect(thisPillEffect).Name;
+  const pillName = itemConfig.GetPillEffect(thisPillEffect).Name;
   RacingPlusGlobals.run.streakText = pillName;
 }

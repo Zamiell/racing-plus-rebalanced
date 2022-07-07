@@ -1,0 +1,9 @@
+.prettierrc.js
+check-orphaned-words.sh
+tsconfig.eslint.json
+check-file-updates.sh:check-file-updates.sh
+check-orphaned-words.sh
+plugins/addCrashDebugStatements.ts
+plugins/addIsaacScriptCommentHeader.ts
+plugins/noExtendedEnums.ts
+tsconfig.eslint.json

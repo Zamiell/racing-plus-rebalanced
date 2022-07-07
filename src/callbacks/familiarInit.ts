@@ -4,7 +4,7 @@ import g from "../globals";
 // FamiliarVariant.LITTLE_CHUBBY (3)
 export function littleChubby(familiar: EntityFamiliar): void {
   let damage = 3.5 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -17,7 +17,7 @@ export function deadBird(familiar: EntityFamiliar): void {
   }
 
   let damage = 2 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
 
@@ -43,7 +43,7 @@ export function deadBird(familiar: EntityFamiliar): void {
 // FamiliarVariant.DADDY_LONGLEGS (16)
 export function daddyLonglegs(familiar: EntityFamiliar): void {
   let damage = 20 + g.p.Damage * 3;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -52,7 +52,7 @@ export function daddyLonglegs(familiar: EntityFamiliar): void {
 // FamiliarVariant.SACRIFICIAL_DAGGER (35)
 export function sacrificialDagger(familiar: EntityFamiliar): void {
   let damage = 8.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -61,7 +61,7 @@ export function sacrificialDagger(familiar: EntityFamiliar): void {
 // FamiliarVariant.LEECH (56)
 export function leech(familiar: EntityFamiliar): void {
   let damage = 1.5 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -70,7 +70,7 @@ export function leech(familiar: EntityFamiliar): void {
 // FamiliarVariant.LIL_HAUNT (63)
 export function lilHaunt(familiar: EntityFamiliar): void {
   let damage = 2 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -79,7 +79,7 @@ export function lilHaunt(familiar: EntityFamiliar): void {
 // FamiliarVariant.BLUEBABYS_ONLY_FRIEND (77)
 export function blueBabysOnlyFriend(familiar: EntityFamiliar): void {
   let damage = 2.5 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -88,7 +88,7 @@ export function blueBabysOnlyFriend(familiar: EntityFamiliar): void {
 // FamiliarVariant.GEMINI (79)
 export function gemini(familiar: EntityFamiliar): void {
   let damage = 3 + g.p.Damage;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -97,7 +97,7 @@ export function gemini(familiar: EntityFamiliar): void {
 // FamiliarVariant.LIL_GURDY (87)
 export function lilGurdy(familiar: EntityFamiliar): void {
   let damage = 6 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -105,15 +105,14 @@ export function lilGurdy(familiar: EntityFamiliar): void {
 
 // FamiliarVariant.BUMBO (88)
 export function bumbo(familiar: EntityFamiliar): void {
-  // Make Bumbo start at level 3
-  // Bumbo reaches level 4 (max level) at 25 coins
+  // Make Bumbo start at level 3 Bumbo reaches level 4 (max level) at 25 coins
   familiar.Coins = 25;
 }
 
 // FamiliarVariant.BIG_CHUBBY (104)
 export function bigChubby(familiar: EntityFamiliar): void {
   let damage = 2.7 + g.p.Damage * 0.25;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;
@@ -125,7 +124,7 @@ export function disableVanillaShooting(familiar: EntityFamiliar): void {
 
 export function damage7(familiar: EntityFamiliar): void {
   let damage = 7;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
   familiar.CollisionDamage = damage;

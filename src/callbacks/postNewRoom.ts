@@ -25,8 +25,8 @@ export function main(): void {
   const stage = g.l.GetStage();
   const stageType = g.l.GetStageType();
 
-  // Make sure the callbacks run in the right order
-  // (naturally, PostNewRoom gets called before the PostNewLevel && PostGameStarted callbacks)
+  // Make sure the callbacks run in the right order (naturally, PostNewRoom gets called before the
+  CacheFlag. PostGameStarted callbacks)
   if (
     gameFrameCount === 0 ||
     g.run.level.stage !== stage ||
@@ -73,36 +73,27 @@ function checkDressingMachine() {
     return;
   }
 
-  misc.removeSpecificEntities(
-    EntityType.ENTITY_SLOT,
-    SlotVariant.MOMS_DRESSING_TABLE,
-  );
+  misc.removeSpecificEntities(EntityType.SLOT, SlotVariant.MOMS_DRESSING_TABLE);
 }
 
-// RoomType.ROOM_SHOP (2)
+// RoomType.SHOP (2)
 function checkShopMachine() {
   // Local variables
   const roomSeed = g.r.GetSpawnSeed();
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
-  if (roomType !== RoomType.ROOM_SHOP || !isFirstVisit) {
+  if (roomType !== RoomType.SHOP || !isFirstVisit) {
     return;
   }
 
-  const greeds = Isaac.FindByType(
-    EntityType.ENTITY_GREED,
-    -1,
-    -1,
-    false,
-    false,
-  );
+  const greeds = Isaac.FindByType(EntityType.GREED, -1, -1, false, false);
   if (greeds.length > 0) {
     return;
   }
 
   misc.removeSpecificEntities(
-    EntityType.ENTITY_SLOT,
+    EntityType.SLOT,
     SlotVariant.SHOP_RESTOCK_MACHINE,
   );
 
@@ -113,7 +104,7 @@ function checkShopMachine() {
     case 1: {
       // Spawn a Restock Machine (33% chance)
       g.g.Spawn(
-        EntityType.ENTITY_SLOT,
+        EntityType.SLOT,
         SlotVariant.SHOP_RESTOCK_MACHINE,
         Vector(200, 160),
         ZERO_VECTOR,
@@ -127,7 +118,7 @@ function checkShopMachine() {
     case 2: {
       // Spawn a Transmutation Machine (33% chance)
       g.g.Spawn(
-        EntityType.ENTITY_SLOT,
+        EntityType.SLOT,
         SlotVariantCustom.TRANSMUTATION_MACHINE,
         Vector(200, 160),
         ZERO_VECTOR,
@@ -150,14 +141,14 @@ function checkShopMachine() {
   }
 }
 
-// RoomType.ROOM_ARCADE (9)
+// RoomType.ARCADE (9)
 function replaceArcade() {
   // Local variables
   const stage = g.l.GetStage();
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
-  if (roomType !== RoomType.ROOM_ARCADE) {
+  if (roomType !== RoomType.ARCADE) {
     return;
   }
 
@@ -170,7 +161,7 @@ function replaceArcade() {
   misc.removeAllEntities();
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT,
+    EntityType.SLOT,
     SlotVariant.BEGGAR,
     0,
     misc.gridToPos(2, 1),
@@ -179,7 +170,7 @@ function replaceArcade() {
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT,
+    EntityType.SLOT,
     SlotVariant.BLOOD_DONATION_MACHINE,
     0,
     misc.gridToPos(10, 1),
@@ -188,7 +179,7 @@ function replaceArcade() {
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT,
+    EntityType.SLOT,
     SlotVariantCustom.BOMB_DONATION_MACHINE,
     0,
     misc.gridToPos(2, 5),
@@ -197,7 +188,7 @@ function replaceArcade() {
   );
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT,
+    EntityType.SLOT,
     SlotVariantCustom.KEY_DONATION_MACHINE,
     0,
     misc.gridToPos(10, 5),
@@ -211,7 +202,7 @@ function replaceArcade() {
   }
 
   Isaac.Spawn(
-    EntityType.ENTITY_SLOT,
+    EntityType.SLOT,
     SlotVariantCustom.ROULETTE_TABLE,
     0,
     roulettePosition,
@@ -222,7 +213,7 @@ function replaceArcade() {
   // On Womb 2, also spawn a Holy Machine
   if (stage === 8) {
     Isaac.Spawn(
-      EntityType.ENTITY_SLOT,
+      EntityType.SLOT,
       SlotVariantCustom.HOLY_MACHINE,
       0,
       misc.gridToPos(8, 3),
@@ -232,13 +223,13 @@ function replaceArcade() {
   }
 }
 
-// RoomType.ROOM_CURSE (10)
+// RoomType.CURSE (10)
 function replaceCurseRoom() {
   // Local variables
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
-  if (roomType !== RoomType.ROOM_CURSE) {
+  if (roomType !== RoomType.CURSE) {
     return;
   }
 
@@ -258,13 +249,13 @@ export function spawnCurseRoomPedestalItem(): void {
 
   // Get a new item from the Curse Room pool
   const subType = g.itemPool.GetCollectible(
-    ItemPoolType.POOL_CURSE,
+    ItemPoolType.CURSE,
     true,
     g.r.GetSpawnSeed(),
   ); // 12
   const collectible = Isaac.Spawn(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_COLLECTIBLE,
+    EntityType.PICKUP,
+    PickupVariant.COLLECTIBLE,
     subType,
     centerPos,
     ZERO_VECTOR,
@@ -276,13 +267,13 @@ export function spawnCurseRoomPedestalItem(): void {
   }
 }
 
-// RoomType.ROOM_CHALLENGE (21)
+// RoomType.CHALLENGE (21)
 function replaceChallengeRoom() {
   // Local variables
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
-  if (roomType !== RoomType.ROOM_CHALLENGE) {
+  if (roomType !== RoomType.CHALLENGE) {
     return;
   }
 
@@ -296,13 +287,13 @@ function replaceChallengeRoom() {
 
   // Get a new item from the Treasure Room pool
   const subType = g.itemPool.GetCollectible(
-    ItemPoolType.POOL_TREASURE,
+    ItemPoolType.TREASURE,
     true,
     g.r.GetSpawnSeed(),
   );
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_COLLECTIBLE,
+    EntityType.PICKUP,
+    PickupVariant.COLLECTIBLE,
     subType,
     g.r.GetCenterPos(),
     ZERO_VECTOR,
@@ -310,7 +301,7 @@ function replaceChallengeRoom() {
   ).ToPickup();
 }
 
-// RoomType.ROOM_DEVIL (14)
+// RoomType.DEVIL (14)
 function replaceRedChestDD() {
   // Local variables
   const roomDesc = g.l.GetCurrentRoomDesc();
@@ -319,21 +310,18 @@ function replaceRedChestDD() {
   const isFirstVisit = g.r.IsFirstVisit();
 
   if (
-    roomType !== RoomType.ROOM_DEVIL ||
+    roomType !== RoomType.DEVIL ||
     roomVariant !== 18 || // The devil room with the 10 Red Chests is #18
     !isFirstVisit
   ) {
     return;
   }
 
-  misc.removeSpecificEntities(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_REDCHEST,
-  );
+  misc.removeSpecificEntities(EntityType.PICKUP, PickupVariant.REDCHEST);
 
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_SHOPITEM,
+    EntityType.PICKUP,
+    PickupVariant.SHOPITEM,
     0,
     misc.gridToPos(6, 4),
     ZERO_VECTOR,
@@ -342,7 +330,7 @@ function replaceRedChestDD() {
   // (we do not care about the seed because it will be replaced on the next frame)
 }
 
-// RoomType.ROOM_CHEST (20)
+// RoomType.CHEST (20)
 function replaceChestRoom() {
   // Local variables
   const velocityMultiplier = 8;
@@ -352,7 +340,7 @@ function replaceChestRoom() {
   const roomSeed = g.r.GetSpawnSeed();
   const numKeys = g.p.GetNumKeys();
 
-  if (roomType !== RoomType.ROOM_CHEST) {
+  if (roomType !== RoomType.CHEST) {
     return;
   }
 
@@ -364,8 +352,7 @@ function replaceChestRoom() {
 
   misc.removeAllEntities();
 
-  // Spawn Golden Chests equal to the number of keys held
-  // If under X keys, spawn up to X Gray Chests
+  // Spawn Golden Chests equal to the number of keys held If under X keys, spawn up to X Gray Chests
   // (we cannot use the "spawnPickupsInCircle()" function because they are not all the same type of
   // pickup)
   let numToSpawn = numKeys;
@@ -385,12 +372,12 @@ function replaceChestRoom() {
     const rotatedVelocity = velocity.Rotated(degrees);
     seed = misc.incrementRNG(seed);
 
-    let variant = PickupVariant.PICKUP_LOCKEDCHEST;
+    let variant = PickupVariant.LOCKEDCHEST;
     if (i >= numKeys) {
-      variant = PickupVariant.PICKUP_CHEST;
+      variant = PickupVariant.CHEST;
     }
     g.g.Spawn(
-      EntityType.ENTITY_PICKUP,
+      EntityType.PICKUP,
       variant,
       centerPos,
       rotatedVelocity,
@@ -401,13 +388,13 @@ function replaceChestRoom() {
   }
 }
 
-// RoomType.ROOM_DICE (21)
+// RoomType.DICE (21)
 function replaceDiceRoom() {
   // Local variables
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
-  if (roomType !== RoomType.ROOM_DICE) {
+  if (roomType !== RoomType.DICE) {
     return;
   }
 
@@ -426,7 +413,7 @@ function replaceDiceRoom() {
   math.randomseed(g.r.GetSpawnSeed());
   const dicePip = math.random(1, 6);
   const diceEffect = Isaac.Spawn(
-    EntityType.ENTITY_EFFECT,
+    EntityType.EFFECT,
     EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM,
     dicePip, // Use a subtype corresponding to the random dice pip chosen
     g.r.GetCenterPos(),
@@ -441,15 +428,15 @@ function replaceDiceRoom() {
   diceEffect.DepthOffset = -150;
 }
 
-// CollectibleType.COLLECTIBLE_ABEL (188)
+// CollectibleType.ABEL (188)
 function abel() {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_ABEL)) {
+  if (!g.p.HasCollectible(CollectibleType.ABEL)) {
     return;
   }
 
   // Disable the vanilla shooting behavior
   const abels = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR,
+    EntityType.FAMILIAR,
     FamiliarVariant.ABEL,
     -1,
     false,
@@ -463,34 +450,34 @@ function abel() {
   }
 }
 
-// CollectibleType.COLLECTIBLE_BLUE_MAP (246)
+// CollectibleType.BLUE_MAP (246)
 function blueMap() {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_BLUE_MAP)) {
+  if (!g.p.HasCollectible(CollectibleType.BLUE_MAP)) {
     return;
   }
 
-  const bossIndex = g.l.QueryRoomTypeIndex(RoomType.ROOM_BOSS, false, RNG());
+  const bossIndex = g.l.QueryRoomTypeIndex(RoomType.BOSS, false, RNG());
   const bossRoom = g.l.GetRoomByIdx(bossIndex);
   if (bossRoom.DisplayFlags === 0) {
     bossRoom.DisplayFlags = 4;
   }
 }
 
-// CollectibleType.COLLECTIBLE_HOLY_MANTLE (313)
+// CollectibleType.HOLY_MANTLE (313)
 function holyMantle() {
   if (
     !g.run.holyMantle ||
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
+    !g.p.HasCollectible(CollectibleTypeCustom.HOLY_MANTLE_NERFED)
   ) {
     return;
   }
 
   const effects = g.p.GetEffects();
-  effects.AddCollectibleEffect(CollectibleType.COLLECTIBLE_HOLY_MANTLE, true);
+  effects.AddCollectibleEffect(CollectibleType.HOLY_MANTLE, true);
 }
 
 function pokeGoImproved() {
-  if (!g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_POKE_GO_IMPROVED)) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.POKE_GO_IMPROVED)) {
     return;
   }
 
@@ -510,9 +497,9 @@ function pokeGoImproved() {
     return;
   }
 
-  targetNPC.AddEntityFlags(EntityFlag.FLAG_CHARM); // 1 << 8
-  targetNPC.AddEntityFlags(EntityFlag.FLAG_FRIENDLY); // 1 << 29
-  targetNPC.AddEntityFlags(EntityFlag.FLAG_PERSISTENT); // 1 << 37
+  targetNPC.AddEntityFlags(EntityFlag.CHARM); // 1 << 8
+  targetNPC.AddEntityFlags(EntityFlag.FRIENDLY); // 1 << 29
+  targetNPC.AddEntityFlags(EntityFlag.PERSISTENT); // 1 << 37
 }
 
 export function familiarFrenzy(): void {
@@ -521,12 +508,12 @@ export function familiarFrenzy(): void {
   }
 
   let numFamiliars = 10;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_PHD)) {
+  if (g.p.HasCollectible(CollectibleType.PHD)) {
     numFamiliars *= 2;
   }
   for (let i = 0; i < numFamiliars; i++) {
     g.p.UseActiveItem(
-      CollectibleType.COLLECTIBLE_MONSTER_MANUAL,
+      CollectibleType.MONSTER_MANUAL,
       false,
       false,
       false,

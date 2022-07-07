@@ -1,5 +1,7 @@
 # Racing+ Rebalanced Mod Changes
 
+<!-- markdownlint-disable MD033 -->
+
 WARNING: Racing+ Rebalanced is a mod intended for speedrunners and people who play the game [competitively in actual tournaments](https://isaacrankings.com/). If you are a casual and/or don't play the game at a high level, then some of the balancing changes may not make sense to you. This mod is not recommended unless you are trying to complete the game as fast as possible (e.g. speedrunning or racing).
 
 Racing+ Rebalanced is a separate mod that is intended to be run alongside the Racing+ mod. The vanilla game has many design flaws: it contains many completely useless items and it contains many overpowered items. Most important of all, it was never designed to be played competitively. The Rebalanced mod changes many things about the game in an attempt to:
@@ -9,20 +11,20 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 3) Make the item pools more streamlined, each having a specific purpose.
 4) Rework some mechanics in order to make the game more skill-based and reward players who take less hits.
 
-<br />
+<br>
 
 ## Table of Contents
 
 1. [Characters](#characters)
-2. [Items](#items)
-3. [Trinkets](#trinkets)
-4. [Cards](#cards)
-5. [Pills](#pills)
-5. [Room Revamps](#room-revamps)
-5. [Miscellaneous](#miscellaneous)
-6. [Starting Items](#starting-items)
+1. [Items](#items)
+1. [Trinkets](#trinkets)
+1. [Cards](#cards)
+1. [Pills](#pills)
+1. [Room Revamps](#room-revamps)
+1. [Miscellaneous](#miscellaneous)
+1. [Starting Items](#starting-items)
 
-<br />
+<br>
 
 ## Characters
 
@@ -38,7 +40,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
   * Azazel
   * Lazarus
 
-<br />
+<br>
 
 ## Items
 
@@ -353,7 +355,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * Catalog - A 6 charge item that spawns a random collectible item on the ground that you can purchase for 10 cents.
   * Catalog cannot be used in a shop, a Curse Room, a Devil Room, an Angel Room, or a Black Market.
 
-<br />
+<br>
 
 ## Trinkets
 
@@ -416,7 +418,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * Ethereal Penny - Has a 20% chance to spawn a half soul heart every time you pick up a penny.
 * Penny on a String - Everything that costs a coin is free.
 
-<br />
+<br>
 
 ## Cards
 
@@ -437,7 +439,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * World (22) now only reveals the Boss Room.
 * Ansuz (36) now only reveals the map (no icons).
 
-<br />
+<br>
 
 ## Pills
 
@@ -510,7 +512,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * The pill pool per run is reduced from 13 pills to 4 pills, so it is much easier to get repeat pills.
 * Magdalene is no longer guaranteed to have a Speed Up pill in her pill pool.
 
-<br />
+<br>
 
 ## Room Revamps
 
@@ -542,7 +544,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
   * 5-pip - Spawn 10 trinkets
   * 6-pip - Spawn 6 cards
 
-<br />
+<br>
 
 ## Miscellaneous Buffs
 
@@ -555,7 +557,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
   * Because of this, bosses are now immune to charm. (However, Skatole will still work on fly bosses and Bursting Sack will still work on spider bosses.)
 * Super Gluttony will now always drop Super Bandage (since Bucket of Lard is supposed to be removed from the game).
 
-<br />
+<br>
 
 ## Miscellaneous Nerfs
 
@@ -565,7 +567,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
 * Dressing Machines will no longer spawn.
 * Super Pride will now always drop 1up! (since Dead Cat is supposed to be removed from the game).
 
-<br />
+<br>
 
 ### Starting Items
 
@@ -599,7 +601,7 @@ Racing+ Rebalanced is a separate mod that is intended to be run alongside the Ra
   * Pointy Rib x2
   * Chocolate Milk + Stephen + Sad Onion <!-- Triple item starts -->
 
-<br />
+<br>
 
 ### Change Log
 

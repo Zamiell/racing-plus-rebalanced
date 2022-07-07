@@ -15,7 +15,7 @@ export function momsRazor(
 
   // Mom's Razor only ticks once every two frames
   let damage = 10;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
 

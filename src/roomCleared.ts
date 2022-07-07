@@ -6,9 +6,9 @@ export function main(): void {
   chargedBaby(); // 372
 }
 
-// CollectibleType.COLLECTIBLE_CHARGED_BABY (372)
+// CollectibleType.CHARGED_BABY (372)
 function chargedBaby() {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_CHARGED_BABY)) {
+  if (!g.p.HasCollectible(CollectibleType.CHARGED_BABY)) {
     return;
   }
 
@@ -20,7 +20,7 @@ function chargedBaby() {
   g.run.chargedBabyCounters = 0;
 
   const chargedBabies = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR,
+    EntityType.FAMILIAR,
     FamiliarVariant.CHARGED_BABY,
     -1,
     false,
@@ -28,8 +28,8 @@ function chargedBaby() {
   );
   for (const chargedBabyEntity of chargedBabies) {
     Isaac.Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_LIL_BATTERY,
+      EntityType.PICKUP,
+      PickupVariant.LIL_BATTERY,
       0,
       chargedBabyEntity.Position,
       ZERO_VECTOR,

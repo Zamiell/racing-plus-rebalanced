@@ -1,0 +1,18 @@
+export const PillEffectCustom = {
+  DAMAGE_UP: Isaac.GetPillEffectByName("Damage Up"),
+  TEAR_DELAY_DOWN: Isaac.GetPillEffectByName("Tear Delay Down"),
+  DEAL_AFFINITY: Isaac.GetPillEffectByName("Deal Affinity"),
+  BONE_AFFINITY: Isaac.GetPillEffectByName("Bone Affinity"),
+  RESTOCK: Isaac.GetPillEffectByName("Restock"),
+  GOLDEN_DUMP: Isaac.GetPillEffectByName("Golden Dump"),
+  GLIMPSE: Isaac.GetPillEffectByName("Glimpse"),
+  SUPER_SADNESS: Isaac.GetPillEffectByName("Super Sadness"),
+  INVINCIBILITY: Isaac.GetPillEffectByName("Invincibility"),
+  REALLY_BAD_GAS: Isaac.GetPillEffectByName("Really Bad Gas"),
+  AETHER: Isaac.GetPillEffectByName("Aether"),
+  WALLS_HAVE_EYES: Isaac.GetPillEffectByName("Walls Have Eyes"),
+  BLADDER_INFECTION: Isaac.GetPillEffectByName("Bladder Infection"),
+  SCORCHED_EARTH: Isaac.GetPillEffectByName("Scorched Earth"),
+  FAMILIAR_FRENZY: Isaac.GetPillEffectByName("Familiar Frenzy"),
+  UNLOCK: Isaac.GetPillEffectByName("Unlock"),
+} as const;

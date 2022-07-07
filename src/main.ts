@@ -101,104 +101,104 @@ RPRebalanced.AddCallback(ModCallbacks.MC_GET_PILL_EFFECT, getPillEffect.main); /
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.bookOfRevelations,
-  CollectibleType.COLLECTIBLE_BOOK_REVELATIONS, // 78
+  CollectibleType.BOOK_REVELATIONS, // 78
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.theNail,
-  CollectibleType.COLLECTIBLE_THE_NAIL, // 83
+  CollectibleType.THE_NAIL, // 83
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.monstrosTooth,
-  CollectibleType.COLLECTIBLE_MONSTROS_TOOTH, // 86
+  CollectibleType.MONSTROS_TOOTH, // 86
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.bookOfSecrets,
-  CollectibleType.COLLECTIBLE_BOOK_OF_SECRETS, // 287
+  CollectibleType.BOOK_OF_SECRETS, // 287
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.satanicBible,
-  CollectibleType.COLLECTIBLE_SATANIC_BIBLE, // 292
+  CollectibleType.SATANIC_BIBLE, // 292
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.brownNugget,
-  CollectibleType.COLLECTIBLE_BROWN_NUGGET, // 504
+  CollectibleType.BROWN_NUGGET, // 504
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.holyPoop,
-  CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP, // Replacing 36
+  CollectibleTypeCustom.HOLY_POOP, // Replacing 36
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.momsBraImproved,
-  CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED, // Replacing 39
+  CollectibleTypeCustom.MOMS_BRA_IMPROVED, // Replacing 39
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.monsterManualImproved,
-  CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED, // Replacing 123
+  CollectibleTypeCustom.MONSTER_MANUAL_IMPROVED, // Replacing 123
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.boxOfSpidersImproved,
-  CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED, // Replacing 288
+  CollectibleTypeCustom.BOX_OF_SPIDERS_IMPROVED, // Replacing 288
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.megaBlastSingle,
-  CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE, // Replacing 441
+  CollectibleTypeCustom.MEGA_BLAST_SINGLE, // Replacing 441
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.clockworkAssembly,
-  CollectibleTypeCustom.COLLECTIBLE_CLOCKWORK_ASSEMBLY,
+  CollectibleTypeCustom.CLOCKWORK_ASSEMBLY,
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   useItem.chargingStation,
-  CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION,
+  CollectibleTypeCustom.CHARGING_STATION,
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_ITEM,
   catalog.useItem,
-  CollectibleTypeCustom.COLLECTIBLE_CATALOG,
+  CollectibleTypeCustom.CATALOG,
 );
 
 // Define specific use card callbacks (5)
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
   useCard.magician,
-  Card.CARD_MAGICIAN, // 2
+  Card.MAGICIAN, // 2
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
   useCard.emperor,
-  Card.CARD_EMPEROR, // 5
+  Card.EMPEROR, // 5
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
   useCard.lovers,
-  Card.CARD_LOVERS, // 7
+  Card.LOVERS, // 7
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
   useCard.wheelOfFortune,
-  Card.CARD_WHEEL_OF_FORTUNE, // 11
+  Card.WHEEL_OF_FORTUNE, // 11
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
   useCard.sun,
-  Card.CARD_SUN, // 20
+  Card.SUN, // 20
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
   useCard.world,
-  Card.CARD_WORLD, // 22
+  Card.WORLD, // 22
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_USE_CARD,
@@ -334,27 +334,27 @@ for (const familiarVariant of damage7FamiliarVariants) {
 RPRebalanced.AddCallback(
   ModCallbacks.MC_EVALUATE_CACHE,
   evaluateCache.damage,
-  CacheFlag.CACHE_DAMAGE, // 1
+  CacheFlag.DAMAGE, // 1
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_EVALUATE_CACHE,
   evaluateCache.fireDelay,
-  CacheFlag.CACHE_FIREDELAY, // 2
+  CacheFlag.FIRE_DELAY, // 2
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_EVALUATE_CACHE,
   evaluateCache.shotSpeed,
-  CacheFlag.CACHE_SHOTSPEED, // 4
+  CacheFlag.SHOTSPEED, // 4
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_EVALUATE_CACHE,
   evaluateCache.speed,
-  CacheFlag.CACHE_SPEED, // 16
+  CacheFlag.SPEED, // 16
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_EVALUATE_CACHE,
   evaluateCache.luck,
-  CacheFlag.CACHE_LUCK, // 1024
+  CacheFlag.LUCK, // 1024
 );
 
 // Define specific use pill callbacks (10)
@@ -443,17 +443,17 @@ RPRebalanced.AddCallback(
 RPRebalanced.AddCallback(
   ModCallbacks.MC_PRE_USE_ITEM,
   preUseItem.isaacsTears,
-  CollectibleType.COLLECTIBLE_ISAACS_TEARS, // 323
+  CollectibleType.ISAACS_TEARS, // 323
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_PRE_USE_ITEM,
   preUseItem.voidItem,
-  CollectibleType.COLLECTIBLE_VOID, // 477
+  CollectibleType.VOID, // 477
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_PRE_USE_ITEM,
   catalog.preUseItem,
-  CollectibleTypeCustom.COLLECTIBLE_CATALOG,
+  CollectibleTypeCustom.CATALOG,
 );
 
 // Define specific pre-familiar collision callbacks (26)
@@ -467,31 +467,31 @@ RPRebalanced.AddCallback(
 RPRebalanced.AddCallback(
   ModCallbacks.MC_POST_PICKUP_INIT,
   postPickupInit.tarotCard,
-  PickupVariant.PICKUP_TAROTCARD, // 300
+  PickupVariant.TAROTCARD, // 300
 );
 
 // Define specific pickup update callbacks (35)
 RPRebalanced.AddCallback(
   ModCallbacks.MC_POST_PICKUP_UPDATE,
   postPickupUpdate.heart,
-  PickupVariant.PICKUP_HEART, // 10
+  PickupVariant.HEART, // 10
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_POST_PICKUP_UPDATE,
   postPickupUpdate.pill,
-  PickupVariant.PICKUP_PILL, // 70
+  PickupVariant.PILL, // 70
 );
 RPRebalanced.AddCallback(
   ModCallbacks.MC_POST_PICKUP_UPDATE,
   postPickupUpdate.collectible,
-  PickupVariant.PICKUP_COLLECTIBLE, // 100
+  PickupVariant.COLLECTIBLE, // 100
 );
 
 // Define specific pickup render callbacks (36)
 RPRebalanced.AddCallback(
   ModCallbacks.MC_POST_PICKUP_RENDER,
   postPickupRender.collectible,
-  PickupVariant.PICKUP_COLLECTIBLE, // 100
+  PickupVariant.COLLECTIBLE, // 100
 );
 
 // Define specific post effect update callbacks (55)
@@ -509,8 +509,8 @@ const playerCreepEffectVariants = [
   EffectVariant.PLAYER_CREEP_LEMON_MISHAP, // 32 (does 8 damage per tick, ticks every 10 frames)
   EffectVariant.PLAYER_CREEP_HOLYWATER, // 37 (does 8 damage per tick, ticks every 10 frames)
   EffectVariant.PLAYER_CREEP_RED, // 46 (does 2 damage per tick, ticks every 10 frames)
-  // EffectVariant.PLAYER_CREEP_WHITE (44) does not deal damage
-  // EffectVariant.PLAYER_CREEP_BLACK (45) does not deal damage
+  // EffectVariant.PLAYER_CREEP_WHITE (44) does not deal damage EffectVariant.PLAYER_CREEP_BLACK
+  // (45) does not deal damage
   EffectVariant.PLAYER_CREEP_GREEN, // 53 (does 0.35 damage per tick, ticks every 1 frame)
   // (Racing+ replaces green player creep with holy water trail creep, so this entry is superfluous)
   EffectVariant.PLAYER_CREEP_HOLYWATER_TRAIL, // 54 (does 2 damage per tick, ticks every 10 frames)

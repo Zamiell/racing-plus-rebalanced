@@ -17,21 +17,21 @@ export function main(knife: EntityKnife): void {
   }
 
   if (isFlying && !flyingLastFrame) {
-    // Calculate the velocity
-    // (the velocity of the knife will always be 0, even if it is flying across the room)
+    // Calculate the velocity (the velocity of the knife will always be 0, even if it is flying
+    // across the room)
     let lastKnifePosition = g.run.room.knifePositions.get(knife.Index);
     if (lastKnifePosition === undefined) {
       lastKnifePosition = Vector(knife.Position.X, knife.Position.Y);
     }
-    const velocity = knife.Position.__sub(lastKnifePosition);
+    const velocity = knife.Position.sub(lastKnifePosition);
 
-    // Fire a tear and then immediately remove it, which will cause familiars to shoot a tear
-    // (if any)
+    // Fire a tear and then immediately remove it, which will cause familiars to shoot a tear (if
+    // any)
     const fakeTear = g.p.FireTear(g.p.Position, velocity, false, true, false);
     fakeTear.Remove();
 
     g.run.familiarMultiShot = 3; // For a total of 4
-    if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)) {
+    if (g.p.HasCollectible(CollectibleType.ISAACS_HEART)) {
       g.run.familiarMultiShot = 0;
     }
     g.run.familiarMultiShotVelocity = velocity;

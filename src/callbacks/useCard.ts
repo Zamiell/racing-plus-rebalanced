@@ -4,32 +4,32 @@ import * as misc from "../misc";
 import * as path from "../path";
 import { CollectibleTypeCustom } from "../types/enums";
 
-// Card.CARD_MAGICIAN (2)
+// Card.MAGICIAN (2)
 export function magician(): void {
-  if (!g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5)) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.TECHNOLOGY_2_5)) {
     return;
   }
 
-  // The Technology 2.5 laser was spawned when we entered the room
-  // We need to update the laser ring to account for now having homing
+  // The Technology 2.5 laser was spawned when we entered the room We need to update the laser ring
+  // to account for now having homing
   const lasers = Isaac.FindByType(
-    EntityType.ENTITY_LASER,
+    EntityType.LASER,
     LaserVariant.LASER_THIN_RED,
     -1,
     false,
     false,
   );
   for (const entity of lasers) {
-    if (entity.SpawnerType === EntityType.ENTITY_PLAYER) {
+    if (entity.SpawnerType === EntityType.PLAYER) {
       const laser = entity.ToLaser();
       if (laser !== null) {
-        laser.TearFlags |= TearFlags.TEAR_HOMING;
+        laser.TearFlags |= TearFlag.HOMING;
       }
     }
   }
 }
 
-// Card.CARD_EMPEROR (5)
+// Card.EMPEROR (5)
 export function emperor(): void {
   if (RacingPlusGlobals.run.bossCommand) {
     return;
@@ -53,7 +53,7 @@ export function emperor(): void {
   // transition
 }
 
-// Card.CARD_LOVERS (7)
+// Card.LOVERS (7)
 export function lovers(): void {
   for (let i = 0; i < 2; i++) {
     deleteNearestHeart();
@@ -61,8 +61,8 @@ export function lovers(): void {
 
   // Spawn a bed
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_BED,
+    EntityType.PICKUP,
+    PickupVariant.BED,
     0,
     g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true),
     ZERO_VECTOR,
@@ -72,8 +72,8 @@ export function lovers(): void {
 
 function deleteNearestHeart() {
   const hearts = Isaac.FindByType(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_HEART,
+    EntityType.PICKUP,
+    PickupVariant.HEART,
     HeartSubType.HEART_FULL,
     false,
     false,
@@ -87,8 +87,8 @@ function deleteNearestHeart() {
     }
     if (
       pickup.FrameCount <= 1 &&
-      pickup.SpawnerType === EntityType.ENTITY_PLAYER &&
-      pickup.Touched === false &&
+      pickup.SpawnerType === EntityType.PLAYER &&
+      !pickup.Touched &&
       pickup.Price === 0 &&
       pickup.State !== 1 // We set the state to 1 when we are deleting it
     ) {
@@ -109,7 +109,7 @@ function deleteNearestHeart() {
   }
 }
 
-// Card.CARD_WHEEL_OF_FORTUNE (11)
+// Card.WHEEL_OF_FORTUNE (11)
 export function wheelOfFortune(): void {
   let slotVariant: int;
   if (g.run.spawningRestock) {
@@ -117,8 +117,8 @@ export function wheelOfFortune(): void {
     slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE;
   } else {
     // 33% chance for a Slot Machine / Fortune Teller Machine / Shop Restock Machine
-    g.run.wheelOfFortuneRNG = misc.incrementRNG(g.run.wheelOfFortuneRNG);
-    math.randomseed(g.run.wheelOfFortuneRNG);
+    g.run.wheelOfFortuneSeed = misc.incrementRNG(g.run.wheelOfFortuneSeed);
+    math.randomseed(g.run.wheelOfFortuneSeed);
     const slotChoice = math.random(1, 3);
     if (slotChoice === 1) {
       slotVariant = SlotVariant.SLOT_MACHINE;
@@ -132,11 +132,11 @@ export function wheelOfFortune(): void {
   }
 
   // Remove the vanilla Slot Machine / Fortune Teller Machine
-  const slots = Isaac.FindByType(EntityType.ENTITY_SLOT, -1, -1, false, false);
+  const slots = Isaac.FindByType(EntityType.SLOT, -1, -1, false, false);
   for (const slot of slots) {
     if (slot.FrameCount === 0) {
       g.g.Spawn(
-        EntityType.ENTITY_SLOT,
+        EntityType.SLOT,
         slotVariant,
         slot.Position,
         slot.Velocity,
@@ -145,7 +145,7 @@ export function wheelOfFortune(): void {
         slot.InitSeed,
       );
       Isaac.Spawn(
-        EntityType.ENTITY_EFFECT,
+        EntityType.EFFECT,
         EffectVariant.POOF01,
         3, // A subtype of 3 makes a bigger poof
         slot.Position,
@@ -157,7 +157,7 @@ export function wheelOfFortune(): void {
   }
 }
 
-// Card.CARD_SUN (20)
+// Card.SUN (20)
 export function sun(): void {
   // Local variables
   const rooms = g.l.GetRooms();
@@ -199,7 +199,7 @@ export function sun(): void {
   g.l.UpdateVisibility();
 }
 
-// Card.CARD_WORLD (22)
+// Card.WORLD (22)
 export function world(): void {
   // Local variables
   const rooms = g.l.GetRooms();
@@ -221,7 +221,7 @@ export function world(): void {
     const roomData = roomDesc.Data;
     const roomType = roomData.Type;
 
-    if (roomType !== RoomType.ROOM_BOSS) {
+    if (roomType !== RoomType.BOSS) {
       // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
       const room = g.l.GetRoomByIdx(roomIndexSafe);
       room.DisplayFlags = 0;

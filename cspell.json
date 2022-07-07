@@ -1,8 +1,23 @@
 {
-    "version": "0.1",
-    "language": "en",
-    "dictionaries": [
-        "en_US"
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+    "version": "0.2",
+    "import": [
+        "isaacscript-spell/cspell-isaacscript.json"
+    ],
+    "files": [
+        "**"
+    ],
+    "ignorePaths": [
+        "*.pyc",
+        "*.wav",
+        ".git/**",
+        "dist/**",
+        "node_modules/**",
+        "mod/**/*.anm2",
+        "mod/main.lua",
+        "mod/resources/fortunes.txt",
+        "mod/resources/rooms/**",
+        "sha1.json"
     ],
     "words": [
         "abels",
@@ -57,6 +72,7 @@
         "castleportcullis",
         "chdir",
         "childs",
+        "cloc",
         "cooldown",
         "cpad",
         "crackwave",
@@ -189,6 +205,7 @@
         "nickeldrop",
         "nickelpickup",
         "nokill",
+        "noout",
         "nopits",
         "notchedaxe",
         "npcs",

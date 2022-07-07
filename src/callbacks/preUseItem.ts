@@ -1,24 +1,24 @@
 import g from "../globals";
 import { CollectibleTypeCustom } from "../types/enums";
 
-// CollectibleType.COLLECTIBLE_ISAACS_TEARS (323)
+// CollectibleType.ISAACS_TEARS (323)
 export function isaacsTears(): boolean {
   let vel = Vector(10, 0);
   for (let i = 0; i < 8; i++) {
     vel = vel.Rotated(45);
     const tear = g.p.FireTear(g.p.Position, vel, false, false, false);
 
-    // Increase the damage && make it look more impressive
+    CacheFlag. make it look more impressive
     const buff = 2.5;
     tear.CollisionDamage = g.p.Damage * buff;
     tear.Scale = buff;
     tear.KnockbackMultiplier = 20;
   }
 
-  // When we return from the function below,
-  // no animation will play, so we have to explicitly perform one
+  // When we return from the function below, no animation will play, so we have to explicitly
+  // perform one
   g.p.AnimateCollectible(
-    CollectibleType.COLLECTIBLE_ISAACS_TEARS,
+    CollectibleType.ISAACS_TEARS,
     "UseItem",
     "PlayerPickup",
   );
@@ -27,12 +27,12 @@ export function isaacsTears(): boolean {
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_VOID (477)
+// CollectibleType.VOID (477)
 export function voidItem(): boolean {
   const megaBlasts = Isaac.FindByType(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_COLLECTIBLE,
-    CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE,
+    EntityType.PICKUP,
+    PickupVariant.COLLECTIBLE,
+    CollectibleTypeCustom.MEGA_BLAST_SINGLE,
     false,
     false,
   );

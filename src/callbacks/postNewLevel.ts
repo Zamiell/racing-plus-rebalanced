@@ -1,12 +1,11 @@
 import g from "../globals";
-import * as misc from "../misc";
 import { CollectibleTypeCustom } from "../types/enums";
 import GlobalsRunLevel from "../types/GlobalsRunLevel";
 import * as postNewRoom from "./postNewRoom";
 
 export function main(): void {
-  // Make sure the callbacks run in the right order
-  // (naturally, PostNewLevel gets called before the PostGameStarted callbacks)
+  // Make sure the callbacks run in the right order (naturally, PostNewLevel gets called before the
+  // PostGameStarted callbacks)
   const gameFrameCount = g.g.GetFrameCount();
   if (gameFrameCount === 0) {
     return;
@@ -21,9 +20,8 @@ export function newLevel(): void {
   const stage = g.l.GetStage();
   const stageType = g.l.GetStageType();
 
-  // Racing+ has a feature to remove duplicate rooms,
-  // so it may reseed the floor immediately upon reach it
-  // If so, then we don't want to do anything, since this isn't really a new level
+  // Racing+ has a feature to remove duplicate rooms, so it may reseed the floor immediately upon
+  // reach it If so, then we don't want to do anything, since this isn't really a new level
   if (gameFrameCount !== 0 && gameFrameCount === g.run.level.stageFrame) {
     return;
   }
@@ -43,24 +41,22 @@ export function newLevel(): void {
   postNewRoom.newRoom();
 }
 
-// CollectibleType.COLLECTIBLE_WAFER (108)
+// CollectibleType.WAFER (108)
 function theWafer() {
   if (!g.run.wafer) {
     return;
   }
 
   g.run.waferCounters = 2;
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_WAFER)) {
-    g.p.AddCollectible(CollectibleType.COLLECTIBLE_WAFER, 0, false);
-    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_WAFER);
+  if (!g.p.HasCollectible(CollectibleType.WAFER)) {
+    g.p.AddCollectible(CollectibleType.WAFER, 0, false);
+    removeCollectibleFromItemTracker(CollectibleType.WAFER);
   }
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED (replacing 313)
+// CollectibleTypeCustom.HOLY_MANTLE_NERFED (replacing 313)
 function holyMantleNerfed() {
-  if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
-  ) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.HOLY_MANTLE_NERFED)) {
     return;
   }
 

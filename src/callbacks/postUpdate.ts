@@ -1,11 +1,34 @@
+import {
+  CacheFlag,
+  CollectibleType,
+  DamageFlag,
+  Direction,
+  EffectVariant,
+  EntityPartition,
+  EntityType,
+  NullItemID,
+  PickupVariant,
+  PlayerForm,
+  PlayerType,
+  SoundEffect,
+  TearVariant,
+} from "isaac-typescript-definitions";
+import {
+  getEnumValues,
+  removeCollectibleFromItemTracker,
+  sfxManager,
+  spawnEffect,
+  spawnTear,
+} from "isaacscript-common";
 import { ZERO_VECTOR } from "../constants";
+import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
+import { TrinketTypeCustom } from "../enums/TrinketTypeCustom";
 import g from "../globals";
 import * as technology from "../items/technology";
 import * as misc from "../misc";
 import * as postItemPickup from "../postItemPickup";
 import * as roomCleared from "../roomCleared";
 import * as slots from "../slots";
-import { CollectibleTypeCustom, TrinketTypeCustom } from "../types/enums";
 import postUpdateCollectible from "./postUpdateCollectible";
 
 export function main(): void {
@@ -115,25 +138,25 @@ function checkItemPickup() {
 
 function checkItemPickupQueueEmpty() {
   // Check to see if we were picking up something on the previous frame
-  if (g.run.pickingUpItem === CollectibleType.COLLECTIBLE_NULL) {
+  if (g.run.pickingUpItem === CollectibleType.NULL) {
     return;
   }
 
   // We just finished putting an item into our inventory
-  // (e.g. the animation where Isaac holds the item over his head just finished)
-  // Check to see if we need to do something specific after this item is added to our inventory
+  // (e.g. the animation where Isaac holds the item over his head just finished) Check to see if we
+  // need to do something specific after this item is added to our inventory
   if (
-    g.run.pickingUpItemType === ItemType.ITEM_PASSIVE || // 1
-    g.run.pickingUpItemType === ItemType.ITEM_ACTIVE || // 3
-    g.run.pickingUpItemType === ItemType.ITEM_FAMILIAR // 4
+    g.run.pickingUpItemType === ItemType.PASSIVE || // 1
+    g.run.pickingUpItemType === ItemType.ACTIVE || // 3
+    g.run.pickingUpItemType === ItemType.FAMILIAR // 4
   ) {
     postNewItem();
   }
 
   // Mark that we are no longer picking up anything anymore
-  g.run.pickingUpItem = CollectibleType.COLLECTIBLE_NULL;
+  g.run.pickingUpItem = CollectibleType.NULL;
   g.run.pickingUpItemRoom = 0;
-  g.run.pickingUpItemType = ItemType.ITEM_NULL;
+  g.run.pickingUpItemType = ItemType.NULL;
 }
 
 function checkItemPickupQueueNotEmpty() {
@@ -141,14 +164,13 @@ function checkItemPickupQueueNotEmpty() {
   const roomIndex = misc.getRoomIndex();
 
   // We are currently in the animation where Isaac holds an item over his head
-  if (g.run.pickingUpItem !== CollectibleType.COLLECTIBLE_NULL) {
+  if (g.run.pickingUpItem !== CollectibleType.NULL) {
     // We have already marked down which item is being held, so do nothing
     return;
   }
 
   if (g.p.QueuedItem.Item === null) {
-    // We are currently picking up an item, but QueuedItem is null
-    // This should never happen
+    // We are currently picking up an item, but QueuedItem is null This should never happen
     return;
   }
 
@@ -166,17 +188,16 @@ function postNewItem() {
 }
 
 function checkTransformations() {
-  for (let i = 0; i < PlayerForm.NUM_PLAYER_FORMS; i++) {
-    const hasPlayerForm = g.p.HasPlayerForm(i);
-    const storedHasPlayerForm = g.run.transformations.get(i);
+  for (const transformation of getEnumValues(PlayerForm)) {
+    const hasPlayerForm = g.p.HasPlayerForm(transformation);
+    const storedHasPlayerForm = g.run.transformations.get(transformation);
     if (storedHasPlayerForm === undefined) {
-      error(`Failed to get the stored player form for: ${i}`);
+      error(`Failed to get the stored player form for: ${transformation}`);
     }
     if (hasPlayerForm !== storedHasPlayerForm) {
-      g.run.transformations.set(i, hasPlayerForm);
+      g.run.transformations.set(transformation, hasPlayerForm);
 
-      if (i === PlayerForm.PLAYERFORM_EVIL_ANGEL) {
-        // Leviathan
+      if (transformation === PlayerForm.LEVIATHAN) {
         misc.setHealthFromLastFrame();
         misc.killIfNoHealth();
       }
@@ -199,7 +220,7 @@ function checkFamiliarMultiShot() {
   }
 }
 
-// CollectibleType.COLLECTIBLE_MONSTROS_TOOTH (86)
+// CollectibleType.MONSTROS_TOOTH (86)
 function monstrosTooth() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
@@ -210,13 +231,13 @@ function monstrosTooth() {
   }
 
   if (roomClear) {
-    // The room might have been cleared since the initial Monstro's Tooth activation
-    // If so, cancel the remaining Monstro's
+    // The room might have been cleared since the initial Monstro's Tooth activation If so, cancel
+    // the remaining Monstro's
     g.run.monstroCounters = 0;
     g.run.monstroFrame = 0;
   } else {
     g.p.UseActiveItem(
-      CollectibleType.COLLECTIBLE_MONSTROS_TOOTH,
+      CollectibleType.MONSTROS_TOOTH,
       false,
       false,
       false,
@@ -225,14 +246,14 @@ function monstrosTooth() {
   }
 }
 
-// CollectibleType.COLLECTIBLE_MOMS_KNIFE (114)
+// CollectibleType.MOMS_KNIFE (114)
 function momsKnife() {
   if (g.run.knifeCooldownFrames > 0) {
     g.run.knifeCooldownFrames = -1;
   }
 }
 
-// CollectibleType.COLLECTIBLE_NINE_VOLT (116)
+// CollectibleType.NINE_VOLT (116)
 function nineVolt() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
@@ -255,7 +276,7 @@ function nineVolt() {
   g.p.SetActiveCharge(charge);
 }
 
-// CollectibleType.COLLECTIBLE_BLACK_BEAN (180)
+// CollectibleType.BLACK_BEAN (180)
 function theBlackBean() {
   if (g.run.blackBeanEndFrame === 0) {
     return;
@@ -269,31 +290,24 @@ function theBlackBean() {
     return;
   }
 
-  // Farting on every frame is very powerful
-  // Instead, only fart on every 3rd frame
+  // Farting on every frame is very powerful Instead, only fart on every 3rd frame
   if (gameFrameCount % 3 === 0) {
-    g.p.UseActiveItem(
-      CollectibleType.COLLECTIBLE_BEAN,
-      false,
-      false,
-      false,
-      false,
-    );
+    g.p.UseActiveItem(CollectibleType.BEAN, false, false, false, false);
   }
 }
 
-// CollectibleType.COLLECTIBLE_TINY_PLANET (233)
+// CollectibleType.TINY_PLANET (233)
 function tinyPlanet() {
   // Local variables
   const roomFrameCount = g.r.GetFrameCount();
   const roomType = g.r.GetType();
 
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET)) {
+  if (!g.p.HasCollectible(CollectibleType.TINY_PLANET)) {
     return;
   }
 
   // Don't check for softlocks in boss rooms
-  if (roomType === RoomType.ROOM_BOSS) {
+  if (roomType === RoomType.BOSS) {
     return;
   }
 
@@ -308,29 +322,29 @@ function tinyPlanet() {
   misc.openAllDoors();
 }
 
-// CollectibleType.COLLECTIBLE_ISAACS_HEART (276)
+// CollectibleType.ISAACS_HEART (276)
 function isaacsHeart() {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)) {
+  if (!g.p.HasCollectible(CollectibleType.ISAACS_HEART)) {
     return;
   }
 
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)) {
-    g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE);
-    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_BRIMSTONE);
+  if (g.p.HasCollectible(CollectibleType.BRIMSTONE)) {
+    g.p.RemoveCollectible(CollectibleType.BRIMSTONE);
+    removeCollectibleFromItemTracker(CollectibleType.BRIMSTONE);
   }
 
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_ANTI_GRAVITY)) {
-    g.p.RemoveCollectible(CollectibleType.COLLECTIBLE_ANTI_GRAVITY);
-    misc.removeItemFromItemTracker(CollectibleType.COLLECTIBLE_ANTI_GRAVITY);
+  if (g.p.HasCollectible(CollectibleType.ANTI_GRAVITY)) {
+    g.p.RemoveCollectible(CollectibleType.ANTI_GRAVITY);
+    removeCollectibleFromItemTracker(CollectibleType.ANTI_GRAVITY);
   }
 }
 
-// CollectibleType.COLLECTIBLE_JUDAS_SHADOW (311)
+// CollectibleType.JUDAS_SHADOW (311)
 function judasShadow() {
   // Local variables
   const character = g.p.GetPlayerType();
 
-  if (!g.run.judasShadow && character === PlayerType.PLAYER_BLACKJUDAS) {
+  if (!g.run.judasShadow && character === PlayerType.BLACK_JUDAS) {
     g.run.judasShadow = true;
     g.p.AddSoulHearts(-4);
     g.p.AddMaxHearts(2, false);
@@ -339,22 +353,20 @@ function judasShadow() {
   }
 }
 
-// CollectibleType.COLLECTIBLE_MONGO_BABY (322)
+// CollectibleType.MONGO_BABY (322)
 function mongoBaby() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
   for (let i = g.run.room.mongoBabyTears.length - 1; i >= 0; i--) {
-    const tear = g.run.room.mongoBabyTears[i];
+    const tear = g.run.room.mongoBabyTears[i]!;
     if (gameFrameCount >= tear.frame) {
-      const familiarTear = Isaac.Spawn(
-        EntityType.ENTITY_TEAR,
-        0,
+      const familiarTear = spawnTear(
+        TearVariant.BLUE,
         0,
         tear.familiar.Position,
         tear.velocity,
-        null,
-      ).ToTear();
+      );
       if (familiarTear !== null) {
         familiarTear.Scale = tear.scale;
         familiarTear.CollisionDamage = tear.damage;
@@ -364,19 +376,20 @@ function mongoBaby() {
   }
 }
 
-// CollectibleType.COLLECTIBLE_FARTING_BABY (404)
+// CollectibleType.FARTING_BABY (404)
 function fartingBaby() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
-  // Farting Baby creates shockwaves
-  // (we iterate backwards because we might remove some elements from the table)
+  // Farting Baby creates shockwaves (we iterate backwards because we might remove some elements
+  // from the table)
   for (let i = g.run.room.fartingBabyShockwaves.length - 1; i >= 0; i--) {
-    const shockwave = g.run.room.fartingBabyShockwaves[i];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const shockwave = g.run.room.fartingBabyShockwaves[i]!;
 
     if ((gameFrameCount - shockwave.frame) % 2 === 0) {
       const explosion = Isaac.Spawn(
-        EntityType.ENTITY_EFFECT,
+        EntityType.EFFECT,
         EffectVariant.ROCK_EXPLOSION,
         0,
         shockwave.position,
@@ -387,8 +400,8 @@ function fartingBaby() {
       const index = g.r.GetGridIndex(shockwave.position);
       g.r.DestroyGrid(index, true);
 
-      g.sfx.Play(SoundEffect.SOUND_ROCK_CRUMBLE, 0.5, 0, false, 1);
-      // (if the sound effect plays at full volume, it starts to get annoying)
+      sfxManager.Play(SoundEffect.ROCK_CRUMBLE, 0.5, 0, false, 1);
+      // (If the sound effect plays at full volume, it starts to get annoying.)
 
       // Make the shockwave deal damage to NPCs
       const entities = Isaac.FindInRadius(
@@ -400,13 +413,13 @@ function fartingBaby() {
         const damage = g.p.Damage * 1.5;
         entity.TakeDamage(
           damage,
-          DamageFlag.DAMAGE_EXPLOSION,
+          DamageFlag.EXPLOSION,
           EntityRef(explosion),
           2,
         );
       }
 
-      shockwave.position = shockwave.position.__add(shockwave.velocity);
+      shockwave.position = shockwave.position.add(shockwave.velocity);
     }
 
     // Stop if it gets to a wall
@@ -416,32 +429,32 @@ function fartingBaby() {
   }
 }
 
-// CollectibleType.COLLECTIBLE_BLACK_POWDER (420)
+// CollectibleType.BLACK_POWDER (420)
 function blackPowder() {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_BLACK_POWDER)) {
+  if (!g.p.HasCollectible(CollectibleType.BLACK_POWDER)) {
     return;
   }
 
   const pentagrams = Isaac.FindByType(
-    EntityType.ENTITY_EFFECT,
-    EffectVariant.PENTAGRAM_BLACKPOWDER,
+    EntityType.EFFECT,
+    EffectVariant.PENTAGRAM_BLACK_POWDER,
     -1,
     false,
     false,
   );
   if (pentagrams.length > 0 && !g.run.blackPowderActive) {
     g.run.blackPowderActive = true;
-    g.p.AddCacheFlags(CacheFlag.CACHE_DAMAGE);
+    g.p.AddCacheFlags(CacheFlag.DAMAGE);
     g.p.EvaluateItems();
   }
   if (pentagrams.length === 0 && g.run.blackPowderActive) {
     g.run.blackPowderActive = false;
-    g.p.AddCacheFlags(CacheFlag.CACHE_DAMAGE);
+    g.p.AddCacheFlags(CacheFlag.DAMAGE);
     g.p.EvaluateItems();
   }
 }
 
-// CollectibleType.COLLECTIBLE_BROWN_NUGGET (504)
+// CollectibleType.BROWN_NUGGET (504)
 function brownNugget() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
@@ -452,44 +465,34 @@ function brownNugget() {
 
   g.run.brownNuggetCounters += 1;
   g.run.brownNuggetFrame = gameFrameCount + 3;
-  g.p.UseActiveItem(
-    CollectibleType.COLLECTIBLE_BROWN_NUGGET,
-    false,
-    false,
-    false,
-    false,
-  );
+  g.p.UseActiveItem(CollectibleType.BROWN_NUGGET, false, false, false, false);
   if (g.run.brownNuggetCounters === 9) {
-    // We now have spawned 10 familiars in total,
-    // because one is already spawned with the initial trigger
+    // We now have spawned 10 familiars in total, because one is already spawned with the initial
+    // trigger
     g.run.brownNuggetCounters = 0;
     g.run.brownNuggetFrame = 0;
   }
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED (replacing 257)
+// CollectibleTypeCustom.FIRE_MIND_IMPROVED (replacing 257)
 function fireMindImproved() {
-  if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)
-  ) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.FIRE_MIND_IMPROVED)) {
     return;
   }
 
   if (!misc.isOnTearBuild()) {
     // Remove the custom Fire Mind item and give back the normal one
-    g.p.RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED);
-    misc.removeItemFromItemTracker(
-      CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED,
-    );
-    g.p.AddCollectible(CollectibleType.COLLECTIBLE_FIRE_MIND, 0, false);
+    g.p.RemoveCollectible(CollectibleTypeCustom.FIRE_MIND_IMPROVED);
+    removeCollectibleFromItemTracker(CollectibleTypeCustom.FIRE_MIND_IMPROVED);
+    g.p.AddCollectible(CollectibleType.FIRE_MIND, 0, false);
   }
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED (replacing 313)
+// CollectibleTypeCustom.HOLY_MANTLE_NERFED (replacing 313)
 function holyMantleNerfed() {
   if (
     !g.run.holyMantle ||
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_HOLY_MANTLE_NERFED)
+    !g.p.HasCollectible(CollectibleTypeCustom.HOLY_MANTLE_NERFED)
   ) {
     return;
   }
@@ -497,30 +500,28 @@ function holyMantleNerfed() {
   // Keep track of whether we lose our Holy Mantle
   const effects = g.p.GetEffects();
   const numMantleEffects = effects.GetCollectibleEffectNum(
-    CollectibleType.COLLECTIBLE_HOLY_MANTLE,
+    CollectibleType.HOLY_MANTLE,
   );
   if (numMantleEffects === 0) {
     g.run.holyMantle = false;
   }
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_ADRENALINE_IMPROVED (replacing 493)
+// CollectibleTypeCustom.ADRENALINE_IMPROVED (replacing 493)
 function adrenalineImproved() {
-  if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_ADRENALINE_IMPROVED)
-  ) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.ADRENALINE_IMPROVED)) {
     return;
   }
 
   if (g.run.health.changedOnThisFrame) {
-    g.p.AddCacheFlags(CacheFlag.CACHE_DAMAGE);
+    g.p.AddCacheFlags(CacheFlag.DAMAGE);
     g.p.EvaluateItems();
   }
 }
 
-// TrinketTypeCustom.TRINKET_PENNY_ON_A_STRING
+// TrinketTypeCustom.PENNY_ON_A_STRING
 function pennyOnAString() {
-  if (!g.p.HasTrinket(TrinketTypeCustom.TRINKET_PENNY_ON_A_STRING)) {
+  if (!g.p.HasTrinket(TrinketTypeCustom.PENNY_ON_A_STRING)) {
     return;
   }
 
@@ -541,23 +542,23 @@ function checkPillTimer() {
     gameFrameCount > g.run.pills.superSadness
   ) {
     g.run.pills.superSadness = 0;
-    g.p.AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
+    g.p.AddCacheFlags(CacheFlag.FIRE_DELAY);
     g.p.EvaluateItems();
   }
 
   if (g.run.pills.invincibility !== 0) {
     if (gameFrameCount + 60 > g.run.pills.invincibility) {
-      // 2 seconds before it ends, start to flicker the costume
+      // 2 seconds before it ends, start to flicker the costume.
       if (gameFrameCount % 2 === 0) {
-        g.p.TryRemoveNullCostume(NullItemID.ID_STATUE);
+        g.p.TryRemoveNullCostume(NullItemID.STATUE);
       } else {
-        g.p.AddNullCostume(NullItemID.ID_STATUE);
+        g.p.AddNullCostume(NullItemID.STATUE);
       }
     }
 
     if (gameFrameCount > g.run.pills.invincibility) {
       g.run.pills.invincibility = 0;
-      g.p.TryRemoveNullCostume(NullItemID.ID_STATUE);
+      g.p.TryRemoveNullCostume(NullItemID.STATUE);
     }
   }
 
@@ -565,10 +566,10 @@ function checkPillTimer() {
     if (gameFrameCount > g.run.pills.reallyBadGas) {
       g.run.pills.reallyBadGas = 0;
     } else {
-      // Prevent softlocks that occur if you try to jump into a Big Chest
+      // Prevent softlocks that occur if you try to jump into a Big Chest.
       const bigChests = Isaac.FindByType(
-        EntityType.ENTITY_PICKUP,
-        PickupVariant.PICKUP_BIGCHEST,
+        EntityType.PICKUP,
+        PickupVariant.BIG_CHEST,
         -1,
         false,
         false,
@@ -577,20 +578,14 @@ function checkPillTimer() {
         return;
       }
 
-      // Prevent dying animation softlocks
+      // Prevent dying animation softlocks.
       if (misc.hasNoHealth()) {
         return;
       }
 
-      // Constant The Bean effect
+      // Constant The Bean effect.
       if (gameFrameCount % 3 === 0) {
-        g.p.UseActiveItem(
-          CollectibleType.COLLECTIBLE_BEAN,
-          false,
-          false,
-          false,
-          false,
-        );
+        g.p.UseActiveItem(CollectibleType.BEAN, false, false, false, false);
       }
     }
   }
@@ -611,14 +606,13 @@ function checkPillTimer() {
       g.run.pills.bladderInfection = 0;
     } else {
       // Constant Lemon Party effect
-      const creep = Isaac.Spawn(
-        EntityType.ENTITY_EFFECT,
+      const creep = spawnEffect(
         EffectVariant.PLAYER_CREEP_LEMON_MISHAP,
         0,
         g.p.Position,
         ZERO_VECTOR,
         g.p,
-      ).ToEffect();
+      );
 
       if (creep !== null) {
         creep.Scale = 2;
@@ -636,14 +630,8 @@ function checkPillTimer() {
   if (g.run.pills.scorchedEarth > 0) {
     g.run.pills.scorchedEarth -= 1;
 
-    Isaac.Spawn(
-      EntityType.ENTITY_EFFECT,
-      EffectVariant.HOT_BOMB_FIRE,
-      0,
-      g.r.GetRandomPosition(1),
-      ZERO_VECTOR,
-      null,
-    );
+    const position = g.r.GetRandomPosition(1);
+    spawnEffect(EffectVariant.HOT_BOMB_FIRE, 0, position);
   }
 
   if (

@@ -11,21 +11,21 @@ import { SoundEffectCustom } from "../types/enums";
 export function useItem(): boolean {
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
   spawnItem(position);
-  g.sfx.Play(SoundEffectCustom.SOUND_SANTA, 1, 0, false, 1);
+  sfxManager.Play(SoundEffectCustom.SANTA, 1, 0, false, 1);
   return true;
 }
 
 export function spawnItem(position: Vector): void {
-  g.run.catalogRNG = misc.incrementRNG(g.run.catalogRNG);
+  g.run.catalogSeed = misc.incrementRNG(g.run.catalogSeed);
   const spawnedItem = g.g
     .Spawn(
-      EntityType.ENTITY_PICKUP,
-      PickupVariant.PICKUP_COLLECTIBLE,
+      EntityType.PICKUP,
+      PickupVariant.COLLECTIBLE,
       position,
       ZERO_VECTOR,
       null,
       0, // Random item
-      g.run.catalogRNG,
+      g.run.catalogSeed,
     )
     .ToPickup();
 

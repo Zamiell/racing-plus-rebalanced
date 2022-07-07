@@ -1,3 +1,11 @@
+import {
+  CollectibleType,
+  Direction,
+  EntityType,
+  FamiliarVariant,
+  TearVariant,
+} from "isaac-typescript-definitions";
+import { spawnTear } from "isaacscript-common";
 import { FAMILIAR_TEAR_DAMAGE, FAMILIAR_TEAR_SCALE } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
@@ -32,26 +40,23 @@ export function main(tear: EntityTear): void {
   familiars(tear);
 }
 
-// CollectibleType.COLLECTIBLE_MOMS_CONTACTS (110)
+// CollectibleType.MOMS_CONTACTS (110)
 function momsContacts(tear: EntityTear) {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_MOMS_CONTACTS)) {
+  if (!g.p.HasCollectible(CollectibleType.MOMS_CONTACTS)) {
     return;
   }
 
-  tear.TearFlags |= TearFlags.TEAR_FREEZE;
+  tear.TearFlags |= TearFlag.FREEZE;
 }
 
-// CollectibleType.COLLECTIBLE_ABEL (188)
+// CollectibleType.ABEL (188)
 function abel(tear: EntityTear) {
-  if (
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_ABEL) ||
-    g.run.abelDoubleTear
-  ) {
+  if (!g.p.HasCollectible(CollectibleType.ABEL) || g.run.abelDoubleTear) {
     return;
   }
 
   const abels = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR,
+    EntityType.FAMILIAR,
     FamiliarVariant.ABEL,
     -1,
     false,
@@ -59,35 +64,34 @@ function abel(tear: EntityTear) {
   );
   for (const abelEntity of abels) {
     g.run.abelDoubleTear = true;
-    const velocity = tear.Velocity.__mul(-1);
+    const velocity = tear.Velocity.mul(-1);
     g.p.FireTear(abelEntity.Position, velocity, false, true, false);
     g.run.abelDoubleTear = false;
   }
 }
 
-// CollectibleType.COLLECTIBLE_TINY_PLANET (233)
+// CollectibleType.TINY_PLANET (233)
 function tinyPlanet(tear: EntityTear) {
   // Local variables
   const direction = g.p.GetFireDirection();
 
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET)) {
+  if (!g.p.HasCollectible(CollectibleType.TINY_PLANET)) {
     return;
   }
 
   // We need to have spectral for this ability to work properly
-  tear.TearFlags |= TearFlags.TEAR_SPECTRAL;
+  tear.TearFlags |= TearFlag.SPECTRAL;
 
   // We want the tears to orbit for a long time without falling to the ground
   tear.FallingSpeed = 0;
 
-  // Mark the direction of the tear on the subtype
-  // All vanilla tears have a subtype of 0,
-  // so any non-zero value will denote that this is a Tiny Planet tear
-  // We add 1 because a direction of left is enum 0 and we need the subtype to be non-zero
+  // Mark the direction of the tear on the subtype All vanilla tears have a subtype of 0, so any
+  // non-zero value will denote that this is a Tiny Planet tear We add 1 because a direction of left
+  // is enum 0 and we need the subtype to be non-zero
   tear.SubType = direction + 1;
 
-  // Set the tear's starting position
-  // (this is necessary because otherwise you will see it in the default location for a frame)
+  // Set the tear's starting position (this is necessary because otherwise you will see it in the
+  // default location for a frame)
   const distance = 90;
   let degrees = 0;
   if (direction === Direction.RIGHT) {
@@ -97,15 +101,15 @@ function tinyPlanet(tear: EntityTear) {
   } else if (direction === Direction.LEFT) {
     degrees += 270;
   }
-  tear.Position = g.p.Position.__add(Vector(0, distance * -1)).Rotated(degrees);
+  tear.Position = g.p.Position.add(Vector(0, distance * -1)).Rotated(degrees);
 
-  // From this point, the tear's position && velocity will be handled in the PostTearUpdate
-  // callback
+  // From this point, the tear's position and velocity will be handled in the `POST_TEAR_UPDATE`
+  // callback.
 }
 
-// CollectibleType.COLLECTIBLE_ISAACS_HEART (276)
+// CollectibleType.ISAACS_HEART (276)
 function isaacsHeart(tear: EntityTear) {
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)) {
+  if (!g.p.HasCollectible(CollectibleType.ISAACS_HEART)) {
     return;
   }
 
@@ -115,25 +119,20 @@ function isaacsHeart(tear: EntityTear) {
   tear.Remove();
 }
 
-// CollectibleType.COLLECTIBLE_THE_WIZ (358)
+// CollectibleType.THE_WIZ (358)
 function theWiz(tear: EntityTear) {
-  if (
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_THE_WIZ) ||
-    g.run.wizDoubleTear
-  ) {
+  if (!g.p.HasCollectible(CollectibleType.THE_WIZ) || g.run.wizDoubleTear) {
     return;
   }
 
   g.run.wizDoubleTear = true;
-  g.p.FireTear(g.p.Position, tear.Velocity.__mul(-1), false, false, false);
+  g.p.FireTear(g.p.Position, tear.Velocity.mul(-1), false, false, false);
   g.run.wizDoubleTear = false;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED (replacing 257)
+// CollectibleTypeCustom.FIRE_MIND_IMPROVED (replacing 257)
 function fireMind(tear: EntityTear) {
-  if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_FIRE_MIND_IMPROVED)
-  ) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.FIRE_MIND_IMPROVED)) {
     return;
   }
 
@@ -141,10 +140,10 @@ function fireMind(tear: EntityTear) {
   tear.SubType = 1;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_STRABISMUS
+// CollectibleTypeCustom.STRABISMUS
 function strabismus(tear: EntityTear) {
   if (
-    !g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_STRABISMUS) ||
+    !g.p.HasCollectible(CollectibleTypeCustom.STRABISMUS) ||
     g.run.strabismusDoubleTear
   ) {
     return;
@@ -160,9 +159,9 @@ function strabismus(tear: EntityTear) {
   g.run.strabismusDoubleTear = false;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_U235
+// CollectibleTypeCustom.U235
 function u235(tear: EntityTear) {
-  if (!g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_U235)) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.U235)) {
     return;
   }
 
@@ -170,7 +169,7 @@ function u235(tear: EntityTear) {
   if (g.run.tearCounter % 8 === 0) {
     const bomb = g.g
       .Spawn(
-        EntityType.ENTITY_BOMBDROP, // 4
+        EntityType.BOMBDROP, // 4
         0,
         tear.Position,
         tear.Velocity,
@@ -259,26 +258,22 @@ function pillWallsHaveEyes(tear: EntityTear) {
     }
 
     const saveState = gridEntity.GetSaveState();
-    if (saveState.Type !== GridEntityType.GRID_WALL) {
+    if (saveState.Type !== GridEntityType.WALL) {
       continue;
     }
 
-    // By default, the tear will get hit by the collision of the wall,
-    // so we need to move it closer to the center of the room
+    // By default, the tear will get hit by the collision of the wall, so we need to move it closer
+    // to the center of the room.
     let adjustedPosition = gridEntity.Position;
     const distanceToAdjust = 15;
     if (direction === Direction.LEFT) {
-      adjustedPosition = adjustedPosition.__add(
-        Vector(distanceToAdjust * -1, 0),
-      );
+      adjustedPosition = adjustedPosition.add(Vector(distanceToAdjust * -1, 0));
     } else if (direction === Direction.UP) {
-      adjustedPosition = adjustedPosition.__add(
-        Vector(0, distanceToAdjust * -1),
-      );
+      adjustedPosition = adjustedPosition.add(Vector(0, distanceToAdjust * -1));
     } else if (direction === Direction.RIGHT) {
-      adjustedPosition = adjustedPosition.__add(Vector(distanceToAdjust, 0));
+      adjustedPosition = adjustedPosition.add(Vector(distanceToAdjust, 0));
     } else if (direction === Direction.DOWN) {
-      adjustedPosition = adjustedPosition.__add(Vector(0, distanceToAdjust));
+      adjustedPosition = adjustedPosition.add(Vector(0, distanceToAdjust));
     }
 
     g.p.FireTear(adjustedPosition, tear.Velocity, false, true, false);
@@ -288,24 +283,24 @@ function pillWallsHaveEyes(tear: EntityTear) {
 }
 
 function removeFear(tear: EntityTear) {
-  tear.TearFlags &= ~TearFlags.TEAR_FEAR;
+  tear.TearFlags &= ~TearFlag.FEAR;
 }
 
 function familiars(tear: EntityTear) {
   let damage = 3.5 + g.p.Damage * FAMILIAR_TEAR_DAMAGE;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) {
+  if (g.p.HasCollectible(CollectibleType.BFFS)) {
     damage *= 2;
   }
 
-  // If the player has Tiny Planet, the velocity of the familiar's tears will be messed up
-  // Manually detect the direction && fix this
+  // If the player has Tiny Planet, the velocity of the familiar's tears will be messed up. Manually
+  // detect the direction and fix this.
   let velocity = tear.Velocity;
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_TINY_PLANET)) {
+  if (g.p.HasCollectible(CollectibleType.TINY_PLANET)) {
     velocity = misc.getVelocityFromAimDirection();
   }
 
   const familiarEntities = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR,
+    EntityType.FAMILIAR,
     -1,
     -1,
     false,
@@ -349,18 +344,14 @@ function familiars(tear: EntityTear) {
           } else if (i === 2) {
             velocity = velocity.Rotated(10);
           }
-          const familiarTear = Isaac.Spawn(
-            EntityType.ENTITY_TEAR,
-            0,
+          const familiarTear = spawnTear(
+            TearVariant.BLUE,
             0,
             familiar.Position,
             velocity,
-            null,
-          ).ToTear();
-          if (familiarTear !== null) {
-            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
-            familiarTear.CollisionDamage = damage;
-          }
+          );
+          familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
+          familiarTear.CollisionDamage = damage;
         }
         break;
       }
@@ -368,19 +359,15 @@ function familiars(tear: EntityTear) {
       case FamiliarVariant.LIL_LOKI: {
         // 97
         for (let i = 0; i < 4; i++) {
-          const familiarTear = Isaac.Spawn(
-            EntityType.ENTITY_TEAR,
-            0,
+          const familiarTear = spawnTear(
+            TearVariant.BLUE,
             0,
             familiar.Position,
             velocity,
-            null,
-          ).ToTear();
-          if (familiarTear !== null) {
-            velocity = velocity.Rotated(90);
-            familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
-            familiarTear.CollisionDamage = damage;
-          }
+          );
+          velocity = velocity.Rotated(90);
+          familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
+          familiarTear.CollisionDamage = damage;
         }
         break;
       }
@@ -399,7 +386,7 @@ function spawnTearWithIncreasedDmg(
   damage: number,
 ) {
   const familiarTear = Isaac.Spawn(
-    EntityType.ENTITY_TEAR,
+    EntityType.TEAR,
     0,
     0,
     familiar.Position,
@@ -417,7 +404,7 @@ function spawnTearWithIncreasedDmg(
       // 4
       const color = Color(0, 0, 0, 1, 1, 1, 1); // Black
       familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlags.TEAR_SLOW;
+      familiarTear.TearFlags |= TearFlag.SLOW;
       break;
     }
 
@@ -425,7 +412,7 @@ function spawnTearWithIncreasedDmg(
       // 5
       const color = Color(1, 0, 1, 1, 1, 1, 1); // Purple
       familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlags.TEAR_HOMING;
+      familiarTear.TearFlags |= TearFlag.HOMING;
       break;
     }
 
@@ -433,7 +420,7 @@ function spawnTearWithIncreasedDmg(
       // 9
       const color = Color(1, 1, 1, 0.5, 1, 1, 1); // Faded
       familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlags.TEAR_SPECTRAL;
+      familiarTear.TearFlags |= TearFlag.SPECTRAL;
       break;
     }
 
@@ -466,7 +453,7 @@ function spawnTearWithIncreasedDmg(
       familiarTear.CollisionDamage = damage * 1.8953;
       const color = Color(1, 1, 1, 1, 1, 1, 1); // White
       familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlags.TEAR_HOMING; // 1 << 2
+      familiarTear.TearFlags |= TearFlag.HOMING; // 1 << 2
       break;
     }
 

@@ -1,6 +1,12 @@
-import { CollectibleTypeCustom } from "./types/enums";
+import {
+  CollectibleType,
+  EntityType,
+  RoomType,
+  TrinketType,
+} from "isaac-typescript-definitions";
+import { CollectibleTypeCustom } from "./enums/CollectibleTypeCustom";
 
-// The version is updated automatically by IsaacScript
+// The version is updated automatically by IsaacScript.
 export const VERSION = "v1.1.0";
 
 export const ZERO_VECTOR = Vector(0, 0);
@@ -9,244 +15,241 @@ export const FAMILIAR_TEAR_DAMAGE = 0.33;
 export const FAMILIAR_TEAR_SCALE = 0.5;
 
 export const REMOVED_TRINKETS = [
-  TrinketType.TRINKET_PURPLE_HEART, // 5
-  TrinketType.TRINKET_ROSARY_BEAD, // 7
-  TrinketType.TRINKET_CARTRIDGE, // 8
-  TrinketType.TRINKET_PULSE_WORM, // 9
-  TrinketType.TRINKET_MOMS_TOENAIL, // 16
-  TrinketType.TRINKET_BUTT_PENNY, // 24
-  TrinketType.TRINKET_MYSTERIOUS_CANDY, // 25
-  TrinketType.TRINKET_HOOK_WORM, // 26
-  TrinketType.TRINKET_BROKEN_ANKH, // 28
-  TrinketType.TRINKET_UMBILICAL_CORD, // 33
-  TrinketType.TRINKET_CHILDS_HEART, // 34
-  TrinketType.TRINKET_RUSTED_KEY, // 36
-  TrinketType.TRINKET_MATCH_STICK, // 41
-  TrinketType.TRINKET_LUCKY_TOE, // 42
-  TrinketType.TRINKET_CURSED_SKULL, // 43
-  TrinketType.TRINKET_ISAACS_FORK, // 46
-  TrinketType.TRINKET_SOUL, // 57
-  TrinketType.TRINKET_EVES_BIRD_FOOT, // 60
-  TrinketType.TRINKET_SHINY_ROCK, // 62
-  TrinketType.TRINKET_RAINBOW_WORM, // 64
-  TrinketType.TRINKET_TAPE_WORM, // 65
-  TrinketType.TRINKET_LAZY_WORM, // 66
-  TrinketType.TRINKET_CRACKED_DICE, // 67
-  TrinketType.TRINKET_FADED_POLAROID, // 69
-  TrinketType.TRINKET_BOBS_BLADDER, // 71
-  TrinketType.TRINKET_STUD_FINDER, // 74
-  TrinketType.TRINKET_ERROR, // 75
-  TrinketType.TRINKET_POKER_CHIP, // 76
-  TrinketType.TRINKET_BLISTER, // 77
-  TrinketType.TRINKET_SECOND_HAND, // 78
-  TrinketType.TRINKET_BLACK_FEATHER, // 80
-  TrinketType.TRINKET_MOMS_LOCKET, // 87
-  TrinketType.TRINKET_BROWN_CAP, // 90
-  TrinketType.TRINKET_USED_DIAPER, // 93
-  TrinketType.TRINKET_OUROBOROS_WORM, // 96
-  TrinketType.TRINKET_TONSIL, // 97
-  TrinketType.TRINKET_NOSE_GOBLIN, // 98
-  TrinketType.TRINKET_EQUALITY, // 103
-  TrinketType.TRINKET_BAG_LUNCH, // 105
-  TrinketType.TRINKET_LOST_CORK, // 106
-  TrinketType.TRINKET_CROW_HEART, // 107
-  TrinketType.TRINKET_DUCT_TAPE, // 109
-  TrinketType.TRINKET_LOCUST_OF_WRATH, // 113
-  TrinketType.TRINKET_BAT_WING, // 118
-  TrinketType.TRINKET_STEM_CELL, // 119
-  TrinketType.TRINKET_WOODEN_CROSS, // 121
+  TrinketType.PURPLE_HEART, // 5
+  TrinketType.ROSARY_BEAD, // 7
+  TrinketType.CARTRIDGE, // 8
+  TrinketType.PULSE_WORM, // 9
+  TrinketType.MOMS_TOENAIL, // 16
+  TrinketType.BUTT_PENNY, // 24
+  TrinketType.MYSTERIOUS_CANDY, // 25
+  TrinketType.HOOK_WORM, // 26
+  TrinketType.BROKEN_ANKH, // 28
+  TrinketType.UMBILICAL_CORD, // 33
+  TrinketType.CHILDS_HEART, // 34
+  TrinketType.RUSTED_KEY, // 36
+  TrinketType.MATCH_STICK, // 41
+  TrinketType.LUCKY_TOE, // 42
+  TrinketType.CURSED_SKULL, // 43
+  TrinketType.ISAACS_FORK, // 46
+  TrinketType.SOUL, // 57
+  TrinketType.EVES_BIRD_FOOT, // 60
+  TrinketType.SHINY_ROCK, // 62
+  TrinketType.RAINBOW_WORM, // 64
+  TrinketType.TAPE_WORM, // 65
+  TrinketType.LAZY_WORM, // 66
+  TrinketType.CRACKED_DICE, // 67
+  TrinketType.FADED_POLAROID, // 69
+  TrinketType.BOBS_BLADDER, // 71
+  TrinketType.STUD_FINDER, // 74
+  TrinketType.ERROR, // 75
+  TrinketType.POKER_CHIP, // 76
+  TrinketType.BLISTER, // 77
+  TrinketType.SECOND_HAND, // 78
+  TrinketType.BLACK_FEATHER, // 80
+  TrinketType.MOMS_LOCKET, // 87
+  TrinketType.BROWN_CAP, // 90
+  TrinketType.USED_DIAPER, // 93
+  TrinketType.OUROBOROS_WORM, // 96
+  TrinketType.TONSIL, // 97
+  TrinketType.NOSE_GOBLIN, // 98
+  TrinketType.EQUALITY, // 103
+  TrinketType.BAG_LUNCH, // 105
+  TrinketType.LOST_CORK, // 106
+  TrinketType.CROW_HEART, // 107
+  TrinketType.DUCT_TAPE, // 109
+  TrinketType.LOCUST_OF_WRATH, // 113
+  TrinketType.BAT_WING, // 118
+  TrinketType.STEM_CELL, // 119
+  TrinketType.WOODEN_CROSS, // 121
 ];
 
-// Define the items that will have a price / cost of two red hearts in a Devil Room
+// Define the items that will have a price / cost of two red hearts in a Devil Room.
 export const TWO_HEART_ITEMS = [
   // S Class
-  CollectibleType.COLLECTIBLE_MAXS_HEAD, // 4
-  CollectibleType.COLLECTIBLE_MAGIC_MUSHROOM, // 12
-  CollectibleType.COLLECTIBLE_DR_FETUS, // 52
-  CollectibleType.COLLECTIBLE_TECHNOLOGY, // 68
-  CollectibleType.COLLECTIBLE_CHOCOLATE_MILK, // 69
-  CollectibleType.COLLECTIBLE_MOMS_KNIFE, // 114
-  CollectibleType.COLLECTIBLE_BRIMSTONE, // 118
-  CollectibleType.COLLECTIBLE_IPECAC, // 149
-  CollectibleType.COLLECTIBLE_EPIC_FETUS, // 168
-  CollectibleType.COLLECTIBLE_POLYPHEMUS, // 169
-  CollectibleType.COLLECTIBLE_SACRED_HEART, // 182
-  CollectibleType.COLLECTIBLE_CRICKETS_BODY, // 224
-  CollectibleType.COLLECTIBLE_MONSTROS_LUNG, // 229
-  CollectibleType.COLLECTIBLE_DEATHS_TOUCH, // 237
-  CollectibleType.COLLECTIBLE_TECH_5, // 244
-  CollectibleType.COLLECTIBLE_20_20, // 245
-  CollectibleType.COLLECTIBLE_PROPTOSIS, // 261
-  CollectibleType.COLLECTIBLE_LIL_BRIMSTONE, // 275
-  CollectibleType.COLLECTIBLE_ISAACS_HEART, // 276
-  CollectibleType.COLLECTIBLE_JUDAS_SHADOW, // 311
-  CollectibleType.COLLECTIBLE_GODHEAD, // 331
-  CollectibleType.COLLECTIBLE_INCUBUS, // 360
-  CollectibleType.COLLECTIBLE_DEAD_EYE, // 373
-  CollectibleType.COLLECTIBLE_TECH_X, // 395
-  CollectibleType.COLLECTIBLE_MAW_OF_VOID, // 399
-  CollectibleType.COLLECTIBLE_CROWN_OF_LIGHT, // 415
-  CollectibleType.COLLECTIBLE_JACOBS_LADDER, // 494
-  CollectibleTypeCustom.COLLECTIBLE_MUTANT_SPIDER_INNER_EYE, // Custom
+  CollectibleType.CRICKETS_HEAD, // 4
+  CollectibleType.MAGIC_MUSHROOM, // 12
+  CollectibleType.DR_FETUS, // 52
+  CollectibleType.TECHNOLOGY, // 68
+  CollectibleType.CHOCOLATE_MILK, // 69
+  CollectibleType.MOMS_KNIFE, // 114
+  CollectibleType.BRIMSTONE, // 118
+  CollectibleType.IPECAC, // 149
+  CollectibleType.EPIC_FETUS, // 168
+  CollectibleType.POLYPHEMUS, // 169
+  CollectibleType.SACRED_HEART, // 182
+  CollectibleType.CRICKETS_BODY, // 224
+  CollectibleType.MONSTROS_LUNG, // 229
+  CollectibleType.DEATHS_TOUCH, // 237
+  CollectibleType.TECH_5, // 244
+  CollectibleType.TWENTY_TWENTY, // 245
+  CollectibleType.PROPTOSIS, // 261
+  CollectibleType.LIL_BRIMSTONE, // 275
+  CollectibleType.ISAACS_HEART, // 276
+  CollectibleType.JUDAS_SHADOW, // 311
+  CollectibleType.GODHEAD, // 331
+  CollectibleType.INCUBUS, // 360
+  CollectibleType.DEAD_EYE, // 373
+  CollectibleType.TECH_X, // 395
+  CollectibleType.MAW_OF_THE_VOID, // 399
+  CollectibleType.CROWN_OF_LIGHT, // 415
+  CollectibleType.JACOBS_LADDER, // 494
+  CollectibleTypeCustom.MUTANT_SPIDER_INNER_EYE, // Custom
 
   // Mid Tier
-  CollectibleType.COLLECTIBLE_PYRO, // 190
-  CollectibleType.COLLECTIBLE_ABADDON, // 230
-  CollectibleType.COLLECTIBLE_TINY_PLANET, // 233
-  CollectibleType.COLLECTIBLE_PURITY, // 407
-  CollectibleType.COLLECTIBLE_SUCCUBUS, // 417
-  CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5, // Custom
+  CollectibleType.PYRO, // 190
+  CollectibleType.ABADDON, // 230
+  CollectibleType.TINY_PLANET, // 233
+  CollectibleType.PURITY, // 407
+  CollectibleType.SUCCUBUS, // 417
+  CollectibleTypeCustom.TECHNOLOGY_2_5, // Custom
 ];
 
-export const SHOP_PRICES = new Map<
-  CollectibleType | CollectibleTypeCustom,
-  int
->([
+export const SHOP_PRICES = new Map<CollectibleType, int>([
   // Mapping (15 cents)
-  [CollectibleType.COLLECTIBLE_COMPASS, 15], // 21
-  [CollectibleType.COLLECTIBLE_TREASURE_MAP, 15], // 54
-  [CollectibleType.COLLECTIBLE_BLUE_MAP, 15], // 246 (buffed)
-  [CollectibleType.COLLECTIBLE_BOOK_OF_SECRETS, 15], // 287
+  [CollectibleType.COMPASS, 15], // 21
+  [CollectibleType.TREASURE_MAP, 15], // 54
+  [CollectibleType.BLUE_MAP, 15], // 246 (buffed)
+  [CollectibleType.BOOK_OF_SECRETS, 15], // 287
 
   // Utility (15 cents)
-  [CollectibleType.COLLECTIBLE_TELEPORT, 15], // 44
-  [CollectibleType.COLLECTIBLE_DADS_KEY, 15], // 175
-  [CollectibleType.COLLECTIBLE_BFFS, 15], // 247
-  [CollectibleType.COLLECTIBLE_THERES_OPTIONS, 15], // 249
-  [CollectibleType.COLLECTIBLE_UNDEFINED, 15], // 324
-  [CollectibleType.COLLECTIBLE_DIPLOPIA, 15], // 347
-  [CollectibleTypeCustom.COLLECTIBLE_CLOCKWORK_ASSEMBLY, 15],
-  [CollectibleTypeCustom.COLLECTIBLE_CATALOG, 15],
+  [CollectibleType.TELEPORT, 15], // 44
+  [CollectibleType.DADS_KEY, 15], // 175
+  [CollectibleType.BFFS, 15], // 247
+  [CollectibleType.THERES_OPTIONS, 15], // 249
+  [CollectibleType.UNDEFINED, 15], // 324
+  [CollectibleType.DIPLOPIA, 15], // 347
+  [CollectibleTypeCustom.CLOCKWORK_ASSEMBLY, 15],
+  [CollectibleTypeCustom.CATALOG, 15],
 
   // Utility (10 cents)
-  [CollectibleType.COLLECTIBLE_TRANSCENDENCE, 10], // 20
-  [CollectibleType.COLLECTIBLE_STEAM_SALE, 10], // 64
-  [CollectibleType.COLLECTIBLE_BLANK_CARD, 10], // 286
-  [CollectibleType.COLLECTIBLE_BLUE_BOX, 10], // 297
-  [CollectibleType.COLLECTIBLE_UNICORN_STUMP, 10], // 298
-  [CollectibleType.COLLECTIBLE_PLACEBO, 10], // 348 (buffed)
-  [CollectibleType.COLLECTIBLE_CHARGED_BABY, 10], // 372 (buffed)
-  [CollectibleType.COLLECTIBLE_RESTOCK, 10], // 376
-  [CollectibleType.COLLECTIBLE_VENTRICLE_RAZOR, 10], // 396
-  [CollectibleType.COLLECTIBLE_VOID, 10], // 477
-  [CollectibleType.COLLECTIBLE_PAUSE, 10], // 478
-  [CollectibleType.COLLECTIBLE_POTATO_PEELER, 10], // 487
-  [CollectibleType.COLLECTIBLE_EDENS_SOUL, 10], // 490
-  [CollectibleType.COLLECTIBLE_MYSTERY_GIFT, 10], // 515
-  [CollectibleType.COLLECTIBLE_MOVING_BOX, 10], // 523
-  [CollectibleType.COLLECTIBLE_MR_ME, 10], // 527
-  [CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR, 10], // 536
+  [CollectibleType.TRANSCENDENCE, 10], // 20
+  [CollectibleType.STEAM_SALE, 10], // 64
+  [CollectibleType.BLANK_CARD, 10], // 286
+  [CollectibleType.BLUE_BOX, 10], // 297
+  [CollectibleType.UNICORN_STUMP, 10], // 298
+  [CollectibleType.PLACEBO, 10], // 348 (buffed)
+  [CollectibleType.CHARGED_BABY, 10], // 372 (buffed)
+  [CollectibleType.RESTOCK, 10], // 376
+  [CollectibleType.VENTRICLE_RAZOR, 10], // 396
+  [CollectibleType.VOID, 10], // 477
+  [CollectibleType.PAUSE, 10], // 478
+  [CollectibleType.POTATO_PEELER, 10], // 487
+  [CollectibleType.EDENS_SOUL, 10], // 490
+  [CollectibleType.MYSTERY_GIFT, 10], // 515
+  [CollectibleType.MOVING_BOX, 10], // 523
+  [CollectibleType.MR_ME, 10], // 527
+  [CollectibleType.SACRIFICIAL_ALTAR, 10], // 536
 
   // Utility (5 cents)
-  [CollectibleType.COLLECTIBLE_BOOK_OF_SHADOWS, 5], // 54
-  [CollectibleType.COLLECTIBLE_BATTERY, 5], // 63
-  [CollectibleType.COLLECTIBLE_PHD, 5], // 75
-  [CollectibleType.COLLECTIBLE_XRAY_VISION, 5], // 76
-  [CollectibleType.COLLECTIBLE_DECK_OF_CARDS, 5], // 85
-  [CollectibleType.COLLECTIBLE_SPELUNKER_HAT, 5], // 91
-  [CollectibleType.COLLECTIBLE_MOMS_BOTTLE_PILLS, 5], // 102
-  [CollectibleType.COLLECTIBLE_NINE_VOLT, 5], // 116 (buffed)
-  [CollectibleType.COLLECTIBLE_HABIT, 5], // 156
-  [CollectibleType.COLLECTIBLE_SHARP_PLUG, 5], // 205
-  [CollectibleType.COLLECTIBLE_PIGGY_BANK, 5], // 227 (buffed)
-  [CollectibleType.COLLECTIBLE_CONTRACT_FROM_BELOW, 5], // 241
-  [CollectibleType.COLLECTIBLE_HIVE_MIND, 5], // 248
-  [CollectibleType.COLLECTIBLE_STARTER_DECK, 5], // 251
-  [CollectibleType.COLLECTIBLE_LITTLE_BAGGY, 5], // 252
-  [CollectibleType.COLLECTIBLE_HOW_TO_JUMP, 5], // 282
-  [CollectibleType.COLLECTIBLE_MORE_OPTIONS, 5], // 414
-  [CollectibleType.COLLECTIBLE_SACK_HEAD, 5], // 424
-  [CollectibleType.COLLECTIBLE_MOMS_BOX, 5], // 439
-  [CollectibleType.COLLECTIBLE_POLYDACTYLY, 5], // 454
-  [CollectibleType.COLLECTIBLE_BELLY_BUTTON, 5], // 458
-  [CollectibleType.COLLECTIBLE_D1, 5], // 476
-  [CollectibleType.COLLECTIBLE_SMELTER, 5], // 479
-  [CollectibleType.COLLECTIBLE_COMPOST, 5], // 480
-  [CollectibleType.COLLECTIBLE_YO_LISTEN, 5], // 492 (buffed)
-  [CollectibleType.COLLECTIBLE_COUPON, 5], // 521
-  [CollectibleTypeCustom.COLLECTIBLE_FANNY_PACK_IMPROVED, 5],
-  [CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION, 5],
+  [CollectibleType.BOOK_OF_SHADOWS, 5], // 54
+  [CollectibleType.BATTERY, 5], // 63
+  [CollectibleType.PHD, 5], // 75
+  [CollectibleType.XRAY_VISION, 5], // 76
+  [CollectibleType.DECK_OF_CARDS, 5], // 85
+  [CollectibleType.SPELUNKER_HAT, 5], // 91
+  [CollectibleType.MOMS_BOTTLE_OF_PILLS, 5], // 102
+  [CollectibleType.NINE_VOLT, 5], // 116 (buffed)
+  [CollectibleType.HABIT, 5], // 156
+  [CollectibleType.SHARP_PLUG, 5], // 205
+  [CollectibleType.PIGGY_BANK, 5], // 227 (buffed)
+  [CollectibleType.CONTRACT_FROM_BELOW, 5], // 241
+  [CollectibleType.HIVE_MIND, 5], // 248
+  [CollectibleType.STARTER_DECK, 5], // 251
+  [CollectibleType.LITTLE_BAGGY, 5], // 252
+  [CollectibleType.HOW_TO_JUMP, 5], // 282
+  [CollectibleType.MORE_OPTIONS, 5], // 414
+  [CollectibleType.SACK_HEAD, 5], // 424
+  [CollectibleType.MOMS_BOX, 5], // 439
+  [CollectibleType.POLYDACTYLY, 5], // 454
+  [CollectibleType.BELLY_BUTTON, 5], // 458
+  [CollectibleType.D1, 5], // 476
+  [CollectibleType.SMELTER, 5], // 479
+  [CollectibleType.COMPOST, 5], // 480
+  [CollectibleType.YO_LISTEN, 5], // 492 (buffed)
+  [CollectibleType.COUPON, 5], // 521
+  [CollectibleTypeCustom.FANNY_PACK_IMPROVED, 5],
+  [CollectibleTypeCustom.CHARGING_STATION, 5],
 ]);
 
 export const FLY_ENTITIES = [
-  EntityType.ENTITY_FLY, // 13
-  EntityType.ENTITY_POOTER, // 14
-  EntityType.ENTITY_ATTACKFLY, // 18
-  EntityType.ENTITY_BOOMFLY, // 25
-  EntityType.ENTITY_SUCKER, // 61
-  EntityType.ENTITY_DUKE, // 67
-  EntityType.ENTITY_MOTER, // 80
-  // (intentionally skipping Eternal Flies)
-  EntityType.ENTITY_FLY_L2, // 214
-  EntityType.ENTITY_RING_OF_FLIES, // 222
-  EntityType.ENTITY_FULL_FLY, // 249
-  EntityType.ENTITY_DART_FLY, // 256
-  EntityType.ENTITY_SWARM, // 281
-  EntityType.ENTITY_HUSH_FLY, // 296
+  EntityType.FLY, // 13
+  EntityType.POOTER, // 14
+  EntityType.ATTACK_FLY, // 18
+  EntityType.BOOM_FLY, // 25
+  EntityType.SUCKER, // 61
+  EntityType.DUKE, // 67
+  EntityType.MOTER, // 80
+  // We intentionally skip Eternal Flies.
+  EntityType.FLY_L2, // 214
+  EntityType.RING_OF_FLIES, // 222
+  EntityType.FULL_FLY, // 249
+  EntityType.DART_FLY, // 256
+  EntityType.SWARM, // 281
+  EntityType.HUSH_FLY, // 296
 ];
 
 export const SPIDER_ENTITIES = [
-  EntityType.ENTITY_HOPPER, // 29
-  EntityType.ENTITY_SPIDER, // 85
-  EntityType.ENTITY_BIGSPIDER, // 94
-  EntityType.ENTITY_WIDOW, // 100
-  EntityType.ENTITY_DADDYLONGLEGS, // 101
-  EntityType.ENTITY_BABY_LONG_LEGS, // 206
-  EntityType.ENTITY_CRAZY_LONG_LEGS, // 207
-  EntityType.ENTITY_SPIDER_L2, // 215
-  EntityType.ENTITY_WALL_CREEP, // 240
-  EntityType.ENTITY_RAGE_CREEP, // 241
-  EntityType.ENTITY_BLIND_CREEP, // 242
-  EntityType.ENTITY_RAGLING, // 246
-  EntityType.ENTITY_TICKING_SPIDER, // 250
-  EntityType.ENTITY_BLISTER, // 303
-  EntityType.ENTITY_THE_THING, // 304
+  EntityType.HOPPER, // 29
+  EntityType.SPIDER, // 85
+  EntityType.BIG_SPIDER, // 94
+  EntityType.WIDOW, // 100
+  EntityType.DADDY_LONG_LEGS, // 101
+  EntityType.BABY_LONG_LEGS, // 206
+  EntityType.CRAZY_LONG_LEGS, // 207
+  EntityType.SPIDER_L2, // 215
+  EntityType.WALL_CREEP, // 240
+  EntityType.RAGE_CREEP, // 241
+  EntityType.BLIND_CREEP, // 242
+  EntityType.RAGLING, // 246
+  EntityType.TICKING_SPIDER, // 250
+  EntityType.BLISTER, // 303
+  EntityType.THE_THING, // 304
 ];
 
-// CollectibleType.COLLECTIBLE_TECHNOLOGY (68)
+// CollectibleType.TECHNOLOGY (68)
 // We do not want the Technology double laser buff to apply when the player has certain powerful
-// items
+// items.
 export const TECHNOLOGY_EXCEPTION_ITEMS = [
-  CollectibleType.COLLECTIBLE_DR_FETUS, // 52
-  CollectibleType.COLLECTIBLE_MOMS_KNIFE, // 114
-  CollectibleType.COLLECTIBLE_BRIMSTONE, // 118
-  CollectibleType.COLLECTIBLE_IPECAC, // 149
-  CollectibleType.COLLECTIBLE_EPIC_FETUS, // 168
-  CollectibleType.COLLECTIBLE_TINY_PLANET, // 233
-  CollectibleType.COLLECTIBLE_TECH_X, // 395
+  CollectibleType.DR_FETUS, // 52
+  CollectibleType.MOMS_KNIFE, // 114
+  CollectibleType.BRIMSTONE, // 118
+  CollectibleType.IPECAC, // 149
+  CollectibleType.EPIC_FETUS, // 168
+  CollectibleType.TINY_PLANET, // 233
+  CollectibleType.TECH_X, // 395
 ];
 
-// CollectibleType.COLLECTIBLE_ISAACS_HEART (276)
-// Isaac's Heart is broken with certain other items
-export const ISAACS_HEART_BROKEN_ITEMS = [
-  CollectibleType.COLLECTIBLE_BRIMSTONE, // 118
-  CollectibleType.COLLECTIBLE_RUBBER_CEMENT, // 221
-  CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE, // 329
-  CollectibleType.COLLECTIBLE_MULTIDIMENSIONAL_BABY, // 431
+// CollectibleType.ISAACS_HEART (276)
+// Isaac's Heart is broken with certain other items.
+export const ISAACS_HEART_BROKEN_COLLECTIBLES = [
+  CollectibleType.BRIMSTONE, // 118
+  CollectibleType.RUBBER_CEMENT, // 221
+  CollectibleType.LUDOVICO_TECHNIQUE, // 329
+  CollectibleType.MULTIDIMENSIONAL_BABY, // 431
 ];
 
-// CollectibleType.COLLECTIBLE_POKE_GO (505)
+// CollectibleType.POKE_GO (505)
 export const POKE_GO_EXCEPTION_ENTITIES = [
-  EntityType.ENTITY_SHOPKEEPER, // 17
-  EntityType.ENTITY_FIREPLACE, // 33
-  EntityType.ENTITY_STONEHEAD, // 42
-  EntityType.ENTITY_POKY, // 44
-  EntityType.ENTITY_ETERNALFLY, // 96
-  EntityType.ENTITY_CONSTANT_STONE_SHOOTER, // 202
-  EntityType.ENTITY_BRIMSTONE_HEAD, // 203
-  EntityType.ENTITY_SWINGER, // 216
-  EntityType.ENTITY_WALL_HUGGER, // 218
-  EntityType.ENTITY_GAPING_MAW, // 235
-  EntityType.ENTITY_BROKEN_GAPING_MAW, // 236
-  EntityType.ENTITY_SWARM, // 281
-  EntityType.ENTITY_PITFALL, // 291
+  EntityType.SHOPKEEPER, // 17
+  EntityType.FIREPLACE, // 33
+  EntityType.GRIMACE, // 42
+  EntityType.POKY, // 44
+  EntityType.ETERNAL_FLY, // 96
+  EntityType.CONSTANT_STONE_SHOOTER, // 202
+  EntityType.BRIMSTONE_HEAD, // 203
+  EntityType.SWINGER, // 216
+  EntityType.WALL_HUGGER, // 218
+  EntityType.GAPING_MAW, // 235
+  EntityType.BROKEN_GAPING_MAW, // 236
+  EntityType.SWARM, // 281
+  EntityType.PITFALL, // 291
 ];
 
 export const CATALOG_ITEM_PRICE = 10;
 export const CATALOG_ILLEGAL_ROOM_TYPES = [
-  RoomType.ROOM_SHOP, // 2
-  RoomType.ROOM_CURSE, // 10
-  RoomType.ROOM_DEVIL, // 14
-  RoomType.ROOM_ANGEL, // 15
-  RoomType.ROOM_BLACK_MARKET, // 22
+  RoomType.SHOP, // 2
+  RoomType.CURSE, // 10
+  RoomType.DEVIL, // 14
+  RoomType.ANGEL, // 15
+  RoomType.BLACK_MARKET, // 22
 ];

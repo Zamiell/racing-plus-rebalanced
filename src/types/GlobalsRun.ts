@@ -1,3 +1,10 @@
+import {
+  Direction,
+  PillColor,
+  PillEffect,
+  PlayerForm,
+} from "isaac-typescript-definitions";
+import { getEnumValues, newRNG } from "isaacscript-common";
 import GlobalsRunHealth from "./GlobalsRunHealth";
 import GlobalsRunLastHealth from "./GlobalsRunLastHealth";
 import GlobalsRunLevel from "./GlobalsRunLevel";
@@ -10,23 +17,19 @@ export default class GlobalsRun {
   randomSeed = 0;
   tearCounter = 0;
 
-  // Tracking per level
-  // We start at 0 instead of 1 so that we can trigger the PostNewRoom callback after the
-  // PostNewLevel callback
+  // Tracking per level. We start at 0 instead of 1 so that we can trigger the `POST_NEW_ROOM`
+  // callback after the `POST_NEW_LEVEL` callback.
   level = new GlobalsRunLevel(0, 0, 0);
 
   // Tracking per room
   room = new GlobalsRunRoom(true);
 
   // Miscellaneous variables
-  pickingUpItem = 0; // Equal to the ID of the currently queued item
-  pickingUpItemRoom = 0; // Equal to the room that we picked up the currently queued item
-  pickingUpItemType = ItemType.ITEM_NULL; // Equal to the "QueuedItem.Item.Type"
   lastFireDirection = Direction.DOWN;
   dealingExtraDamage = false;
   familiarMultiShot = 0;
   familiarMultiShotVelocity = Vector(0, 0);
-  rouletteTableRNG = 0;
+  rouletteTableRNG = newRNG();
 
   // Item variables
   monstroCounters = 0; // For Monstro's Tooth (86)
@@ -38,8 +41,8 @@ export default class GlobalsRun {
   spawningDeadBird = false; // For Dead Bird (117)
   blackBeanEndFrame = 0; // For The Black Bean (180)
   abelDoubleTear = false; // For Abel (188)
-  fannyPackRNG = 0; // For Fanny Pack (204)
-  piggyBankRNG = 0; // For Piggy Bank (227)
+  fannyPackRNG = newRNG(); // For Fanny Pack (204)
+  piggyBankRNG = newRNG(); // For Piggy Bank (227)
   technologyAdded2020 = false; // For 20/20 (245)
   spawningIsaacsHeartLaser = false; // For the Isaac's Heart (276)
   judasShadow = false; // For Judas' Shadow (311)
@@ -53,19 +56,19 @@ export default class GlobalsRun {
   walnutCounters = 0; // For Walnut (108)
   spawningRestock = false; // For Clockwork Assembly
   strabismusDoubleTear = false; // For Strabismus
-  catalogRNG = 0;
+  catalogSeed = 0;
 
   // Trinket variables
-  etherealPennyRNG = 0; // For Ethereal Penny
+  etherealPennySeed = 0; // For Ethereal Penny
   numCoins = 0; // For Penny on a String
 
   // Card variables
-  wheelOfFortuneRNG = 0; // For the Wheel of Fortune card (11)
-  sunCardRNG = 0; // For the Sun card (20)
+  wheelOfFortuneSeed = 0; // For the Wheel of Fortune card (11)
+  sunCardRNG = newRNG(); // For the Sun card (20)
 
   // Pill variables
   pills: GlobalsRunPills = {
-    // The randomly selected pill effects for this run
+    // The randomly selected pill effects for this run.
     effects: new Map<PillColor, PillEffect>(),
 
     // Stat up counters
@@ -107,17 +110,17 @@ export default class GlobalsRun {
   // Transformations
   transformations = new Map<PlayerForm, boolean>();
 
-  constructor(startSeed: int) {
+  constructor(startSeed: Seed) {
     this.randomSeed = startSeed;
-    this.rouletteTableRNG = startSeed;
-    this.fannyPackRNG = startSeed; // For Fanny Pack (204)
-    this.piggyBankRNG = startSeed; // For Piggy Bank (227)
-    this.catalogRNG = startSeed;
-    this.etherealPennyRNG = startSeed; // For Ethereal Penny
-    this.wheelOfFortuneRNG = startSeed; // For the Wheel of Fortune card (11)
+    this.rouletteTableRNG = newRNG(startSeed);
+    this.fannyPackRNG = newRNG(startSeed); // For Fanny Pack (204)
+    this.piggyBankRNG = newRNG(startSeed); // For Piggy Bank (227)
+    this.catalogSeed = startSeed;
+    this.etherealPennySeed = startSeed; // For Ethereal Penny
+    this.wheelOfFortuneSeed = startSeed; // For the Wheel of Fortune card (11)
 
-    for (let i = 0; i < PlayerForm.NUM_PLAYER_FORMS; i++) {
-      this.transformations.set(i, false);
+    for (const transformation of getEnumValues(PlayerForm)) {
+      this.transformations.set(transformation, false);
     }
   }
 }

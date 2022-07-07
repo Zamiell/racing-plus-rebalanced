@@ -5,15 +5,14 @@ import { CollectibleTypeCustom } from "../types/enums";
 
 export function main(collectibleType: CollectibleType): boolean {
   // Buff 9-Volt
-  if (!g.p.HasCollectible(CollectibleType.COLLECTIBLE_NINE_VOLT)) {
+  if (!g.p.HasCollectible(CollectibleType.NINE_VOLT)) {
     return true;
   }
 
   const maxCharges = misc.getItemMaxCharges(collectibleType);
   if (maxCharges < 3) {
-    // If the item is a 0 charge item, then we don't have to do anything
-    // If it has 1 charge or 2 charges, then we do nothing,
-    // to prevent the item from infinitely recharging
+    // If the item is a 0 charge item, then we don't have to do anything If it has 1 charge or 2
+    // charges, then we do nothing, to prevent the item from infinitely recharging
     return true;
   }
 
@@ -21,19 +20,19 @@ export function main(collectibleType: CollectibleType): boolean {
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_BOOK_REVELATIONS (78)
+// CollectibleType.BOOK_REVELATIONS (78)
 export function bookOfRevelations(): boolean {
   g.p.AddSoulHearts(-1);
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_THE_NAIL (83)
+// CollectibleType.THE_NAIL (83)
 export function theNail(): boolean {
   g.p.AddSoulHearts(-1);
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_MONSTROS_TOOTH (86)
+// CollectibleType.MONSTROS_TOOTH (86)
 export function monstrosTooth(): boolean {
   // Summon extra Monstro's, spaced apart
   g.run.monstroCounters += 1;
@@ -47,7 +46,7 @@ export function monstrosTooth(): boolean {
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_BOOK_OF_SECRETS (287)
+// CollectibleType.BOOK_OF_SECRETS (287)
 export function bookOfSecrets(): boolean {
   if (g.l.GetStateFlag(LevelStateFlag.STATE_BLUE_MAP_EFFECT)) {
     postItemPickup.blueMap();
@@ -56,13 +55,13 @@ export function bookOfSecrets(): boolean {
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_SATANIC_BIBLE (292)
+// CollectibleType.SATANIC_BIBLE (292)
 export function satanicBible(): boolean {
   g.p.AddBlackHearts(-1);
   return true;
 }
 
-// CollectibleType.COLLECTIBLE_BROWN_NUGGET (504)
+// CollectibleType.BROWN_NUGGET (504)
 export function brownNugget(): boolean {
   // Summon extra flies, spaced apart
   if (g.run.brownNuggetCounters === 0) {
@@ -73,85 +72,67 @@ export function brownNugget(): boolean {
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_HOLY_POOP (replacing 36)
+// CollectibleTypeCustom.HOLY_POOP (replacing 36)
 export function holyPoop(): boolean {
   // Spawn White Poop next to the player
   Isaac.GridSpawn(
-    GridEntityType.GRID_POOP,
+    GridEntityType.POOP,
     PoopVariant.POOP_WHITE,
     g.p.Position,
     false,
   );
 
   // Playing "SOUND_FART" will randomly play one of the three farting sound effects
-  g.sfx.Play(SoundEffect.SOUND_FART, 1, 0, false, 1);
+  sfxManager.Play(SoundEffect.FART, 1, 0, false, 1);
 
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_MOMS_BRA_IMPROVED (replacing 39)
+// CollectibleTypeCustom.MOMS_BRA_IMPROVED (replacing 39)
 export function momsBraImproved(): boolean {
-  g.p.UseActiveItem(
-    CollectibleType.COLLECTIBLE_MOMS_BRA,
-    true,
-    false,
-    false,
-    false,
-  );
+  g.p.UseActiveItem(CollectibleType.MOMS_BRA, true, false, false, false);
 
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_MONSTER_MANUAL_IMPROVED (replacing 123)
+// CollectibleTypeCustom.MONSTER_MANUAL_IMPROVED (replacing 123)
 export function monsterManualImproved(): boolean {
-  g.p.UseActiveItem(
-    CollectibleType.COLLECTIBLE_MONSTER_MANUAL,
-    true,
-    false,
-    false,
-    false,
-  );
+  g.p.UseActiveItem(CollectibleType.MONSTER_MANUAL, true, false, false, false);
 
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_BOX_OF_SPIDERS_IMPROVED (replacing 288)
+// CollectibleTypeCustom.BOX_OF_SPIDERS_IMPROVED (replacing 288)
 export function boxOfSpidersImproved(): boolean {
-  g.p.UseActiveItem(
-    CollectibleType.COLLECTIBLE_BOX_OF_SPIDERS,
-    true,
-    false,
-    false,
-    false,
-  );
+  g.p.UseActiveItem(CollectibleType.BOX_OF_SPIDERS, true, false, false, false);
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE (replacing 441)
+// CollectibleTypeCustom.MEGA_BLAST_SINGLE (replacing 441)
 export function megaBlastSingle(): boolean {
   g.p.UseActiveItem(
-    CollectibleType.COLLECTIBLE_MEGA_SATANS_BREATH,
+    CollectibleType.MEGA_SATANS_BREATH,
     true,
     false,
     false,
     false,
   );
-  g.p.RemoveCollectible(CollectibleTypeCustom.COLLECTIBLE_MEGA_BLAST_SINGLE);
+  g.p.RemoveCollectible(CollectibleTypeCustom.MEGA_BLAST_SINGLE);
 
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_CLOCKWORK_ASSEMBLY
+// CollectibleTypeCustom.CLOCKWORK_ASSEMBLY
 export function clockworkAssembly(): boolean {
   // Spawn a Restock Machine (6.10)
   g.run.spawningRestock = true;
   RacingPlusGlobals.run.streakIgnore = true; // We need to ignore the Wheel of Fortune text
-  g.p.UseCard(Card.CARD_WHEEL_OF_FORTUNE);
+  g.p.UseCard(Card.WHEEL_OF_FORTUNE);
 
   return true;
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION
+// CollectibleTypeCustom.CHARGING_STATION
 export function chargingStation(): boolean {
   if (RacingPlusSchoolbag.isItemFullyCharged()) {
     return false;
@@ -165,11 +146,11 @@ export function chargingStation(): boolean {
   g.p.AddCoins(-1);
   RacingPlusSchoolbag.addCharge(true);
   g.p.AnimateCollectible(
-    CollectibleTypeCustom.COLLECTIBLE_CHARGING_STATION,
+    CollectibleTypeCustom.CHARGING_STATION,
     "UseItem",
     "PlayerPickup",
   );
-  g.sfx.Play(SoundEffect.SOUND_BEEP, 1, 0, false, 1);
+  sfxManager.Play(SoundEffect.BEEP, 1, 0, false, 1);
 
   return true;
 }

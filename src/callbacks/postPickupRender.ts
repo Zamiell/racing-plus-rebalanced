@@ -4,7 +4,7 @@ const shopItemNumbersYellow = Sprite();
 shopItemNumbersYellow.Load("gfx/005.150_shop item custom.anm2", true);
 shopItemNumbersYellow.Play("NumbersYellow", true);
 
-// PickupVariant.PICKUP_COLLECTIBLE (100)
+// PickupVariant.COLLECTIBLE (100)
 export function collectible(pickup: EntityPickup): void {
   // Local variables
   const roomShape = g.r.GetRoomShape();
@@ -34,7 +34,7 @@ export function collectible(pickup: EntityPickup): void {
   } else {
     shopItemNumbersYellow.SetLayerFrame(0, pickup.Price);
     shopItemNumbersYellow.SetLayerFrame(1, 10);
-    shopItemNumbersYellow.RenderLayer(0, position.__add(Vector(11, 0)));
-    shopItemNumbersYellow.RenderLayer(1, position.__add(Vector(9, 1)));
+    shopItemNumbersYellow.RenderLayer(0, position.add(Vector(11, 0)));
+    shopItemNumbersYellow.RenderLayer(1, position.add(Vector(9, 1)));
   }
 }

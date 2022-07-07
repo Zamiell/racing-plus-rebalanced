@@ -15,30 +15,30 @@ export function main(laser: EntityLaser): void {
   friendlyFade(laser);
 }
 
-// CollectibleType.COLLECTIBLE_LIL_BRIMSTONE (275)
+// CollectibleType.LIL_BRIMSTONE (275)
 function lilBrimstone(laser: EntityLaser) {
   if (
     laser.FrameCount === 0 &&
-    laser.SpawnerType === EntityType.ENTITY_FAMILIAR &&
+    laser.SpawnerType === EntityType.FAMILIAR &&
     laser.SpawnerVariant === FamiliarVariant.LIL_BRIMSTONE
   ) {
     laser.CollisionDamage = 3 + g.p.Damage * FAMILIAR_TEAR_DAMAGE;
   }
 }
 
-// CollectibleType.COLLECTIBLE_ISAACS_HEART (276)
+// CollectibleType.ISAACS_HEART (276)
 function isaacsHeart(laser: EntityLaser) {
   if (
     laser.FrameCount >= 3 ||
     laser.Variant !== LaserVariant.LASER_THICK_RED ||
-    laser.SpawnerType !== EntityType.ENTITY_PLAYER ||
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)
+    laser.SpawnerType !== EntityType.PLAYER ||
+    !g.p.HasCollectible(CollectibleType.ISAACS_HEART)
   ) {
     return;
   }
 
   const hearts = Isaac.FindByType(
-    EntityType.ENTITY_FAMILIAR,
+    EntityType.FAMILIAR,
     FamiliarVariant.ISAACS_HEART,
     -1,
     false,
@@ -54,12 +54,12 @@ function isaacsHeart(laser: EntityLaser) {
     laser.Visible = true;
 
     // Making the laser invisible earlier also muted the sound effect, so play it manually
-    g.sfx.Play(SoundEffect.SOUND_BLOOD_LASER_LARGE, 0.75, 0, false, 1); // 7
+    sfxManager.Play(SoundEffect.BLOOD_LASER_LARGE, 0.75, 0, false, 1); // 7
     // (a volume of 1 is a bit too loud)
   }
 }
 
-// CollectibleType.COLLECTIBLE_MAW_OF_VOID (399)
+// CollectibleType.MAW_OF_VOID (399)
 function mawOfTheVoid(laser: EntityLaser) {
   // The value will be somewhere around 0.05 because it is a float
   if (laser.BlackHpDropChance > 0.04 && laser.BlackHpDropChance < 0.06) {
@@ -68,9 +68,9 @@ function mawOfTheVoid(laser: EntityLaser) {
   }
 }
 
-// CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5 (replacing 152)
+// CollectibleTypeCustom.TECHNOLOGY_2_5 (replacing 152)
 function technology25(laser: EntityLaser) {
-  if (!g.p.HasCollectible(CollectibleTypeCustom.COLLECTIBLE_TECHNOLOGY_2_5)) {
+  if (!g.p.HasCollectible(CollectibleTypeCustom.TECHNOLOGY_2_5)) {
     return;
   }
 
@@ -84,25 +84,21 @@ function technology25(laser: EntityLaser) {
 }
 
 function familiarLaser(laser: EntityLaser) {
-  if (
-    laser.FrameCount !== 0 ||
-    laser.SpawnerType !== EntityType.ENTITY_PLAYER
-  ) {
+  if (laser.FrameCount !== 0 || laser.SpawnerType !== EntityType.PLAYER) {
     return;
   }
 
   // Ignore lasers from Epic Fetus
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS)) {
+  if (g.p.HasCollectible(CollectibleType.EPIC_FETUS)) {
     return;
   }
 
-  // Ignore the special situation where we have Brimstone & Trisagion
-  // (the Trisagion lasers will stay completely motionless and will not be removed with
-  // "entity.Remove()")
-  // In this case, familiars won't be able to fire
+  // Ignore the special situation where we have Brimstone & Trisagion (the Trisagion lasers will
+  // stay completely motionless and will not be removed with "entity.Remove()") In this case,
+  // familiars won't be able to fire
   if (
-    g.p.HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) &&
-    g.p.HasCollectible(CollectibleType.COLLECTIBLE_TRISAGION)
+    g.p.HasCollectible(CollectibleType.BRIMSTONE) &&
+    g.p.HasCollectible(CollectibleType.TRISAGION)
   ) {
     return;
   }
@@ -110,8 +106,8 @@ function familiarLaser(laser: EntityLaser) {
   // Ignore Tech.5 lasers
   if (
     laser.Variant === LaserVariant.LASER_THIN_RED &&
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) && // 68
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) // 395
+    !g.p.HasCollectible(CollectibleType.TECHNOLOGY) && // 68
+    !g.p.HasCollectible(CollectibleType.TECH_X) // 395
   ) {
     return;
   }
@@ -124,8 +120,8 @@ function familiarLaser(laser: EntityLaser) {
     return;
   }
 
-  // We only need to handle familiar shooting for Technology lasers, Brimstone lasers,
-  // and Tech X lasers
+  // We only need to handle familiar shooting for Technology lasers, Brimstone lasers, and Tech X
+  // lasers
   if (
     laser.Variant !== LaserVariant.LASER_THICK_RED && // 1
     laser.Variant !== LaserVariant.LASER_THIN_RED && // 2
@@ -135,7 +131,7 @@ function familiarLaser(laser: EntityLaser) {
   }
 
   let velocity = Vector(g.p.ShotSpeed * 10, 0).Rotated(laser.AngleDegrees);
-  if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X)) {
+  if (g.p.HasCollectible(CollectibleType.TECH_X)) {
     velocity = misc.getVelocityFromAimDirection();
   }
   const fakeTear = g.p.FireTear(g.p.Position, velocity, false, true, false);
@@ -145,10 +141,10 @@ function familiarLaser(laser: EntityLaser) {
   if (
     (laser.Variant === LaserVariant.LASER_THICK_RED ||
       laser.Variant === LaserVariant.LASER_BRIMTECH) &&
-    !g.p.HasCollectible(CollectibleType.COLLECTIBLE_TECH_X)
+    !g.p.HasCollectible(CollectibleType.TECH_X)
   ) {
     g.run.familiarMultiShot = 3; // For a total of 4
-    if (g.p.HasCollectible(CollectibleType.COLLECTIBLE_ISAACS_HEART)) {
+    if (g.p.HasCollectible(CollectibleType.ISAACS_HEART)) {
       g.run.familiarMultiShot = 0;
     }
     g.run.familiarMultiShotVelocity = velocity;
@@ -156,17 +152,17 @@ function familiarLaser(laser: EntityLaser) {
 }
 
 function friendlyFade(laser: EntityLaser) {
-  if (!laser.HasEntityFlags(EntityFlag.FLAG_FRIENDLY)) {
+  if (!laser.HasEntityFlags(EntityFlag.FRIENDLY)) {
     return;
   }
 
-  // Fade the lasers of charmed enemies so that it is easier to see everything
-  // We do this on every frame since the MC_POST_LASER_INIT callback is bugged
+  // Fade the lasers of charmed enemies so that it is easier to see everything We do this on every
+  // frame since the MC_POST_LASER_INIT callback is bugged
   const color = laser.GetColor();
   const fadeAmount = 0.25;
   const newColor = Color(color.R, color.G, color.B, fadeAmount, 0, 0, 0);
-  // (for some reason, in this callback, RO, GO, && BO will be float values,
-  // but the Color constructor only wants integers,
-  // so manually use 0 for these 3 values instead of the existing ones)
+  CacheFlag. BO will be float values, but the Color
+  // constructor only wants integers, so manually use 0 for these 3 values instead of the existing
+  // ones)
   laser.SetColor(newColor, 0, 0, true, true);
 }

@@ -10,13 +10,7 @@ export default slotRewardFunctionMap;
 slotRewardFunctionMap.set(
   SlotVariantCustom.TRANSMUTATION_MACHINE,
   (): boolean => {
-    g.p.UseActiveItem(
-      CollectibleType.COLLECTIBLE_D6,
-      false,
-      false,
-      false,
-      false,
-    );
+    g.p.UseActiveItem(CollectibleType.D6, false, false, false, false);
     return true;
   },
 );
@@ -55,7 +49,7 @@ slotRewardFunctionMap.set(
   (slot: Entity): boolean => {
     // Spawn a heaven door (which will be replaced by Racing+ on the next frame)
     Isaac.Spawn(
-      EntityType.ENTITY_EFFECT,
+      EntityType.EFFECT,
       EffectVariant.HEAVEN_LIGHT_DOOR,
       0,
       slot.Position,
@@ -72,11 +66,11 @@ slotRewardFunctionMap.set(
 
 function spawnCoin(slot: Entity) {
   Isaac.Spawn(
-    EntityType.ENTITY_PICKUP,
-    PickupVariant.PICKUP_COIN,
+    EntityType.PICKUP,
+    PickupVariant.COIN,
     0,
     slot.Position,
-    RandomVector().__mul(3),
+    RandomVector().mul(3),
     slot,
   );
 }
