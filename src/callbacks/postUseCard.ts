@@ -1,8 +1,79 @@
-import { ZERO_VECTOR } from "../constants";
+import {
+  Card,
+  Direction,
+  DisplayFlag,
+  DisplayFlagZero,
+  DoorSlot,
+  EffectVariant,
+  EntityType,
+  HeartSubType,
+  LaserVariant,
+  LevelStateFlag,
+  ModCallback,
+  PickupVariant,
+  PoofSubType,
+  RoomTransitionAnim,
+  RoomType,
+  SlotVariant,
+  TearFlag,
+} from "isaac-typescript-definitions";
+import {
+  addFlag,
+  clearFloorDisplayFlags,
+  getLasers,
+  getRandomInt,
+  log,
+  removeFlag,
+  repeat,
+  spawnEffect,
+} from "isaacscript-common";
+import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import g from "../globals";
-import * as misc from "../misc";
 import * as path from "../path";
-import { CollectibleTypeCustom } from "../types/enums";
+
+export function init(mod: Mod): void {
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    magician,
+    Card.MAGICIAN, // 2
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    emperor,
+    Card.EMPEROR, // 5
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    lovers,
+    Card.LOVERS, // 7
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    wheelOfFortune,
+    Card.WHEEL_OF_FORTUNE, // 11
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    sun,
+    Card.SUN, // 20
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    world,
+    Card.WORLD, // 22
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_CARD,
+    ansuz,
+    Card.RUNE_ANSUZ, // 36
+  );
+}
 
 // Card.MAGICIAN (2)
 export function magician(): void {
@@ -11,20 +82,11 @@ export function magician(): void {
   }
 
   // The Technology 2.5 laser was spawned when we entered the room We need to update the laser ring
-  // to account for now having homing
-  const lasers = Isaac.FindByType(
-    EntityType.LASER,
-    LaserVariant.LASER_THIN_RED,
-    -1,
-    false,
-    false,
-  );
-  for (const entity of lasers) {
-    if (entity.SpawnerType === EntityType.PLAYER) {
-      const laser = entity.ToLaser();
-      if (laser !== null) {
-        laser.TearFlags |= TearFlag.HOMING;
-      }
+  // to account for now having homing.
+  const lasers = getLasers(LaserVariant.THIN_RED);
+  for (const laser of lasers) {
+    if (laser.SpawnerType === EntityType.PLAYER) {
+      laser.TearFlags = addFlag(laser.TearFlags, TearFlag.HOMING);
     }
   }
 }
@@ -35,22 +97,22 @@ export function emperor(): void {
     return;
   }
 
-  // Find a room 66% of the way to the boss
+  // Find a room 66% of the way to the boss.
   const gridIndex = path.findMidBoss(0.66);
 
-  // You have to set LeaveDoor before every teleport or else it will send you to the wrong room
-  g.l.LeaveDoor = -1;
+  // You have to set LeaveDoor before every teleport or else it will send you to the wrong room.
+  g.l.LeaveDoor = DoorSlot.NO_DOOR_SLOT;
 
   // Teleport
   g.g.StartRoomTransition(
     gridIndex,
     Direction.NO_DIRECTION,
-    RoomTransition.TRANSITION_TELEPORT,
+    RoomTransitionAnim.TELEPORT,
   );
-  Isaac.DebugString(`Nerfed emperor to room. ${gridIndex}`);
+  log(`Nerfed emperor to room. ${gridIndex}`);
 
   // This will override the existing Emperor effect because we have already locked in a room
-  // transition
+  // transition.
 }
 
 // Card.LOVERS (7)
@@ -74,7 +136,7 @@ function deleteNearestHeart() {
   const hearts = Isaac.FindByType(
     EntityType.PICKUP,
     PickupVariant.HEART,
-    HeartSubType.HEART_FULL,
+    HeartSubType.FULL,
     false,
     false,
   );
@@ -82,7 +144,7 @@ function deleteNearestHeart() {
   let nearestPickupDistance: int | null = null;
   for (const heart of hearts) {
     const pickup = heart.ToPickup();
-    if (pickup === null) {
+    if (pickup === undefined) {
       continue;
     }
     if (
@@ -116,10 +178,8 @@ export function wheelOfFortune(): void {
     g.run.spawningRestock = false;
     slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE;
   } else {
-    // 33% chance for a Slot Machine / Fortune Teller Machine / Shop Restock Machine
-    g.run.wheelOfFortuneSeed = misc.incrementRNG(g.run.wheelOfFortuneSeed);
-    math.randomseed(g.run.wheelOfFortuneSeed);
-    const slotChoice = math.random(1, 3);
+    // 33% chance for a Slot Machine / Fortune Teller Machine / Shop Restock Machine.
+    const slotChoice = getRandomInt(1, 3, g.run.wheelOfFortuneRNG);
     if (slotChoice === 1) {
       slotVariant = SlotVariant.SLOT_MACHINE;
     } else if (slotChoice === 2) {
@@ -131,7 +191,7 @@ export function wheelOfFortune(): void {
     }
   }
 
-  // Remove the vanilla Slot Machine / Fortune Teller Machine
+  // Remove the vanilla Slot Machine / Fortune Teller Machine.
   const slots = Isaac.FindByType(EntityType.SLOT, -1, -1, false, false);
   for (const slot of slots) {
     if (slot.FrameCount === 0) {
@@ -144,14 +204,7 @@ export function wheelOfFortune(): void {
         slot.SubType,
         slot.InitSeed,
       );
-      Isaac.Spawn(
-        EntityType.EFFECT,
-        EffectVariant.POOF01,
-        3, // A subtype of 3 makes a bigger poof
-        slot.Position,
-        ZERO_VECTOR,
-        null,
-      );
+      spawnEffect(EffectVariant.POOF_1, PoofSubType.LARGE, slot.Position);
       slot.Remove();
     }
   }
@@ -162,37 +215,28 @@ export function sun(): void {
   // Local variables
   const rooms = g.l.GetRooms();
 
-  // Make all the rooms invisible
-  for (let i = 0; i < rooms.Size; i++) {
-    // This is 0 indexed
-    const roomDesc = rooms.Get(i);
-    if (roomDesc !== null) {
-      const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-      const room = g.l.GetRoomByIdx(roomIndexSafe);
-      room.DisplayFlags = 0;
-    }
-  }
+  // Make all the rooms invisible.
+  clearFloorDisplayFlags();
 
-  // Reveal 3 random rooms
+  // Reveal 3 random rooms.
   const randomIndexes: int[] = [];
-  do {
-    let randomIndex: int;
-    do {
-      g.run.sunCardRNG = misc.incrementRNG(g.run.sunCardRNG);
-      math.randomseed(g.run.sunCardRNG);
-      randomIndex = math.random(0, rooms.Size - 1);
-    } while (randomIndexes.includes(randomIndex));
+  repeat(3, () => {
+    const randomIndex = getRandomInt(
+      0,
+      rooms.Size - 1,
+      g.run.sunCardRNG,
+      randomIndexes,
+    );
     randomIndexes.push(randomIndex);
-  } while (randomIndexes.length < 3);
+  });
 
   for (const randomIndex of randomIndexes) {
-    const roomDesc = rooms.Get(randomIndex);
-    if (roomDesc !== null) {
-      const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-      const room = g.l.GetRoomByIdx(roomIndexSafe);
-      room.DisplayFlags = 5;
+    const roomDescription = rooms.Get(randomIndex);
+    if (roomDescription !== undefined) {
+      roomDescription.DisplayFlags = addFlag(
+        DisplayFlag.VISIBLE,
+        DisplayFlag.SHOW_ICON,
+      );
     }
   }
 
@@ -204,27 +248,26 @@ export function world(): void {
   // Local variables
   const rooms = g.l.GetRooms();
 
-  // If they already have the compass effect, then this card will have no effect
-  if (g.l.GetStateFlag(LevelStateFlag.STATE_COMPASS_EFFECT)) {
+  // If they already have the compass effect, then this card will have no effect.
+  if (g.l.GetStateFlag(LevelStateFlag.COMPASS_EFFECT)) {
     return;
   }
 
-  // Make all the rooms invisible except for the Boss Room
+  // Make all the rooms invisible except for the Boss Room.
   for (let i = 0; i < rooms.Size; i++) {
-    // This is 0 indexed
-    const roomDesc = rooms.Get(i);
-    if (roomDesc === null) {
+    // This is 0 indexed.
+    const roomDescription = rooms.Get(i);
+    if (roomDescription === undefined) {
       continue;
     }
 
-    const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-    const roomData = roomDesc.Data;
-    const roomType = roomData.Type;
+    const roomData = roomDescription.Data;
+    if (roomData === undefined) {
+      continue;
+    }
 
-    if (roomType !== RoomType.BOSS) {
-      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-      const room = g.l.GetRoomByIdx(roomIndexSafe);
-      room.DisplayFlags = 0;
+    if (roomData.Type !== RoomType.BOSS) {
+      roomDescription.DisplayFlags = DisplayFlagZero;
     }
   }
 
@@ -236,15 +279,15 @@ export function ansuz(): void {
   // Local variables
   const rooms = g.l.GetRooms();
 
-  // Remove all the icons (so that the rune only reveals the map)
+  // Remove all the icons (so that the rune only reveals the map).
   for (let i = 0; i < rooms.Size; i++) {
-    // This is 0 indexed
-    const roomDesc = rooms.Get(i);
-    if (roomDesc !== null) {
-      const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
-      // We have to use the "GetRoomByIdx()" function in order to modify the DisplayFlags
-      const room = g.l.GetRoomByIdx(roomIndexSafe);
-      room.DisplayFlags &= ~(1 << 2);
+    // This is 0 indexed.
+    const roomDescription = rooms.Get(i);
+    if (roomDescription !== undefined) {
+      roomDescription.DisplayFlags = removeFlag(
+        roomDescription.DisplayFlags,
+        DisplayFlag.SHOW_ICON,
+      );
     }
   }
 

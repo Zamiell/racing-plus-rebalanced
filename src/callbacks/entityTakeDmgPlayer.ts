@@ -284,7 +284,6 @@ function fannyPackImproved(player: EntityPlayer) {
 
 // TrinketType.WALNUT (108)
 function walnut(player: EntityPlayer, damageFlags: BitFlags<DamageFlag>) {
-  // Local variables
   const startSeed = g.seeds.GetStartSeed();
 
   if (!player.HasTrinket(TrinketTypeCustom.WALNUT_IMPROVED)) {

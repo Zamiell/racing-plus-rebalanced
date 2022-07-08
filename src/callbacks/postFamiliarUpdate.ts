@@ -1,10 +1,10 @@
 import g from "../globals";
 import * as misc from "../misc";
-import * as NPCUpdate from "./NPCUpdate";
+import * as NPCUpdate from "./postNPCUpdate";
 
 // FamiliarVariant.LEECH (56)
 export function leech(familiar: EntityFamiliar): void {
-  // Fade the leeches so that it is easier to see real enemies
+  // Fade the leeches so that it is easier to see real enemies.
   NPCUpdate.fade(familiar);
 }
 
@@ -42,7 +42,7 @@ export function preventStacking(familiar: EntityFamiliar): void {
   for (const familiar2 of familiars) {
     if (
       familiar.Position.Distance(familiar2.Position) <= 1 &&
-      // Use the index as a priority of which familiar is forced to move away
+      // Use the index as a priority of which familiar is forced to move away.
       familiar.Index < familiar2.Index
     ) {
       familiar2.Position = misc.getRandomOffsetPosition(

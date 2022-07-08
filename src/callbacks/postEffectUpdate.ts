@@ -1,7 +1,36 @@
-import { DiceFloorSubType } from "isaac-typescript-definitions";
-import { ZERO_VECTOR } from "../constants";
+import {
+  CoinSubType,
+  DiceFloorSubType,
+  EffectVariant,
+  EntityType,
+  HeartSubType,
+  ItemPoolType,
+  PickupVariant,
+} from "isaac-typescript-definitions";
+import {
+  getRandomArrayElement,
+  isCloseEnoughToTriggerDiceFloor,
+  log,
+  nextSeed,
+  spawnCollectible,
+  spawnWithSeed,
+} from "isaacscript-common";
+import { CreepSubTypeCustom } from "../enums/CreepSubTypeCustom";
 import g from "../globals";
-import * as misc from "../misc";
+
+const ITEM_POOL_TYPES = [
+  ItemPoolType.TREASURE, // 0
+  ItemPoolType.SHOP, // 1
+  ItemPoolType.BOSS, // 2
+  ItemPoolType.DEVIL, // 3
+  ItemPoolType.ANGEL, // 4
+  ItemPoolType.LIBRARY, // 6
+];
+
+enum DiceFloorState {
+  INITIAL,
+  ACTIVATED,
+}
 
 // EffectVariant.BLUE_FLAME (10)
 export function blueFlame(effect: EntityEffect): void {
@@ -17,104 +46,82 @@ export function blueFlame(effect: EntityEffect): void {
 
 // EffectVariant.DICE_FLOOR_CUSTOM
 export function diceRoomCustom(effect: EntityEffect): void {
-  if (effect.State === 1) {
+  if (effect.State === (DiceFloorState.ACTIVATED as int)) {
     return;
   }
 
-  const activationDistance = 75; // Determined through trial and error
-  if (g.p.Position.Distance(effect.Position) > activationDistance) {
+  if (!isCloseEnoughToTriggerDiceFloor(g.p, effect)) {
     return;
   }
 
-  effect.State = 1;
+  effect.State = DiceFloorState.ACTIVATED;
   g.p.AnimateHappy();
-  Isaac.DebugString(`Activated a ${effect.SubType}-pip custom dice room.`);
+  log(`Activated a ${effect.SubType}-pip custom dice room.`);
 
-  // An "effect.SubType" of 1 will correspond to a 1-pip dice room, and so forth.
-  const streakText = dicePipFunctions.get(effect.SubType as DiceFloorSubType);
+  const dicePipFunction = dicePipFunctions.get(
+    effect.SubType as DiceFloorSubType,
+  );
+  if (dicePipFunction === undefined) {
+    return;
+  }
+
+  const streakText = dicePipFunction();
 
   RacingPlusGlobals.run.streakFrame = Isaac.GetFrameCount();
   RacingPlusGlobals.run.streakText = streakText;
 }
 
-const dicePipFunctions = new Map<DiceFloorSubType, string>();
+const dicePipFunctions = new Map<DiceFloorSubType, () => string>();
 
-[
-  // 1
-  (): string => {
-    const effectDescription =
-      "Spawn a random item from one of the six item pools";
+dicePipFunctions.set(DiceFloorSubType.ONE_PIP, (): string => {
+  const effectDescription =
+    "Spawn a random item from one of the six item pools";
 
-    // Local variables
-    const roomSeed = g.r.GetSpawnSeed();
+  const roomSeed = g.r.GetSpawnSeed();
 
-    math.randomseed(roomSeed);
-    const itemPoolTypes = [
-      ItemPoolType.TREASURE, // 0
-      ItemPoolType.SHOP, // 1
-      ItemPoolType.BOSS, // 2
-      ItemPoolType.DEVIL, // 3
-      ItemPoolType.ANGEL, // 4
-      ItemPoolType.LIBRARY, // 6
-    ];
-    const randomIndex = math.random(0, itemPoolTypes.length - 1);
-    const itemPoolType = itemPoolTypes[randomIndex];
+  const randomItemPoolType = getRandomArrayElement(ITEM_POOL_TYPES);
 
-    const subType = g.itemPool.GetCollectible(
-      itemPoolType,
-      true,
-      g.r.GetSpawnSeed(),
-    );
-    g.g.Spawn(
-      EntityType.PICKUP,
-      PickupVariant.COLLECTIBLE,
-      g.r.GetCenterPos(),
-      ZERO_VECTOR,
-      null,
-      subType,
-      roomSeed,
-    );
+  const collectibleType = g.itemPool.GetCollectible(
+    randomItemPoolType,
+    true,
+    g.r.GetSpawnSeed(),
+  );
+  const centerPos = g.r.GetCenterPos();
+  spawnCollectible(collectibleType, centerPos, roomSeed);
 
-    return effectDescription;
-  },
+  return effectDescription;
+});
 
-  // 2
-  (): string => {
-    g.run.level.doubleItems = true;
-    return "Double items for the rest of the floor";
-  },
+dicePipFunctions.set(DiceFloorSubType.TWO_PIP, (): string => {
+  g.run.level.doubleItems = true;
+  return "Double items for the rest of the floor";
+});
 
-  // 3
-  (): string => {
-    spawnPickupsInCircle(3, PickupVariant.COIN, CoinSubType.COIN_DIME);
-    return "Spawn 3 dimes";
-  },
+dicePipFunctions.set(DiceFloorSubType.THREE_PIP, (): string => {
+  spawnPickupsInCircle(3, PickupVariant.COIN, CoinSubType.DIME);
+  return "Spawn 3 dimes";
+});
 
-  // 4
-  (): string => {
-    spawnPickupsInCircle(3, PickupVariant.HEART, HeartSubType.HEART_SOUL);
-    return "Spawn 4 soul hearts";
-  },
+dicePipFunctions.set(DiceFloorSubType.FOUR_PIP, (): string => {
+  spawnPickupsInCircle(3, PickupVariant.HEART, HeartSubType.SOUL);
+  return "Spawn 4 soul hearts";
+});
 
-  // 5
-  (): string => {
-    spawnPickupsInCircle(10, PickupVariant.TRINKET, 0);
-    return "Spawn 10 trinkets";
-  },
+dicePipFunctions.set(DiceFloorSubType.FIVE_PIP, (): string => {
+  spawnPickupsInCircle(10, PickupVariant.TRINKET, 0);
+  return "Spawn 10 trinkets";
+});
 
-  // 6
-  (): string => {
-    spawnPickupsInCircle(10, PickupVariant.TAROTCARD, 0);
-    return "Spawn 6 cards";
-  },
-];
+dicePipFunctions.set(DiceFloorSubType.SIX_PIP, (): string => {
+  spawnPickupsInCircle(10, PickupVariant.TAROT_CARD, 0);
+  return "Spawn 6 cards";
+});
 
 function spawnPickupsInCircle(
   numToSpawn: int,
   pickupVariant: PickupVariant,
   pickupSubType: int,
 ) {
-  // Local variables
   const velocityMultiplier = 4;
   const roomSeed = g.r.GetSpawnSeed();
   const centerPos = g.r.GetCenterPos();
@@ -124,31 +131,30 @@ function spawnPickupsInCircle(
     const velocity = Vector(velocityMultiplier, 0);
     const degrees = (360 / numToSpawn) * i;
     const rotatedVelocity = velocity.Rotated(degrees);
-    seed = misc.incrementRNG(seed);
 
-    g.g.Spawn(
+    seed = nextSeed(seed);
+    spawnWithSeed(
       EntityType.PICKUP,
       pickupVariant,
-      centerPos,
-      rotatedVelocity,
-      null,
       pickupSubType,
+      centerPos,
       seed,
+      rotatedVelocity,
     );
   }
 }
 
 export function creepScaling(effect: EntityEffect): void {
-  // Ignore the starting room graphic spawned by Racing+
-  if (effect.SubType === CreepSubTypeCustom.FLOOR_EFFECT_CREEP) {
+  // Ignore the starting room graphic spawned by Racing+.
+  if (effect.SubType === (CreepSubTypeCustom.FLOOR_EFFECT_CREEP as int)) {
     return;
   }
 
-  // Make player creep scale with the player's damage
+  // Make player creep scale with the player's damage.
   effect.CollisionDamage = g.p.Damage;
 
-  // All creep ticks once every 10 frames with the exception of PLAYER_CREEP_GREEN, which ticks
-  // every frame, so account for this
+  // All creep ticks once every 10 frames with the exception of `PLAYER_CREEP_GREEN`, which ticks
+  // every frame, so account for this.
   if (effect.Variant === EffectVariant.PLAYER_CREEP_GREEN) {
     effect.CollisionDamage /= 10;
   }

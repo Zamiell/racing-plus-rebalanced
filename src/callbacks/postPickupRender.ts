@@ -10,7 +10,7 @@ export function collectible(pickup: EntityPickup): void {
   const roomShape = g.r.GetRoomShape();
 
   // The special yellow rendering will not work in large rooms
-  if (roomShape >= RoomShape.ROOMSHAPE_1x2) {
+  if (roomShape >= RoomShape.1x2) {
     return;
   }
 

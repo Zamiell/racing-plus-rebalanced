@@ -2,9 +2,12 @@ import {
   CollectibleType,
   EffectVariant,
   EntityType,
-  GridEntityType,
 } from "isaac-typescript-definitions";
-import { getEntities, setPlayerHealth } from "isaacscript-common";
+import {
+  getEntities,
+  playerHasHealthLeft,
+  setPlayerHealth,
+} from "isaacscript-common";
 import g from "./globals";
 
 export function getRandomOffsetPosition(
@@ -45,14 +48,6 @@ export function getVelocityFromAimDirection(): Vector {
   return velocity.mul(g.p.ShotSpeed * 10);
 }
 
-export function hasNoHealth(): boolean {
-  return (
-    g.p.GetHearts() === 0 &&
-    g.p.GetSoulHearts() === 0 &&
-    g.p.GetBoneHearts() === 0
-  );
-}
-
 export function isOnTearBuild(): boolean {
   return (
     !g.p.HasCollectible(CollectibleType.DR_FETUS) && // 52
@@ -65,7 +60,7 @@ export function isOnTearBuild(): boolean {
 }
 
 export function killIfNoHealth(): void {
-  if (hasNoHealth()) {
+  if (!playerHasHealthLeft(g.p)) {
     g.p.Kill();
   }
 }
@@ -88,31 +83,6 @@ export function removeAllEntities(): void {
   // We need to also set the room to being clear, otherwise we will get a free drop/charge if there
   // was an enemy in the room.
   g.r.SetClear(true);
-}
-
-export function removeAllGridEntities(): void {
-  const gridSize = g.r.GetGridSize();
-  for (let i = 1; i <= gridSize; i++) {
-    const gridEntity = g.r.GetGridEntity(i);
-    if (gridEntity !== undefined) {
-      if (
-        gridEntity.GetSaveState().Type !== GridEntityType.WALL && // 15
-        gridEntity.GetSaveState().Type !== GridEntityType.DOOR // 16
-      ) {
-        g.r.RemoveGridEntity(i, 0, false); // gridEntity.Destroy() does not work
-      }
-    }
-  }
-}
-
-export function removeSpecificEntities(
-  entityType: EntityType,
-  variant: int,
-): void {
-  const entities = Isaac.FindByType(entityType, variant, -1, false, false);
-  for (const entity of entities) {
-    entity.Remove();
-  }
 }
 
 export function setHealthFromLastFrame(): void {

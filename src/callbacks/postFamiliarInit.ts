@@ -1,3 +1,4 @@
+import { CollectibleType } from "isaac-typescript-definitions";
 import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 
@@ -23,7 +24,7 @@ export function deadBird(familiar: EntityFamiliar): void {
 
   familiar.CollisionDamage = damage;
   for (let i = 0; i < 4; i++) {
-    // We will have 5 birds in total since 1 is spawned by the vanilla item
+    // We will have 5 birds in total since 1 is spawned by the vanilla item.
     g.run.spawningDeadBird = true;
     const bird = g.g.Spawn(
       familiar.Type,

@@ -1,12 +1,5 @@
-import {
-  Direction,
-  PillColor,
-  PillEffect,
-  PlayerForm,
-} from "isaac-typescript-definitions";
-import { getEnumValues, newRNG } from "isaacscript-common";
-import GlobalsRunHealth from "./GlobalsRunHealth";
-import GlobalsRunLastHealth from "./GlobalsRunLastHealth";
+import { Direction, PillColor, PillEffect } from "isaac-typescript-definitions";
+import { newPlayerHealth, newRNG } from "isaacscript-common";
 import GlobalsRunLevel from "./GlobalsRunLevel";
 import GlobalsRunPills from "./GlobalsRunPills";
 import GlobalsRunRoom from "./GlobalsRunRoom";
@@ -56,14 +49,14 @@ export default class GlobalsRun {
   walnutCounters = 0; // For Walnut (108)
   spawningRestock = false; // For Clockwork Assembly
   strabismusDoubleTear = false; // For Strabismus
-  catalogSeed = 0;
+  catalogRNG = newRNG();
 
   // Trinket variables
-  etherealPennySeed = 0; // For Ethereal Penny
+  etherealPennyRNG = newRNG(); // For Ethereal Penny
   numCoins = 0; // For Penny on a String
 
   // Card variables
-  wheelOfFortuneSeed = 0; // For the Wheel of Fortune card (11)
+  wheelOfFortuneRNG = newRNG(); // For the Wheel of Fortune card (11)
   sunCardRNG = newRNG(); // For the Sun card (20)
 
   // Pill variables
@@ -89,38 +82,21 @@ export default class GlobalsRun {
   };
 
   // Health tracking
-  health: GlobalsRunHealth = {
-    hearts: 0,
-    maxHearts: 0,
-    soulHearts: 0,
-    blackHearts: 0,
-    boneHearts: 0,
+  health = {
+    health: newPlayerHealth(),
     changedOnThisFrame: false,
     restoredLastHealthOnThisFrame: false,
   };
 
-  lastHealth: GlobalsRunLastHealth = {
-    hearts: 0,
-    maxHearts: 0,
-    soulHearts: 0,
-    blackHearts: 0,
-    boneHearts: 0,
-  };
-
-  // Transformations
-  transformations = new Map<PlayerForm, boolean>();
+  lastHealth = newPlayerHealth();
 
   constructor(startSeed: Seed) {
     this.randomSeed = startSeed;
     this.rouletteTableRNG = newRNG(startSeed);
     this.fannyPackRNG = newRNG(startSeed); // For Fanny Pack (204)
     this.piggyBankRNG = newRNG(startSeed); // For Piggy Bank (227)
-    this.catalogSeed = startSeed;
-    this.etherealPennySeed = startSeed; // For Ethereal Penny
-    this.wheelOfFortuneSeed = startSeed; // For the Wheel of Fortune card (11)
-
-    for (const transformation of getEnumValues(PlayerForm)) {
-      this.transformations.set(transformation, false);
-    }
+    this.catalogRNG = newRNG(startSeed);
+    this.etherealPennyRNG = newRNG(startSeed); // For Ethereal Penny
+    this.wheelOfFortuneRNG = newRNG(startSeed); // For the Wheel of Fortune card (11)
   }
 }

@@ -17,7 +17,6 @@ slotRewardTouchedMap.set(
 slotRewardTouchedMap.set(
   SlotVariantCustom.BOMB_DONATION_MACHINE,
   (slot: Entity) => {
-    // Local variables
     const numBombs = g.p.GetNumBombs();
     const price = 1;
 
@@ -35,7 +34,6 @@ slotRewardTouchedMap.set(
 slotRewardTouchedMap.set(
   SlotVariantCustom.KEY_DONATION_MACHINE,
   (slot: Entity) => {
-    // Local variables
     const numKeys = g.p.GetNumKeys();
     const price = 1;
 
@@ -51,7 +49,6 @@ slotRewardTouchedMap.set(
 
 // 16
 slotRewardTouchedMap.set(SlotVariantCustom.ROULETTE_TABLE, (slot: Entity) => {
-  // Local variables
   const numCoins = g.p.GetNumCoins();
   const price = 5;
 
@@ -66,11 +63,10 @@ slotRewardTouchedMap.set(SlotVariantCustom.ROULETTE_TABLE, (slot: Entity) => {
 
 // 17
 slotRewardTouchedMap.set(SlotVariantCustom.HOLY_MACHINE, (slot: Entity) => {
-  // Local variables
   const numCoins = g.p.GetNumCoins();
   const price = 20;
 
-  // Don't do anything if we don't have enough coins
+  // Don't do anything if we don't have enough coins.
   if (numCoins < price) {
     return;
   }

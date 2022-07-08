@@ -48,33 +48,33 @@ export function findMidBoss(percent: int): int {
       grid[y][x] = GridValue.ROOM;
 
       if (
-        roomShape === RoomShape.ROOMSHAPE_1x2 || // 1 wide x 2 tall
-        roomShape === RoomShape.ROOMSHAPE_IIV // 1 wide x 2 tall, narrow
+        roomShape === RoomShape.1x2 || // 1 wide x 2 tall
+        roomShape === RoomShape.IIV // 1 wide x 2 tall, narrow
       ) {
         grid[y + 1][x] = GridValue.ROOM; // The square below
       } else if (
-        roomShape === RoomShape.ROOMSHAPE_2x1 || // 2 wide x 1 tall
-        roomShape === RoomShape.ROOMSHAPE_IIH // 2 wide x 1 tall, narrow
+        roomShape === RoomShape.2x1 || // 2 wide x 1 tall
+        roomShape === RoomShape.IIH // 2 wide x 1 tall, narrow
       ) {
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
-      } else if (roomShape === RoomShape.ROOMSHAPE_2x2) {
+      } else if (roomShape === RoomShape.2x2) {
         // 2 wide x 2 tall
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
         grid[y + 1][x] = GridValue.ROOM; // The square below
         grid[y + 1][x + 1] = GridValue.ROOM; // The square to the bottom-right
-      } else if (roomShape === RoomShape.ROOMSHAPE_LTL) {
+      } else if (roomShape === RoomShape.LTL) {
         // L room, top-left is missing
         grid[y + 1][x] = GridValue.ROOM; // The square below
         grid[y + 1][x - 1] = GridValue.ROOM; // The square to the bottom-left
-      } else if (roomShape === RoomShape.ROOMSHAPE_LTR) {
+      } else if (roomShape === RoomShape.LTR) {
         // L room, top-right is missing
         grid[y + 1][x] = GridValue.ROOM; // The square below
         grid[y + 1][x + 1] = GridValue.ROOM; // The square to the bottom-right
-      } else if (roomShape === RoomShape.ROOMSHAPE_LBL) {
+      } else if (roomShape === RoomShape.LBL) {
         // L room, bottom-left is missing
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
         grid[y + 1][x + 1] = GridValue.ROOM; // The square to the bottom-right
-      } else if (roomShape === RoomShape.ROOMSHAPE_LBR) {
+      } else if (roomShape === RoomShape.LBR) {
         // L room, bottom-right is missing
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
         grid[y + 1][x] = GridValue.ROOM; // The square below

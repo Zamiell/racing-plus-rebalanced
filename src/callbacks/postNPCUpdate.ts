@@ -1,8 +1,17 @@
-import { EntityFlag } from "isaac-typescript-definitions";
+import {
+  CollectibleType,
+  EntityFlag,
+  EntityType,
+  ModCallback,
+} from "isaac-typescript-definitions";
 import { FLY_ENTITIES, SPIDER_ENTITIES } from "../constants";
 import g from "../globals";
 
-export function main(npc: EntityNPC): void {
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_NPC_UPDATE, main);
+}
+
+function main(npc: EntityNPC) {
   // Items
   skatole(npc); // 9
   burstingSack(npc); // 377
@@ -61,7 +70,7 @@ function delirious(npc: EntityNPC) {
 
 // EntityFlag.CHARM (1 << 8)
 function removeCharm(npc: EntityNPC) {
-  // We remove charm from all bosses
+  // We remove charm from all bosses.
   if (npc.HasEntityFlags(EntityFlag.CHARM) && npc.IsBoss()) {
     npc.ClearEntityFlags(EntityFlag.CHARM);
   }
@@ -79,7 +88,7 @@ function checkTemporaryCharm(npc: EntityNPC) {
   }
 
   // Check for Lil' Haunts to prevent the softlock where charming a Lil' Haunt will make The Haunt
-  // unkillable
+  // unkillable.
   if (npc.Type === EntityType.THE_HAUNT && npc.Variant === 1) {
     const haunts = Isaac.FindByType(EntityType.THE_HAUNT, 0, -1, false, false);
     if (haunts.length !== 0) {
@@ -87,12 +96,12 @@ function checkTemporaryCharm(npc: EntityNPC) {
     }
   }
 
-  // Make it permanently charmed instead of temporarily charmed
+  // Make it permanently charmed instead of temporarily charmed.
   npc.AddEntityFlags(EntityFlag.FRIENDLY); // 1 << 29
   npc.AddEntityFlags(EntityFlag.PERSISTENT); // 1 << 37
 
-  // Champions are bugged with charm such that the fading code does not work Thus, just delete them
-  // and replace them with a non-champion version
+  // Champions are bugged with charm such that the fading code does not work. Thus, just delete them
+  // and replace them with a non-champion version.
   if (npc.IsChampion()) {
     const newNPC = g.g.Spawn(
       npc.Type,
@@ -101,7 +110,7 @@ function checkTemporaryCharm(npc: EntityNPC) {
       npc.Velocity,
       npc.SpawnerEntity,
       npc.SubType,
-      0,
+      1 as Seed,
     );
     newNPC.AddEntityFlags(EntityFlag.FRIENDLY); // 1 << 29
     newNPC.AddEntityFlags(EntityFlag.PERSISTENT); // 1 << 37
@@ -111,7 +120,7 @@ function checkTemporaryCharm(npc: EntityNPC) {
 
 // EntityFlag.CONFUSION (1 << 9)
 function removeConfusion(npc: EntityNPC) {
-  // We remove confusion from all enemies
+  // We remove confusion from all enemies.
   if (npc.HasEntityFlags(EntityFlag.CONFUSION)) {
     npc.ClearEntityFlags(EntityFlag.CONFUSION);
   }
@@ -119,7 +128,7 @@ function removeConfusion(npc: EntityNPC) {
 
 // EntityFlag.FEAR (1 << 11)
 function removeFear(npc: EntityNPC) {
-  // We remove fear from all enemies
+  // We remove fear from all enemies.
   if (npc.HasEntityFlags(EntityFlag.FEAR)) {
     npc.ClearEntityFlags(EntityFlag.FEAR);
   }

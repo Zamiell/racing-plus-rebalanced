@@ -7,7 +7,7 @@ import g from "../globals";
 import * as misc from "../misc";
 import { SoundEffectCustom } from "../types/enums";
 
-// ModCallbacks.MC_USE_ITEM (3)
+// ModCallback.POST_USE_ITEM (3)
 export function useItem(): boolean {
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
   spawnItem(position);
@@ -16,7 +16,7 @@ export function useItem(): boolean {
 }
 
 export function spawnItem(position: Vector): void {
-  g.run.catalogSeed = misc.incrementRNG(g.run.catalogSeed);
+  g.run.catalogRNG = misc.incrementRNG(g.run.catalogRNG);
   const spawnedItem = g.g
     .Spawn(
       EntityType.PICKUP,
@@ -25,7 +25,7 @@ export function spawnItem(position: Vector): void {
       ZERO_VECTOR,
       null,
       0, // Random item
-      g.run.catalogSeed,
+      g.run.catalogRNG,
     )
     .ToPickup();
 
@@ -40,7 +40,7 @@ export function spawnItem(position: Vector): void {
   }
 }
 
-// ModCallbacks.MC_PRE_USE_ITEM (23)
+// ModCallback.PRE_USE_ITEM (23)
 export function preUseItem(): boolean {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();

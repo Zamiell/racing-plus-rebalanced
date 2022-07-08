@@ -6,7 +6,12 @@ import {
   PlayerType,
   TrinketType,
 } from "isaac-typescript-definitions";
-import { removeCollectibleCostume } from "isaacscript-common";
+import {
+  ModCallbackCustom,
+  ModUpgraded,
+  removeCollectibleCostume,
+  removeCollectibleFromItemTracker,
+} from "isaacscript-common";
 import { REMOVED_TRINKETS } from "../constants";
 import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import { TrinketTypeCustom } from "../enums/TrinketTypeCustom";
@@ -15,18 +20,16 @@ import * as misc from "../misc";
 import * as pills from "../pills";
 import * as postItemPickup from "../postItemPickup";
 import GlobalsRun from "../types/GlobalsRun";
-import * as postNewLevel from "./postNewLevel";
+import * as postNewLevel from "./postNewLevelReordered";
 
-export function main(saveState: boolean): void {
+export function init(mod: ModUpgraded): void {
+  mod.AddCallbackCustom(ModCallbackCustom.POST_GAME_STARTED_REORDERED, main);
+}
+
+function main(isContinued: boolean) {
   const startSeed = g.seeds.GetStartSeed();
 
-  // Cache the total number of collectibles. (This has to be done after all of the mods are finished
-  // loading.)
-  if (g.numTotalCollectibles === 0) {
-    g.numTotalCollectibles = misc.getNumTotalCollectibles();
-  }
-
-  if (saveState) {
+  if (isContinued) {
     return;
   }
 

@@ -1,49 +1,43 @@
-import { POKE_GO_EXCEPTION_ENTITIES, ZERO_VECTOR } from "../constants";
+import {
+  EntityType,
+  GridEntityType,
+  ItemPoolType,
+  LevelStage,
+  PickupPrice,
+  PickupVariant,
+  RoomType,
+  SlotVariant,
+} from "isaac-typescript-definitions";
+import {
+  doesEntityExist,
+  getRandomInt,
+  gridCoordinatesToWorldPosition,
+  inStartingRoom,
+  ModCallbackCustom,
+  ModUpgraded,
+  newRNG,
+  removeAllGridExcept,
+  removeAllSlots,
+  spawnCollectible,
+  spawnSlotWithSeed,
+} from "isaacscript-common";
+import { updateCachedAPIFunctions } from "../cache";
+import { POKE_GO_EXCEPTION_ENTITIES } from "../constants";
 import g from "../globals";
 import * as technology25 from "../items/technology25";
-import * as misc from "../misc";
-import {
-  CollectibleTypeCustom,
-  EffectVariantCustom,
-  SlotVariantCustom,
-} from "../types/enums";
+import { removeAllEntities } from "../misc";
 import GlobalsRunRoom from "../types/GlobalsRunRoom";
+import { SlotVariantCustom } from "../types/SlotVariantCustom";
 
-export function main(): void {
-  // Update some cached API functions to avoid crashing
-  g.l = g.g.GetLevel();
-  g.r = g.g.GetRoom();
-  const player = Isaac.GetPlayer(0);
-  if (player !== null) {
-    g.p = player;
-  }
-  g.seeds = g.g.GetSeeds();
-  g.itemPool = g.g.GetItemPool();
-
-  // Local variables
-  const gameFrameCount = g.g.GetFrameCount();
-  const stage = g.l.GetStage();
-  const stageType = g.l.GetStageType();
-
-  // Make sure the callbacks run in the right order (naturally, PostNewRoom gets called before the
-  CacheFlag. PostGameStarted callbacks)
-  if (
-    gameFrameCount === 0 ||
-    g.run.level.stage !== stage ||
-    g.run.level.stageType !== stageType
-  ) {
-    return;
-  }
-
-  newRoom();
+export function init(mod: ModUpgraded): void {
+  mod.AddCallbackCustom(ModCallbackCustom.POST_NEW_ROOM_REORDERED, main);
 }
 
-export function newRoom(): void {
-  // Local variables
-  const roomClear = g.r.IsClear();
+function main() {
+  updateCachedAPIFunctions();
+  g.run.room = new GlobalsRunRoom();
 
-  g.run.room = new GlobalsRunRoom(roomClear);
-
+  // Rooms
   checkDressingMachine(); // Start room
   checkShopMachine(); // 2
   replaceArcade(); // 9
@@ -65,15 +59,11 @@ export function newRoom(): void {
 }
 
 function checkDressingMachine() {
-  // Local variables
-  const roomIndex = misc.getRoomIndex();
-  const startingRoomIndex = g.l.GetStartingRoomIndex();
-
-  if (roomIndex !== startingRoomIndex) {
+  if (!inStartingRoom()) {
     return;
   }
 
-  misc.removeSpecificEntities(EntityType.SLOT, SlotVariant.MOMS_DRESSING_TABLE);
+  removeAllSlots(SlotVariant.MOMS_DRESSING_TABLE);
 }
 
 // RoomType.SHOP (2)
@@ -87,51 +77,38 @@ function checkShopMachine() {
     return;
   }
 
-  const greeds = Isaac.FindByType(EntityType.GREED, -1, -1, false, false);
-  if (greeds.length > 0) {
+  const greedExists = doesEntityExist(EntityType.GREED);
+  if (greedExists) {
     return;
   }
 
-  misc.removeSpecificEntities(
-    EntityType.SLOT,
-    SlotVariant.SHOP_RESTOCK_MACHINE,
-  );
+  removeAllSlots(SlotVariant.SHOP_RESTOCK_MACHINE);
 
-  // Figure out which machine to spawn
-  math.randomseed(roomSeed);
-  const machine = math.random(1, 3);
+  const position = Vector(200, 160);
+  const seed = g.r.GetSpawnSeed();
+
+  // Figure out which machine to spawn.
+  const machine = getRandomInt(1, 3, roomSeed);
   switch (machine) {
     case 1: {
-      // Spawn a Restock Machine (33% chance)
-      g.g.Spawn(
-        EntityType.SLOT,
-        SlotVariant.SHOP_RESTOCK_MACHINE,
-        Vector(200, 160),
-        ZERO_VECTOR,
-        null,
-        0,
-        g.r.GetSpawnSeed(),
-      );
+      // Spawn a Restock Machine (33% chance).
+      spawnSlotWithSeed(SlotVariant.SHOP_RESTOCK_MACHINE, 0, position, seed);
       break;
     }
 
     case 2: {
-      // Spawn a Transmutation Machine (33% chance)
-      g.g.Spawn(
-        EntityType.SLOT,
+      // Spawn a Transmutation Machine (33% chance).
+      spawnSlotWithSeed(
         SlotVariantCustom.TRANSMUTATION_MACHINE,
-        Vector(200, 160),
-        ZERO_VECTOR,
-        null,
         0,
-        g.r.GetSpawnSeed(),
+        position,
+        seed,
       );
-
       break;
     }
 
     case 3: {
-      // 33% of the time, the shop should have no machine
+      // 33% of the time, the shop should have no machine.
       break;
     }
 
@@ -147,78 +124,65 @@ function replaceArcade() {
   const stage = g.l.GetStage();
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
+  const seed = g.r.GetSpawnSeed();
+  const rng = newRNG(seed);
 
   if (roomType !== RoomType.ARCADE) {
     return;
   }
 
-  misc.removeAllGridEntities();
+  removeAllGridExcept(
+    GridEntityType.WALL, // 15
+    GridEntityType.DOOR, // 16
+  );
 
   if (!isFirstVisit) {
     return;
   }
 
-  misc.removeAllEntities();
+  removeAllEntities();
 
-  Isaac.Spawn(
-    EntityType.SLOT,
+  spawnSlotWithSeed(
     SlotVariant.BEGGAR,
     0,
-    misc.gridToPos(2, 1),
-    ZERO_VECTOR,
-    null,
+    gridCoordinatesToWorldPosition(2, 1),
+    rng,
   );
 
-  Isaac.Spawn(
-    EntityType.SLOT,
+  spawnSlotWithSeed(
     SlotVariant.BLOOD_DONATION_MACHINE,
     0,
-    misc.gridToPos(10, 1),
-    ZERO_VECTOR,
-    null,
+    gridCoordinatesToWorldPosition(10, 1),
+    rng,
   );
 
-  Isaac.Spawn(
-    EntityType.SLOT,
+  spawnSlotWithSeed(
     SlotVariantCustom.BOMB_DONATION_MACHINE,
     0,
-    misc.gridToPos(2, 5),
-    ZERO_VECTOR,
-    null,
+    gridCoordinatesToWorldPosition(2, 5),
+    rng,
   );
 
-  Isaac.Spawn(
-    EntityType.SLOT,
+  spawnSlotWithSeed(
     SlotVariantCustom.KEY_DONATION_MACHINE,
     0,
-    misc.gridToPos(10, 5),
-    ZERO_VECTOR,
-    null,
+    gridCoordinatesToWorldPosition(10, 5),
+    rng,
   );
 
-  let roulettePosition = g.r.GetCenterPos();
-  if (stage === 8) {
-    roulettePosition = misc.gridToPos(4, 3);
-  }
+  const roulettePosition =
+    stage === LevelStage.WOMB_2
+      ? gridCoordinatesToWorldPosition(4, 3)
+      : g.r.GetCenterPos();
+  spawnSlotWithSeed(SlotVariantCustom.ROULETTE_TABLE, 0, roulettePosition, rng);
 
-  Isaac.Spawn(
-    EntityType.SLOT,
-    SlotVariantCustom.ROULETTE_TABLE,
-    0,
-    roulettePosition,
-    ZERO_VECTOR,
-    null,
-  );
-
-  // On Womb 2, also spawn a Holy Machine
-  if (stage === 8) {
-    Isaac.Spawn(
-      EntityType.SLOT,
+  // On Womb 2, also spawn a Holy Machine.
+  if (stage === LevelStage.WOMB_2) {
+    spawnSlotWithSeed(
       SlotVariantCustom.HOLY_MACHINE,
       0,
-      misc.gridToPos(8, 3),
-      ZERO_VECTOR,
-      null,
+      gridCoordinatesToWorldPosition(8, 3),
+      rng,
     );
   }
 }
@@ -233,38 +197,34 @@ function replaceCurseRoom() {
     return;
   }
 
-  misc.removeAllGridEntities();
+  removeAllGridExcept(
+    GridEntityType.WALL, // 15
+    GridEntityType.DOOR, // 16
+  );
 
   if (!isFirstVisit) {
     return;
   }
 
-  misc.removeAllEntities();
+  removeAllEntities();
   spawnCurseRoomPedestalItem();
 }
 
 export function spawnCurseRoomPedestalItem(): void {
-  // Local variables
   const centerPos = g.r.GetCenterPos();
+  const seed = g.r.GetSpawnSeed();
 
-  // Get a new item from the Curse Room pool
-  const subType = g.itemPool.GetCollectible(
+  // Get a new item from the Curse Room pool.
+  const collectibleType = g.itemPool.GetCollectible(
     ItemPoolType.CURSE,
     true,
-    g.r.GetSpawnSeed(),
-  ); // 12
-  const collectible = Isaac.Spawn(
-    EntityType.PICKUP,
-    PickupVariant.COLLECTIBLE,
-    subType,
-    centerPos,
-    ZERO_VECTOR,
-    null,
-  ).ToPickup();
-  if (collectible !== null) {
-    collectible.AutoUpdatePrice = false;
-    collectible.Price = -1; // All Curse Room items should have a price of one red heart container
-  }
+    seed,
+  );
+  const collectible = spawnCollectible(collectibleType, centerPos, seed);
+
+  // All Curse Room items should have a price of one red heart container.
+  collectible.AutoUpdatePrice = false;
+  collectible.Price = PickupPrice.ONE_HEART;
 }
 
 // RoomType.CHALLENGE (21)
@@ -277,15 +237,18 @@ function replaceChallengeRoom() {
     return;
   }
 
-  misc.removeAllGridEntities();
+  removeAllGridExcept(
+    GridEntityType.WALL, // 15
+    GridEntityType.DOOR, // 16
+  );
 
   if (!isFirstVisit) {
     return;
   }
 
-  misc.removeAllEntities();
+  removeAllEntities();
 
-  // Get a new item from the Treasure Room pool
+  // Get a new item from the Treasure Room pool.
   const subType = g.itemPool.GetCollectible(
     ItemPoolType.TREASURE,
     true,

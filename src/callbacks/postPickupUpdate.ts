@@ -1,10 +1,10 @@
+import * as postNewRoom from "../callbacksCustom/postNewRoomReordered";
 import { ZERO_VECTOR } from "../constants";
 import g from "../globals";
 import * as catalog from "../items/catalog";
 import * as misc from "../misc";
 import { COLORS } from "../pills";
 import { CollectibleState, TrinketTypeCustom } from "../types/enums";
-import * as postNewRoom from "./postNewRoom";
 
 export function main(pickup: EntityPickup): void {
   checkTouched(pickup);
@@ -38,8 +38,8 @@ function touchedEtherealPenny(pickup: EntityPickup) {
   }
 
   // 20% chance for a half soul heart
-  g.run.etherealPennySeed = misc.incrementRNG(g.run.etherealPennySeed);
-  math.randomseed(g.run.etherealPennySeed);
+  g.run.etherealPennyRNG = misc.incrementRNG(g.run.etherealPennyRNG);
+  math.randomseed(g.run.etherealPennyRNG);
   const slotChoice = math.random(1, 5);
   if (slotChoice !== 1) {
     return;
@@ -51,8 +51,8 @@ function touchedEtherealPenny(pickup: EntityPickup) {
     position,
     ZERO_VECTOR,
     null,
-    HeartSubType.HEART_HALF_SOUL,
-    g.run.etherealPennySeed,
+    HeartSubType.HALF_SOUL,
+    g.run.etherealPennyRNG,
   );
 }
 
@@ -97,7 +97,7 @@ export function pill(pickup: EntityPickup): void {
 function heartRelic(pickup: EntityPickup) {
   // Replace soul hearts from The Relic with half soul hearts (5.10.8)
   if (
-    pickup.SubType === HeartSubType.HEART_SOUL &&
+    pickup.SubType === HeartSubType.SOUL &&
     pickup.SpawnerType === EntityType.FAMILIAR &&
     pickup.SpawnerVariant === FamiliarVariant.RELIC
   ) {
@@ -107,7 +107,7 @@ function heartRelic(pickup: EntityPickup) {
       pickup.Position,
       pickup.Velocity,
       pickup.SpawnerEntity,
-      HeartSubType.HEART_HALF_SOUL,
+      HeartSubType.HALF_SOUL,
       pickup.InitSeed,
     );
     pickup.Remove();
@@ -122,7 +122,7 @@ function heartCheckDDReroll(pickup: EntityPickup) {
 
   if (
     pickup.FrameCount === 1 &&
-    pickup.SubType === HeartSubType.HEART_FULL &&
+    pickup.SubType === HeartSubType.FULL &&
     pickup.Price === 3 &&
     roomType === RoomType.CURSE
   ) {
@@ -136,7 +136,7 @@ function heartCheckDDReroll(pickup: EntityPickup) {
 function heartCheckCatalogReroll(pickup: EntityPickup) {
   if (
     pickup.FrameCount === 1 &&
-    pickup.SubType === HeartSubType.HEART_FULL &&
+    pickup.SubType === HeartSubType.FULL &&
     pickup.Price === 3 &&
     !catalog.inIllegalRoomType()
   ) {

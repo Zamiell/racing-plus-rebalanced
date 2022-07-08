@@ -1,3 +1,4 @@
+import { EntityFlag } from "isaac-typescript-definitions";
 import { FAMILIAR_TEAR_DAMAGE } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
@@ -30,7 +31,7 @@ function lilBrimstone(laser: EntityLaser) {
 function isaacsHeart(laser: EntityLaser) {
   if (
     laser.FrameCount >= 3 ||
-    laser.Variant !== LaserVariant.LASER_THICK_RED ||
+    laser.Variant !== LaserVariant.THICK_RED ||
     laser.SpawnerType !== EntityType.PLAYER ||
     !g.p.HasCollectible(CollectibleType.ISAACS_HEART)
   ) {
@@ -105,7 +106,7 @@ function familiarLaser(laser: EntityLaser) {
 
   // Ignore Tech.5 lasers
   if (
-    laser.Variant === LaserVariant.LASER_THIN_RED &&
+    laser.Variant === LaserVariant.THIN_RED &&
     !g.p.HasCollectible(CollectibleType.TECHNOLOGY) && // 68
     !g.p.HasCollectible(CollectibleType.TECH_X) // 395
   ) {
@@ -114,7 +115,7 @@ function familiarLaser(laser: EntityLaser) {
 
   // Ignore Technology Zero lasers
   if (
-    laser.Variant === LaserVariant.LASER_THIN_RED &&
+    laser.Variant === LaserVariant.THIN_RED &&
     laser.SubType === 4 // Technology Zero lasers seem to always have a subtype of 4
   ) {
     return;
@@ -123,9 +124,9 @@ function familiarLaser(laser: EntityLaser) {
   // We only need to handle familiar shooting for Technology lasers, Brimstone lasers, and Tech X
   // lasers
   if (
-    laser.Variant !== LaserVariant.LASER_THICK_RED && // 1
-    laser.Variant !== LaserVariant.LASER_THIN_RED && // 2
-    laser.Variant !== LaserVariant.LASER_BRIMTECH // 9
+    laser.Variant !== LaserVariant.THICK_RED && // 1
+    laser.Variant !== LaserVariant.THIN_RED && // 2
+    laser.Variant !== LaserVariant.BRIMTECH // 9
   ) {
     return;
   }
@@ -139,8 +140,8 @@ function familiarLaser(laser: EntityLaser) {
 
   // Shoot some extra tears for Brimstone lasers
   if (
-    (laser.Variant === LaserVariant.LASER_THICK_RED ||
-      laser.Variant === LaserVariant.LASER_BRIMTECH) &&
+    (laser.Variant === LaserVariant.THICK_RED ||
+      laser.Variant === LaserVariant.BRIMTECH) &&
     !g.p.HasCollectible(CollectibleType.TECH_X)
   ) {
     g.run.familiarMultiShot = 3; // For a total of 4
@@ -156,13 +157,10 @@ function friendlyFade(laser: EntityLaser) {
     return;
   }
 
-  // Fade the lasers of charmed enemies so that it is easier to see everything We do this on every
-  // frame since the MC_POST_LASER_INIT callback is bugged
+  // Fade the lasers of charmed enemies so that it is easier to see everything. We do this on every
+  // frame since the `POST_LASER_INIT` callback is bugged.
   const color = laser.GetColor();
   const fadeAmount = 0.25;
   const newColor = Color(color.R, color.G, color.B, fadeAmount, 0, 0, 0);
-  CacheFlag. BO will be float values, but the Color
-  // constructor only wants integers, so manually use 0 for these 3 values instead of the existing
-  // ones)
   laser.SetColor(newColor, 0, 0, true, true);
 }

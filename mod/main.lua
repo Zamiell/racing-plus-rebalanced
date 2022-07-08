@@ -2536,6 +2536,7 @@ local RoomType = ____isaac_2Dtypescript_2Ddefinitions.RoomType
 local TrinketType = ____isaac_2Dtypescript_2Ddefinitions.TrinketType
 local ____CollectibleTypeCustom = require("enums.CollectibleTypeCustom")
 local CollectibleTypeCustom = ____CollectibleTypeCustom.CollectibleTypeCustom
+____exports.MOD_NAME = "Racing+ Rebalanced"
 ____exports.VERSION = "v1.1.0"
 ____exports.ZERO_VECTOR = Vector(0, 0)
 ____exports.FAMILIAR_TEAR_DAMAGE = 0.33
@@ -2808,9 +2809,8 @@ local Map = ____lualib.Map
 local ____exports = {}
 local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
 local Direction = ____isaac_2Dtypescript_2Ddefinitions.Direction
-local PlayerForm = ____isaac_2Dtypescript_2Ddefinitions.PlayerForm
 local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
-local getEnumValues = ____isaacscript_2Dcommon.getEnumValues
+local newPlayerHealth = ____isaacscript_2Dcommon.newPlayerHealth
 local newRNG = ____isaacscript_2Dcommon.newRNG
 local ____GlobalsRunLevel = require("types.GlobalsRunLevel")
 local GlobalsRunLevel = ____GlobalsRunLevel.default
@@ -2853,10 +2853,10 @@ function GlobalsRun.prototype.____constructor(self, startSeed)
     self.walnutCounters = 0
     self.spawningRestock = false
     self.strabismusDoubleTear = false
-    self.catalogSeed = 0
-    self.etherealPennySeed = 0
+    self.catalogRNG = newRNG(nil)
+    self.etherealPennyRNG = newRNG(nil)
     self.numCoins = 0
-    self.wheelOfFortuneSeed = 0
+    self.wheelOfFortuneRNG = newRNG(nil)
     self.sunCardRNG = newRNG(nil)
     self.pills = {
         effects = __TS__New(Map),
@@ -2874,32 +2874,18 @@ function GlobalsRun.prototype.____constructor(self, startSeed)
         familiarFrenzy = 0
     }
     self.health = {
-        hearts = 0,
-        maxHearts = 0,
-        soulHearts = 0,
-        blackHearts = 0,
-        boneHearts = 0,
+        health = newPlayerHealth(nil),
         changedOnThisFrame = false,
         restoredLastHealthOnThisFrame = false
     }
-    self.lastHealth = {
-        hearts = 0,
-        maxHearts = 0,
-        soulHearts = 0,
-        blackHearts = 0,
-        boneHearts = 0
-    }
-    self.transformations = __TS__New(Map)
+    self.lastHealth = newPlayerHealth(nil)
     self.randomSeed = startSeed
     self.rouletteTableRNG = newRNG(nil, startSeed)
     self.fannyPackRNG = newRNG(nil, startSeed)
     self.piggyBankRNG = newRNG(nil, startSeed)
-    self.catalogSeed = startSeed
-    self.etherealPennySeed = startSeed
-    self.wheelOfFortuneSeed = startSeed
-    for ____, transformation in ipairs(getEnumValues(nil, PlayerForm)) do
-        self.transformations:set(transformation, false)
-    end
+    self.catalogRNG = newRNG(nil, startSeed)
+    self.etherealPennyRNG = newRNG(nil, startSeed)
+    self.wheelOfFortuneRNG = newRNG(nil, startSeed)
 end
 ____exports.default = GlobalsRun
 return ____exports
@@ -2947,53 +2933,6 @@ local g = ____globals.default
 function ____exports.default(self)
     Isaac.DebugString("Racing+ Rebalanced debug function activated.")
     g.run.level.doubleItems = true
-end
-return ____exports
- end,
-["isaacScriptInit"] = function(...) 
-local ____lualib = require("lualib_bundle")
-local __TS__StringSplit = ____lualib.__TS__StringSplit
-local ____exports = {}
-local overwriteError, isaacScriptError
-function overwriteError(self)
-    if ___LUA_ERROR_BACKUP == nil then
-        ___LUA_ERROR_BACKUP = error
-    end
-    error = isaacScriptError
-end
-function isaacScriptError(err, _level)
-    local msg
-    if err == nil or err == "" then
-        msg = "Lua error (with a blank error message)"
-    else
-        msg = "Lua error: " .. err
-    end
-    Isaac.DebugString(msg)
-    Isaac.ConsoleOutput(msg)
-    if debug ~= nil then
-        local tracebackLines = __TS__StringSplit(
-            debug.traceback(),
-            "\n"
-        )
-        do
-            local i = 0
-            while i < #tracebackLines do
-                do
-                    if i == 0 or i == 1 then
-                        goto __continue9
-                    end
-                    local line = tracebackLines[i + 1]
-                    Isaac.DebugString(line)
-                end
-                ::__continue9::
-                i = i + 1
-            end
-        end
-    end
-    ___LUA_ERROR_BACKUP("(See above error messages.)")
-end
-function ____exports.default(self)
-    overwriteError(nil)
 end
 return ____exports
  end,
@@ -3374,6 +3313,8 @@ return ____exports
 ["callbacks.evaluateCache"] = function(...) 
 local ____exports = {}
 local damageItems, damageTrinkets, damagePills, damageGlobalPenalty, fireDelayItems, fireDelayPills, shotSpeedItems, speedItems, luckItems, hasTinyPlanetExceptionItem, TINY_PLANET_EXCEPTION_ITEMS
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local TrinketType = ____isaac_2Dtypescript_2Ddefinitions.TrinketType
 local ____globals = require("globals")
 local g = ____globals.default
 local ____enums = require("types.enums")
@@ -3682,6 +3623,7 @@ local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
 local GridEntityType = ____isaac_2Dtypescript_2Ddefinitions.GridEntityType
 local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
 local getEntities = ____isaacscript_2Dcommon.getEntities
+local playerHasHealthLeft = ____isaacscript_2Dcommon.playerHasHealthLeft
 local setPlayerHealth = ____isaacscript_2Dcommon.setPlayerHealth
 local ____globals = require("globals")
 local g = ____globals.default
@@ -3711,14 +3653,11 @@ function ____exports.getVelocityFromAimDirection(self)
     local velocity = g.p:GetAimDirection()
     return velocity * (g.p.ShotSpeed * 10)
 end
-function ____exports.hasNoHealth(self)
-    return g.p:GetHearts() == 0 and g.p:GetSoulHearts() == 0 and g.p:GetBoneHearts() == 0
-end
 function ____exports.isOnTearBuild(self)
     return not g.p:HasCollectible(CollectibleType.DR_FETUS) and not g.p:HasCollectible(CollectibleType.TECHNOLOGY) and not g.p:HasCollectible(CollectibleType.MOMS_KNIFE) and not g.p:HasCollectible(CollectibleType.BRIMSTONE) and not g.p:HasCollectible(CollectibleType.EPIC_FETUS) and not g.p:HasCollectible(CollectibleType.TECH_X)
 end
 function ____exports.killIfNoHealth(self)
-    if ____exports.hasNoHealth(nil) then
+    if not playerHasHealthLeft(nil, g.p) then
         g.p:Kill()
     end
 end
@@ -3745,18 +3684,6 @@ function ____exports.removeAllGridEntities(self)
         end
     end
 end
-function ____exports.removeSpecificEntities(self, entityType, variant)
-    local entities = Isaac.FindByType(
-        entityType,
-        variant,
-        -1,
-        false,
-        false
-    )
-    for ____, entity in ipairs(entities) do
-        entity:Remove()
-    end
-end
 function ____exports.setHealthFromLastFrame(self)
     local gameFrameCount = g.g:GetFrameCount()
     if gameFrameCount == 0 then
@@ -3777,18 +3704,31 @@ function ____exports.setHealthFromLastFrame(self)
 end
 return ____exports
  end,
-["callbacks.NPCUpdate"] = function(...) 
+["callbacks.postNPCUpdate"] = function(...) 
 local ____lualib = require("lualib_bundle")
 local __TS__ArrayIncludes = ____lualib.__TS__ArrayIncludes
 local ____exports = {}
-local skatole, burstingSack, delirious, removeCharm, checkTemporaryCharm, removeConfusion, removeFear, fadeFriendly
+local main, skatole, burstingSack, delirious, removeCharm, checkTemporaryCharm, removeConfusion, removeFear, fadeFriendly
 local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
 local EntityFlag = ____isaac_2Dtypescript_2Ddefinitions.EntityFlag
+local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
 local ____constants = require("constants")
 local FLY_ENTITIES = ____constants.FLY_ENTITIES
 local SPIDER_ENTITIES = ____constants.SPIDER_ENTITIES
 local ____globals = require("globals")
 local g = ____globals.default
+function main(self, npc)
+    skatole(nil, npc)
+    burstingSack(nil, npc)
+    delirious(nil, npc)
+    removeCharm(nil, npc)
+    checkTemporaryCharm(nil, npc)
+    removeConfusion(nil, npc)
+    removeFear(nil, npc)
+    fadeFriendly(nil, npc)
+end
 function skatole(self, npc)
     if not g.p:HasCollectible(CollectibleType.SKATOLE) or npc:HasEntityFlags(EntityFlag.FRIENDLY) then
         return
@@ -3845,7 +3785,7 @@ function checkTemporaryCharm(self, npc)
             npc.Velocity,
             npc.SpawnerEntity,
             npc.SubType,
-            0
+            1
         )
         newNPC:AddEntityFlags(EntityFlag.FRIENDLY)
         newNPC:AddEntityFlags(EntityFlag.PERSISTENT)
@@ -3887,15 +3827,8 @@ function ____exports.fade(self, entity)
         true
     )
 end
-function ____exports.main(self, npc)
-    skatole(nil, npc)
-    burstingSack(nil, npc)
-    delirious(nil, npc)
-    removeCharm(nil, npc)
-    checkTemporaryCharm(nil, npc)
-    removeConfusion(nil, npc)
-    removeFear(nil, npc)
-    fadeFriendly(nil, npc)
+function ____exports.init(self, mod)
+    mod:AddCallback(ModCallback.POST_NPC_UPDATE, main)
 end
 return ____exports
  end,
@@ -3904,7 +3837,7 @@ local ____exports = {}
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
-local NPCUpdate = require("callbacks.NPCUpdate")
+local NPCUpdate = require("callbacks.postNPCUpdate")
 function ____exports.leech(self, familiar)
     NPCUpdate:fade(familiar)
 end
@@ -3961,93 +3894,85 @@ function ____exports.main(self, rng, card)
 end
 return ____exports
  end,
+["enums.PillEffectCustom"] = function(...) 
+local ____exports = {}
+____exports.PillEffectCustom = {
+    DAMAGE_UP = Isaac.GetPillEffectByName("Damage Up"),
+    TEAR_DELAY_DOWN = Isaac.GetPillEffectByName("Tear Delay Down"),
+    DEAL_AFFINITY = Isaac.GetPillEffectByName("Deal Affinity"),
+    BONE_AFFINITY = Isaac.GetPillEffectByName("Bone Affinity"),
+    RESTOCK = Isaac.GetPillEffectByName("Restock"),
+    GOLDEN_DUMP = Isaac.GetPillEffectByName("Golden Dump"),
+    GLIMPSE = Isaac.GetPillEffectByName("Glimpse"),
+    SUPER_SADNESS = Isaac.GetPillEffectByName("Super Sadness"),
+    INVINCIBILITY = Isaac.GetPillEffectByName("Invincibility"),
+    REALLY_BAD_GAS = Isaac.GetPillEffectByName("Really Bad Gas"),
+    AETHER = Isaac.GetPillEffectByName("Aether"),
+    WALLS_HAVE_EYES = Isaac.GetPillEffectByName("Walls Have Eyes"),
+    BLADDER_INFECTION = Isaac.GetPillEffectByName("Bladder Infection"),
+    SCORCHED_EARTH = Isaac.GetPillEffectByName("Scorched Earth"),
+    FAMILIAR_FRENZY = Isaac.GetPillEffectByName("Familiar Frenzy"),
+    UNLOCK = Isaac.GetPillEffectByName("Unlock")
+}
+return ____exports
+ end,
 ["pills"] = function(...) 
 local ____lualib = require("lualib_bundle")
 local Map = ____lualib.Map
 local __TS__New = ____lualib.__TS__New
 local ____exports = {}
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
+local Direction = ____isaac_2Dtypescript_2Ddefinitions.Direction
+local PillColor = ____isaac_2Dtypescript_2Ddefinitions.PillColor
+local PillEffect = ____isaac_2Dtypescript_2Ddefinitions.PillEffect
+local RoomShape = ____isaac_2Dtypescript_2Ddefinitions.RoomShape
+local SoundEffect = ____isaac_2Dtypescript_2Ddefinitions.SoundEffect
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local sfxManager = ____isaacscript_2Dcommon.sfxManager
+local ____PillEffectCustom = require("enums.PillEffectCustom")
+local PillEffectCustom = ____PillEffectCustom.PillEffectCustom
 local ____globals = require("globals")
 local g = ____globals.default
-local ____enums = require("types.enums")
-local PillEffectCustom = ____enums.PillEffectCustom
 local DURATION = 600
-____exports.COLORS = {PillColor.PILL_BLUE_BLUE, PillColor.PILL_ORANGE_ORANGE, PillColor.PILL_WHITE_WHITE, PillColor.PILL_REDDOTS_RED}
+____exports.COLORS = {PillColor.BLUE_BLUE, PillColor.ORANGE_ORANGE, PillColor.WHITE_WHITE, PillColor.RED_DOTS_RED}
 ____exports.EFFECTS = {
-    PillEffect.PILLEFFECT_BALLS_OF_STEEL,
-    PillEffect.PILLEFFECT_HEALTH_UP,
-    PillEffect.PILLEFFECT_PRETTY_FLY,
-    PillEffect.PILLEFFECT_SPEED_UP,
-    PillEffect.PILLEFFECT_TEARS_UP,
-    PillEffect.PILLEFFECT_48HOUR_ENERGY,
-    PillEffect.PILLEFFECT_SEE_FOREVER,
-    PillEffectCustom.PILLEFFECT_DAMAGE_UP,
-    PillEffectCustom.PILLEFFECT_TEAR_DELAY_DOWN,
-    PillEffectCustom.PILLEFFECT_DEAL_AFFINITY,
-    PillEffectCustom.PILLEFFECT_BONE_AFFINITY,
-    PillEffectCustom.PILLEFFECT_RESTOCK,
-    PillEffectCustom.PILLEFFECT_GOLDEN_DUMP,
-    PillEffectCustom.PILLEFFECT_SUPER_SADNESS,
-    PillEffectCustom.PILLEFFECT_INVINCIBILITY,
-    PillEffectCustom.PILLEFFECT_REALLY_BAD_GAS,
-    PillEffectCustom.PILLEFFECT_GLIMPSE,
-    PillEffectCustom.PILLEFFECT_AETHER,
-    PillEffectCustom.PILLEFFECT_WALLS_HAVE_EYES,
-    PillEffectCustom.PILLEFFECT_BLADDER_INFECTION,
-    PillEffectCustom.PILLEFFECT_SCORCHED_EARTH
+    PillEffect.BALLS_OF_STEEL,
+    PillEffect.HEALTH_UP,
+    PillEffect.PRETTY_FLY,
+    PillEffect.SPEED_UP,
+    PillEffect.TEARS_UP,
+    PillEffect.FORTY_EIGHT_HOUR_ENERGY,
+    PillEffect.I_CAN_SEE_FOREVER,
+    PillEffectCustom.DAMAGE_UP,
+    PillEffectCustom.TEAR_DELAY_DOWN,
+    PillEffectCustom.DEAL_AFFINITY,
+    PillEffectCustom.BONE_AFFINITY,
+    PillEffectCustom.RESTOCK,
+    PillEffectCustom.GOLDEN_DUMP,
+    PillEffectCustom.SUPER_SADNESS,
+    PillEffectCustom.INVINCIBILITY,
+    PillEffectCustom.REALLY_BAD_GAS,
+    PillEffectCustom.GLIMPSE,
+    PillEffectCustom.AETHER,
+    PillEffectCustom.WALLS_HAVE_EYES,
+    PillEffectCustom.BLADDER_INFECTION,
+    PillEffectCustom.SCORCHED_EARTH
 }
-____exports.WALL_COORDINATES = __TS__New(
-    Map,
-    {
-        {
-            RoomShape.ROOMSHAPE_1x1,
-            __TS__New(Map, {{Direction.LEFT, {29, 7}}, {Direction.UP, {121, 13}}, {Direction.RIGHT, {15, 7}}, {Direction.DOWN, {1, 13}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_IH,
-            __TS__New(Map, {{Direction.LEFT, {59, 3}}, {Direction.UP, {91, 13}}, {Direction.RIGHT, {45, 3}}, {Direction.DOWN, {31, 13}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_IV,
-            __TS__New(Map, {{Direction.LEFT, {25, 7}}, {Direction.UP, {125, 5}}, {Direction.RIGHT, {19, 7}}, {Direction.DOWN, {5, 5}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_1x2,
-            __TS__New(Map, {{Direction.LEFT, {44, 14}}, {Direction.UP, {226, 13}}, {Direction.RIGHT, {15, 14}}, {Direction.DOWN, {1, 13}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_IIV,
-            __TS__New(Map, {{Direction.LEFT, {25, 14}}, {Direction.UP, {230, 5}}, {Direction.RIGHT, {19, 14}}, {Direction.DOWN, {5, 5}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_2x1,
-            __TS__New(Map, {{Direction.LEFT, {55, 7}}, {Direction.UP, {225, 26}}, {Direction.RIGHT, {28, 7}}, {Direction.DOWN, {1, 26}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_IIH,
-            __TS__New(Map, {{Direction.LEFT, {111, 3}}, {Direction.UP, {169, 26}}, {Direction.RIGHT, {84, 3}}, {Direction.DOWN, {57, 26}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_2x2,
-            __TS__New(Map, {{Direction.LEFT, {55, 14}}, {Direction.UP, {421, 26}}, {Direction.RIGHT, {28, 14}}, {Direction.DOWN, {1, 26}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_LTL,
-            __TS__New(Map, {{Direction.LEFT, {55, 14}}, {Direction.UP, {421, 26}}, {Direction.RIGHT, {41, 7, 224}}, {Direction.DOWN, {197, 13, 14}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_LTR,
-            __TS__New(Map, {{Direction.LEFT, {42, 7, 251}}, {Direction.UP, {421, 26}}, {Direction.RIGHT, {28, 14}}, {Direction.DOWN, {1, 13, 210}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_LBL,
-            __TS__New(Map, {{Direction.LEFT, {55, 14}}, {Direction.UP, {225, 13, 434}}, {Direction.RIGHT, {28, 7, 237}}, {Direction.DOWN, {1, 26}}})
-        },
-        {
-            RoomShape.ROOMSHAPE_LBR,
-            __TS__New(Map, {{Direction.LEFT, {55, 7, 238}}, {Direction.UP, {421, 13, 238}}, {Direction.RIGHT, {28, 14}}, {Direction.DOWN, {1, 26}}})
-        }
-    }
-)
+____exports.ROOM_SHAPE_WALL_COORDINATES = {
+    [RoomShape.SHAPE_1x1] = __TS__New(Map, {{Direction.LEFT, {29, 7}}, {Direction.UP, {121, 13}}, {Direction.RIGHT, {15, 7}}, {Direction.DOWN, {1, 13}}}),
+    [RoomShape.IH] = __TS__New(Map, {{Direction.LEFT, {59, 3}}, {Direction.UP, {91, 13}}, {Direction.RIGHT, {45, 3}}, {Direction.DOWN, {31, 13}}}),
+    [RoomShape.IV] = __TS__New(Map, {{Direction.LEFT, {25, 7}}, {Direction.UP, {125, 5}}, {Direction.RIGHT, {19, 7}}, {Direction.DOWN, {5, 5}}}),
+    [RoomShape.SHAPE_1x2] = __TS__New(Map, {{Direction.LEFT, {44, 14}}, {Direction.UP, {226, 13}}, {Direction.RIGHT, {15, 14}}, {Direction.DOWN, {1, 13}}}),
+    [RoomShape.IIV] = __TS__New(Map, {{Direction.LEFT, {25, 14}}, {Direction.UP, {230, 5}}, {Direction.RIGHT, {19, 14}}, {Direction.DOWN, {5, 5}}}),
+    [RoomShape.SHAPE_2x1] = __TS__New(Map, {{Direction.LEFT, {55, 7}}, {Direction.UP, {225, 26}}, {Direction.RIGHT, {28, 7}}, {Direction.DOWN, {1, 26}}}),
+    [RoomShape.IIH] = __TS__New(Map, {{Direction.LEFT, {111, 3}}, {Direction.UP, {169, 26}}, {Direction.RIGHT, {84, 3}}, {Direction.DOWN, {57, 26}}}),
+    [RoomShape.SHAPE_2x2] = __TS__New(Map, {{Direction.LEFT, {55, 14}}, {Direction.UP, {421, 26}}, {Direction.RIGHT, {28, 14}}, {Direction.DOWN, {1, 26}}}),
+    [RoomShape.LTL] = __TS__New(Map, {{Direction.LEFT, {55, 14}}, {Direction.UP, {421, 26}}, {Direction.RIGHT, {41, 7, 224}}, {Direction.DOWN, {197, 13, 14}}}),
+    [RoomShape.LTR] = __TS__New(Map, {{Direction.LEFT, {42, 7, 251}}, {Direction.UP, {421, 26}}, {Direction.RIGHT, {28, 14}}, {Direction.DOWN, {1, 13, 210}}}),
+    [RoomShape.LBL] = __TS__New(Map, {{Direction.LEFT, {55, 14}}, {Direction.UP, {225, 13, 434}}, {Direction.RIGHT, {28, 7, 237}}, {Direction.DOWN, {1, 26}}}),
+    [RoomShape.LBR] = __TS__New(Map, {{Direction.LEFT, {55, 7, 238}}, {Direction.UP, {421, 13, 238}}, {Direction.RIGHT, {28, 14}}, {Direction.DOWN, {1, 26}}})
+}
 function ____exports.animateHappy(self)
     g.p:AnimateHappy()
     local color = Color(
@@ -4066,9 +3991,9 @@ function ____exports.animateHappy(self)
         true,
         false
     )
-    sfxManager:Stop(SoundEffect.THUMBSUP)
+    sfxManager:Stop(SoundEffect.THUMBS_UP)
     sfxManager:Play(
-        SoundEffect.POWERUP_SPEWER,
+        SoundEffect.POWER_UP_SPEWER,
         1,
         0,
         false,
@@ -4150,17 +4075,38 @@ function ____exports.main(self, bomb)
 end
 return ____exports
  end,
+["enums.CreepSubTypeCustom"] = function(...) 
+local ____exports = {}
+____exports.CreepSubTypeCustom = CreepSubTypeCustom or ({})
+____exports.CreepSubTypeCustom.FLOOR_EFFECT_CREEP = 12545
+____exports.CreepSubTypeCustom[____exports.CreepSubTypeCustom.FLOOR_EFFECT_CREEP] = "FLOOR_EFFECT_CREEP"
+return ____exports
+ end,
 ["callbacks.postEffectUpdate"] = function(...) 
 local ____lualib = require("lualib_bundle")
 local Map = ____lualib.Map
 local __TS__New = ____lualib.__TS__New
 local ____exports = {}
 local spawnPickupsInCircle, dicePipFunctions
-local ____constants = require("constants")
-local ZERO_VECTOR = ____constants.ZERO_VECTOR
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local CoinSubType = ____isaac_2Dtypescript_2Ddefinitions.CoinSubType
+local DiceFloorSubType = ____isaac_2Dtypescript_2Ddefinitions.DiceFloorSubType
+local EffectVariant = ____isaac_2Dtypescript_2Ddefinitions.EffectVariant
+local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local HeartSubType = ____isaac_2Dtypescript_2Ddefinitions.HeartSubType
+local ItemPoolType = ____isaac_2Dtypescript_2Ddefinitions.ItemPoolType
+local PickupVariant = ____isaac_2Dtypescript_2Ddefinitions.PickupVariant
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local getRandomArrayElement = ____isaacscript_2Dcommon.getRandomArrayElement
+local isCloseEnoughToTriggerDiceFloor = ____isaacscript_2Dcommon.isCloseEnoughToTriggerDiceFloor
+local log = ____isaacscript_2Dcommon.log
+local nextSeed = ____isaacscript_2Dcommon.nextSeed
+local spawnCollectible = ____isaacscript_2Dcommon.spawnCollectible
+local spawnWithSeed = ____isaacscript_2Dcommon.spawnWithSeed
+local ____CreepSubTypeCustom = require("enums.CreepSubTypeCustom")
+local CreepSubTypeCustom = ____CreepSubTypeCustom.CreepSubTypeCustom
 local ____globals = require("globals")
 local g = ____globals.default
-local misc = require("misc")
 function spawnPickupsInCircle(self, numToSpawn, pickupVariant, pickupSubType)
     local velocityMultiplier = 4
     local roomSeed = g.r:GetSpawnSeed()
@@ -4172,20 +4118,33 @@ function spawnPickupsInCircle(self, numToSpawn, pickupVariant, pickupSubType)
             local velocity = Vector(velocityMultiplier, 0)
             local degrees = 360 / numToSpawn * i
             local rotatedVelocity = velocity:Rotated(degrees)
-            seed = misc:incrementRNG(seed)
-            g.g:Spawn(
+            seed = nextSeed(nil, seed)
+            spawnWithSeed(
+                nil,
                 EntityType.PICKUP,
                 pickupVariant,
-                centerPos,
-                rotatedVelocity,
-                nil,
                 pickupSubType,
-                seed
+                centerPos,
+                seed,
+                rotatedVelocity
             )
             i = i + 1
         end
     end
 end
+local ITEM_POOL_TYPES = {
+    ItemPoolType.TREASURE,
+    ItemPoolType.SHOP,
+    ItemPoolType.BOSS,
+    ItemPoolType.DEVIL,
+    ItemPoolType.ANGEL,
+    ItemPoolType.LIBRARY
+}
+local DiceFloorState = DiceFloorState or ({})
+DiceFloorState.INITIAL = 0
+DiceFloorState[DiceFloorState.INITIAL] = "INITIAL"
+DiceFloorState.ACTIVATED = 1
+DiceFloorState[DiceFloorState.ACTIVATED] = "ACTIVATED"
 function ____exports.blueFlame(self, effect)
     if effect.FrameCount == 0 then
         effect.Size = effect.Size * 2
@@ -4194,73 +4153,75 @@ function ____exports.blueFlame(self, effect)
     effect.SpriteScale = Vector(1.5, 1.5)
 end
 function ____exports.diceRoomCustom(self, effect)
-    if effect.State == 1 then
+    if effect.State == DiceFloorState.ACTIVATED then
         return
     end
-    local activationDistance = 75
-    if g.p.Position:Distance(effect.Position) > activationDistance then
+    if not isCloseEnoughToTriggerDiceFloor(nil, g.p, effect) then
         return
     end
-    effect.State = 1
+    effect.State = DiceFloorState.ACTIVATED
     g.p:AnimateHappy()
-    Isaac.DebugString(("Activated a " .. tostring(effect.SubType)) .. "-pip custom dice room.")
-    local streakText = dicePipFunctions:get(effect.SubType)
+    log(("Activated a " .. tostring(effect.SubType)) .. "-pip custom dice room.")
+    local dicePipFunction = dicePipFunctions:get(effect.SubType)
+    if dicePipFunction == nil then
+        return
+    end
+    local streakText = dicePipFunction(nil)
     RacingPlusGlobals.run.streakFrame = Isaac.GetFrameCount()
     RacingPlusGlobals.run.streakText = streakText
 end
 dicePipFunctions = __TS__New(Map)
-local ____ = {
+dicePipFunctions:set(
+    DiceFloorSubType.ONE_PIP,
     function()
         local effectDescription = "Spawn a random item from one of the six item pools"
         local roomSeed = g.r:GetSpawnSeed()
-        math.randomseed(roomSeed)
-        local itemPoolTypes = {
-            ItemPoolType.TREASURE,
-            ItemPoolType.SHOP,
-            ItemPoolType.BOSS,
-            ItemPoolType.DEVIL,
-            ItemPoolType.ANGEL,
-            ItemPoolType.LIBRARY
-        }
-        local randomIndex = math.random(0, #itemPoolTypes - 1)
-        local itemPoolType = itemPoolTypes[randomIndex + 1]
-        local subType = g.itemPool:GetCollectible(
-            itemPoolType,
+        local randomItemPoolType = getRandomArrayElement(nil, ITEM_POOL_TYPES)
+        local collectibleType = g.itemPool:GetCollectible(
+            randomItemPoolType,
             true,
             g.r:GetSpawnSeed()
         )
-        g.g:Spawn(
-            EntityType.PICKUP,
-            PickupVariant.COLLECTIBLE,
-            g.r:GetCenterPos(),
-            ZERO_VECTOR,
-            nil,
-            subType,
-            roomSeed
-        )
+        local centerPos = g.r:GetCenterPos()
+        spawnCollectible(nil, collectibleType, centerPos, roomSeed)
         return effectDescription
-    end,
+    end
+)
+dicePipFunctions:set(
+    DiceFloorSubType.TWO_PIP,
     function()
         g.run.level.doubleItems = true
         return "Double items for the rest of the floor"
-    end,
+    end
+)
+dicePipFunctions:set(
+    DiceFloorSubType.THREE_PIP,
     function()
-        spawnPickupsInCircle(nil, 3, PickupVariant.COIN, CoinSubType.COIN_DIME)
+        spawnPickupsInCircle(nil, 3, PickupVariant.COIN, CoinSubType.DIME)
         return "Spawn 3 dimes"
-    end,
+    end
+)
+dicePipFunctions:set(
+    DiceFloorSubType.FOUR_PIP,
     function()
-        spawnPickupsInCircle(nil, 3, PickupVariant.HEART, HeartSubType.HEART_SOUL)
+        spawnPickupsInCircle(nil, 3, PickupVariant.HEART, HeartSubType.SOUL)
         return "Spawn 4 soul hearts"
-    end,
+    end
+)
+dicePipFunctions:set(
+    DiceFloorSubType.FIVE_PIP,
     function()
         spawnPickupsInCircle(nil, 10, PickupVariant.TRINKET, 0)
         return "Spawn 10 trinkets"
-    end,
+    end
+)
+dicePipFunctions:set(
+    DiceFloorSubType.SIX_PIP,
     function()
-        spawnPickupsInCircle(nil, 10, PickupVariant.TAROTCARD, 0)
+        spawnPickupsInCircle(nil, 10, PickupVariant.TAROT_CARD, 0)
         return "Spawn 6 cards"
     end
-}
+)
 function ____exports.creepScaling(self, effect)
     if effect.SubType == CreepSubTypeCustom.FLOOR_EFFECT_CREEP then
         return
@@ -4276,29 +4237,38 @@ return ____exports
 local ____lualib = require("lualib_bundle")
 local Map = ____lualib.Map
 local ____exports = {}
-local momsContacts, abel, tinyPlanet, isaacsHeart, theWiz, fireMind, strabismus, u235, pillAether, pillWallsHaveEyes, removeFear, familiars, spawnTearWithIncreasedDmg
+local momsContacts, abel, tinyPlanet, isaacsHeart, theWiz, fireMind, strabismus, u235, pillAether, pillWallsHaveEyes, removeFear, familiars, spawnTearWithIncreasedDmg, FADED_COLOR, PINK_COLOR, BLACK_COLOR, WHITE_COLOR, PURPLE_COLOR
 local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local BombVariant = ____isaac_2Dtypescript_2Ddefinitions.BombVariant
 local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
 local Direction = ____isaac_2Dtypescript_2Ddefinitions.Direction
 local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
 local FamiliarVariant = ____isaac_2Dtypescript_2Ddefinitions.FamiliarVariant
+local GridEntityType = ____isaac_2Dtypescript_2Ddefinitions.GridEntityType
+local LaserOffset = ____isaac_2Dtypescript_2Ddefinitions.LaserOffset
+local RoomShape = ____isaac_2Dtypescript_2Ddefinitions.RoomShape
+local TearFlag = ____isaac_2Dtypescript_2Ddefinitions.TearFlag
 local TearVariant = ____isaac_2Dtypescript_2Ddefinitions.TearVariant
 local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local addFlag = ____isaacscript_2Dcommon.addFlag
+local getRandomEnumValue = ____isaacscript_2Dcommon.getRandomEnumValue
+local removeFlag = ____isaacscript_2Dcommon.removeFlag
+local spawnBombWithSeed = ____isaacscript_2Dcommon.spawnBombWithSeed
 local spawnTear = ____isaacscript_2Dcommon.spawnTear
 local ____constants = require("constants")
 local FAMILIAR_TEAR_DAMAGE = ____constants.FAMILIAR_TEAR_DAMAGE
 local FAMILIAR_TEAR_SCALE = ____constants.FAMILIAR_TEAR_SCALE
+local ____CollectibleTypeCustom = require("enums.CollectibleTypeCustom")
+local CollectibleTypeCustom = ____CollectibleTypeCustom.CollectibleTypeCustom
 local ____globals = require("globals")
 local g = ____globals.default
 local misc = require("misc")
 local pills = require("pills")
-local ____enums = require("types.enums")
-local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
 function momsContacts(self, tear)
     if not g.p:HasCollectible(CollectibleType.MOMS_CONTACTS) then
         return
     end
-    tear.TearFlags = tear.TearFlags | TearFlag.FREEZE
+    tear.TearFlags = addFlag(nil, tear.TearFlags, TearFlag.FREEZE)
 end
 function abel(self, tear)
     if not g.p:HasCollectible(CollectibleType.ABEL) or g.run.abelDoubleTear then
@@ -4329,7 +4299,7 @@ function tinyPlanet(self, tear)
     if not g.p:HasCollectible(CollectibleType.TINY_PLANET) then
         return
     end
-    tear.TearFlags = tear.TearFlags | TearFlag.SPECTRAL
+    tear.TearFlags = addFlag(nil, tear.TearFlags, TearFlag.SPECTRAL)
     tear.FallingSpeed = 0
     tear.SubType = direction + 1
     local distance = 90
@@ -4395,18 +4365,15 @@ function u235(self, tear)
         return
     end
     if g.run.tearCounter % 8 == 0 then
-        local bomb = g.g:Spawn(
-            EntityType.BOMBDROP,
+        local bomb = spawnBombWithSeed(
+            nil,
+            BombVariant.NORMAL,
             0,
             tear.Position,
-            tear.Velocity,
-            tear.SpawnerEntity,
-            0,
-            tear.InitSeed
-        ):ToBomb()
-        if bomb ~= nil then
-            bomb.ExplosionDamage = g.p.Damage * 5 + 30
-        end
+            tear.InitSeed,
+            tear.Velocity
+        )
+        bomb.ExplosionDamage = g.p.Damage * 5 + 30
         tear:Remove()
     end
 end
@@ -4440,17 +4407,14 @@ function pillWallsHaveEyes(self, tear)
     local amountToAdd = 1
     if direction == Direction.LEFT or direction == Direction.RIGHT then
         amountToAdd = 15
-        if roomShape >= RoomShape.ROOMSHAPE_2x1 then
+        if roomShape >= RoomShape.SHAPE_2x1 then
             amountToAdd = 28
         end
     end
-    local roomShapeCoordinates = pills.WALL_COORDINATES:get(roomShape)
-    if roomShapeCoordinates == nil then
-        error("Failed to get the wall coordinates for room shape: " .. tostring(roomShape))
-    end
-    local coordinates = roomShapeCoordinates:get(direction)
+    local wallCoordinates = pills.ROOM_SHAPE_WALL_COORDINATES[roomShape]
+    local coordinates = wallCoordinates:get(direction)
     if coordinates == nil then
-        error("Failed to get the wall coordinates direction: " .. tostring(direction))
+        error("Failed to get the wall coordinates for direction: " .. tostring(Direction[direction]))
     end
     local startingGridCoordinate, numTimesToIterate, startingGridCoordinateForSecondWall = table.unpack(coordinates)
     local walls = {}
@@ -4476,11 +4440,11 @@ function pillWallsHaveEyes(self, tear)
         do
             local gridEntity = g.r:GetGridEntity(wall)
             if gridEntity == nil then
-                goto __continue40
+                goto __continue38
             end
             local saveState = gridEntity:GetSaveState()
             if saveState.Type ~= GridEntityType.WALL then
-                goto __continue40
+                goto __continue38
             end
             local adjustedPosition = gridEntity.Position
             local distanceToAdjust = 15
@@ -4501,12 +4465,12 @@ function pillWallsHaveEyes(self, tear)
                 false
             )
         end
-        ::__continue40::
+        ::__continue38::
     end
     g.run.pills.wallsHaveEyesShooting = false
 end
 function removeFear(self, tear)
-    tear.TearFlags = tear.TearFlags & ~TearFlag.FEAR
+    tear.TearFlags = removeFlag(nil, tear.TearFlags, TearFlag.FEAR)
 end
 function familiars(self, tear)
     local damage = 3.5 + g.p.Damage * FAMILIAR_TEAR_DAMAGE
@@ -4526,9 +4490,9 @@ function familiars(self, tear)
     )
     for ____, familiar in ipairs(familiarEntities) do
         repeat
-            local ____switch53 = familiar.Variant
-            local ____cond53 = ____switch53 == FamiliarVariant.BROTHER_BOBBY or ____switch53 == FamiliarVariant.DEMON_BABY or ____switch53 == FamiliarVariant.LITTLE_GISH or ____switch53 == FamiliarVariant.LITTLE_STEVEN or ____switch53 == FamiliarVariant.SISTER_MAGGY or ____switch53 == FamiliarVariant.GHOST_BABY or ____switch53 == FamiliarVariant.RAINBOW_BABY or ____switch53 == FamiliarVariant.ISAACS_HEAD or ____switch53 == FamiliarVariant.MONGO_BABY or ____switch53 == FamiliarVariant.SERAPHIM
-            if ____cond53 then
+            local ____switch51 = familiar.Variant
+            local ____cond51 = ____switch51 == FamiliarVariant.BROTHER_BOBBY or ____switch51 == FamiliarVariant.DEMON_BABY or ____switch51 == FamiliarVariant.LITTLE_GISH or ____switch51 == FamiliarVariant.LITTLE_STEVEN or ____switch51 == FamiliarVariant.SISTER_MAGGY or ____switch51 == FamiliarVariant.GHOST_BABY or ____switch51 == FamiliarVariant.RAINBOW_BABY or ____switch51 == FamiliarVariant.ISAACS_HEAD or ____switch51 == FamiliarVariant.MONGO_BABY or ____switch51 == FamiliarVariant.SERAPHIM
+            if ____cond51 then
                 do
                     spawnTearWithIncreasedDmg(
                         nil,
@@ -4540,12 +4504,12 @@ function familiars(self, tear)
                     break
                 end
             end
-            ____cond53 = ____cond53 or ____switch53 == FamiliarVariant.ROBO_BABY
-            if ____cond53 then
+            ____cond51 = ____cond51 or ____switch51 == FamiliarVariant.ROBO_BABY
+            if ____cond51 then
                 do
                     local laser = g.p:FireTechLaser(
                         familiar.Position,
-                        0,
+                        LaserOffset.TECH_1,
                         velocity,
                         false,
                         false
@@ -4554,8 +4518,8 @@ function familiars(self, tear)
                     break
                 end
             end
-            ____cond53 = ____cond53 or ____switch53 == FamiliarVariant.HARLEQUIN_BABY
-            if ____cond53 then
+            ____cond51 = ____cond51 or ____switch51 == FamiliarVariant.HARLEQUIN_BABY
+            if ____cond51 then
                 do
                     do
                         local i = 0
@@ -4580,8 +4544,8 @@ function familiars(self, tear)
                     break
                 end
             end
-            ____cond53 = ____cond53 or ____switch53 == FamiliarVariant.LIL_LOKI
-            if ____cond53 then
+            ____cond51 = ____cond51 or ____switch51 == FamiliarVariant.LIL_LOKI
+            if ____cond51 then
                 do
                     do
                         local i = 0
@@ -4611,117 +4575,77 @@ function familiars(self, tear)
     end
 end
 function spawnTearWithIncreasedDmg(self, tear, familiar, velocity, damage)
-    local familiarTear = Isaac.Spawn(
-        EntityType.TEAR,
-        0,
+    local familiarTear = spawnTear(
+        nil,
+        TearVariant.BLUE,
         0,
         familiar.Position,
-        velocity,
-        nil
-    ):ToTear()
-    if familiarTear == nil then
-        return
-    end
+        velocity
+    )
     familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE
     familiarTear.CollisionDamage = damage
     repeat
-        local ____switch66 = familiar.Variant
-        local ____cond66 = ____switch66 == FamiliarVariant.LITTLE_GISH
-        if ____cond66 then
+        local ____switch63 = familiar.Variant
+        local ____cond63 = ____switch63 == FamiliarVariant.LITTLE_GISH
+        if ____cond63 then
             do
-                local color = Color(
-                    0,
-                    0,
-                    0,
-                    1,
-                    1,
-                    1,
-                    1
-                )
                 familiarTear:SetColor(
-                    color,
+                    BLACK_COLOR,
                     10000,
                     1000,
                     false,
                     false
                 )
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlag.SLOW
+                familiarTear.TearFlags = addFlag(nil, familiarTear.TearFlags, TearFlag.SLOW)
                 break
             end
         end
-        ____cond66 = ____cond66 or ____switch66 == FamiliarVariant.LITTLE_STEVEN
-        if ____cond66 then
+        ____cond63 = ____cond63 or ____switch63 == FamiliarVariant.LITTLE_STEVEN
+        if ____cond63 then
             do
-                local color = Color(
-                    1,
-                    0,
-                    1,
-                    1,
-                    1,
-                    1,
-                    1
-                )
                 familiarTear:SetColor(
-                    color,
+                    PURPLE_COLOR,
                     10000,
                     1000,
                     false,
                     false
                 )
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlag.HOMING
+                familiarTear.TearFlags = addFlag(nil, familiarTear.TearFlags, TearFlag.HOMING)
                 break
             end
         end
-        ____cond66 = ____cond66 or ____switch66 == FamiliarVariant.GHOST_BABY
-        if ____cond66 then
+        ____cond63 = ____cond63 or ____switch63 == FamiliarVariant.GHOST_BABY
+        if ____cond63 then
             do
-                local color = Color(
-                    1,
-                    1,
-                    1,
-                    0.5,
-                    1,
-                    1,
-                    1
-                )
                 familiarTear:SetColor(
-                    color,
+                    FADED_COLOR,
                     10000,
                     1000,
                     false,
                     false
                 )
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlag.SPECTRAL
+                familiarTear.TearFlags = addFlag(nil, familiarTear.TearFlags, TearFlag.SPECTRAL)
                 break
             end
         end
-        ____cond66 = ____cond66 or ____switch66 == FamiliarVariant.RAINBOW_BABY
-        if ____cond66 then
+        ____cond63 = ____cond63 or ____switch63 == FamiliarVariant.RAINBOW_BABY
+        if ____cond63 then
             do
-                local color = Color(
-                    2,
-                    0,
-                    2,
-                    1,
-                    1,
-                    1,
-                    1
-                )
                 familiarTear:SetColor(
-                    color,
+                    PINK_COLOR,
                     10000,
                     1000,
                     false,
                     false
                 )
                 math.randomseed(g.g:GetFrameCount())
-                local tearFlag = math.random(1, 60)
-                familiarTear.TearFlags = familiarTear.TearFlags | 1 << tearFlag
+                local tearFlag = getRandomEnumValue(nil, TearFlag)
+                familiarTear.TearFlags = addFlag(nil, familiarTear.TearFlags, tearFlag)
                 break
             end
         end
-        ____cond66 = ____cond66 or ____switch66 == FamiliarVariant.MONGO_BABY
-        if ____cond66 then
+        ____cond63 = ____cond63 or ____switch63 == FamiliarVariant.MONGO_BABY
+        if ____cond63 then
             do
                 local ____g_run_room_mongoBabyTears_4 = g.run.room.mongoBabyTears
                 ____g_run_room_mongoBabyTears_4[#____g_run_room_mongoBabyTears_4 + 1] = {
@@ -4734,27 +4658,18 @@ function spawnTearWithIncreasedDmg(self, tear, familiar, velocity, damage)
                 break
             end
         end
-        ____cond66 = ____cond66 or ____switch66 == FamiliarVariant.SERAPHIM
-        if ____cond66 then
+        ____cond63 = ____cond63 or ____switch63 == FamiliarVariant.SERAPHIM
+        if ____cond63 then
             do
                 familiarTear.CollisionDamage = damage * 1.8953
-                local color = Color(
-                    1,
-                    1,
-                    1,
-                    1,
-                    1,
-                    1,
-                    1
-                )
                 familiarTear:SetColor(
-                    color,
+                    WHITE_COLOR,
                     10000,
                     1000,
                     false,
                     false
                 )
-                familiarTear.TearFlags = familiarTear.TearFlags | TearFlag.HOMING
+                familiarTear.TearFlags = addFlag(nil, familiarTear.TearFlags, TearFlag.HOMING)
                 break
             end
         end
@@ -4765,6 +4680,51 @@ function spawnTearWithIncreasedDmg(self, tear, familiar, velocity, damage)
         end
     until true
 end
+FADED_COLOR = Color(
+    1,
+    1,
+    1,
+    0.5,
+    1,
+    1,
+    1
+)
+PINK_COLOR = Color(
+    2,
+    0,
+    2,
+    1,
+    1,
+    1,
+    1
+)
+BLACK_COLOR = Color(
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1
+)
+WHITE_COLOR = Color(
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+)
+PURPLE_COLOR = Color(
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1
+)
 function ____exports.main(self, tear)
     if not g.run.abelDoubleTear and not g.run.wizDoubleTear and not g.run.strabismusDoubleTear then
         local ____g_run_0, ____tearCounter_1 = g.run, "tearCounter"
@@ -5918,7 +5878,7 @@ function lilBrimstone(self, laser)
     end
 end
 function isaacsHeart(self, laser)
-    if laser.FrameCount >= 3 or laser.Variant ~= LaserVariant.LASER_THICK_RED or laser.SpawnerType ~= EntityType.PLAYER or not g.p:HasCollectible(CollectibleType.ISAACS_HEART) then
+    if laser.FrameCount >= 3 or laser.Variant ~= LaserVariant.THICK_RED or laser.SpawnerType ~= EntityType.PLAYER or not g.p:HasCollectible(CollectibleType.ISAACS_HEART) then
         return
     end
     local hearts = Isaac.FindByType(
@@ -5970,13 +5930,13 @@ function familiarLaser(self, laser)
     if g.p:HasCollectible(CollectibleType.BRIMSTONE) and g.p:HasCollectible(CollectibleType.TRISAGION) then
         return
     end
-    if laser.Variant == LaserVariant.LASER_THIN_RED and not g.p:HasCollectible(CollectibleType.TECHNOLOGY) and not g.p:HasCollectible(CollectibleType.TECH_X) then
+    if laser.Variant == LaserVariant.THIN_RED and not g.p:HasCollectible(CollectibleType.TECHNOLOGY) and not g.p:HasCollectible(CollectibleType.TECH_X) then
         return
     end
-    if laser.Variant == LaserVariant.LASER_THIN_RED and laser.SubType == 4 then
+    if laser.Variant == LaserVariant.THIN_RED and laser.SubType == 4 then
         return
     end
-    if laser.Variant ~= LaserVariant.LASER_THICK_RED and laser.Variant ~= LaserVariant.LASER_THIN_RED and laser.Variant ~= LaserVariant.LASER_BRIMTECH then
+    if laser.Variant ~= LaserVariant.THICK_RED and laser.Variant ~= LaserVariant.THIN_RED and laser.Variant ~= LaserVariant.BRIMTECH then
         return
     end
     local velocity = Vector(g.p.ShotSpeed * 10, 0):Rotated(laser.AngleDegrees)
@@ -5991,7 +5951,7 @@ function familiarLaser(self, laser)
         false
     )
     fakeTear:Remove()
-    if (laser.Variant == LaserVariant.LASER_THICK_RED or laser.Variant == LaserVariant.LASER_BRIMTECH) and not g.p:HasCollectible(CollectibleType.TECH_X) then
+    if (laser.Variant == LaserVariant.THICK_RED or laser.Variant == LaserVariant.BRIMTECH) and not g.p:HasCollectible(CollectibleType.TECH_X) then
         g.run.familiarMultiShot = 3
         if g.p:HasCollectible(CollectibleType.ISAACS_HEART) then
             g.run.familiarMultiShot = 0
@@ -6072,7 +6032,11 @@ shopItemNumbersYellow:Load("gfx/005.150_shop item custom.anm2", true)
 shopItemNumbersYellow:Play("NumbersYellow", true)
 function ____exports.collectible(self, pickup)
     local roomShape = g.r:GetRoomShape()
-    if roomShape >= RoomShape.ROOMSHAPE_1x2 then
+    if roomShape >= RoomShape then
+        local ____ = 0.1
+    end
+    local ____ = x2
+    do
         return
     end
     if pickup.Price <= 0 then
@@ -6117,7 +6081,7 @@ local misc = require("misc")
 local ____enums = require("types.enums")
 local SoundEffectCustom = ____enums.SoundEffectCustom
 function ____exports.spawnItem(self, position)
-    g.run.catalogSeed = misc:incrementRNG(g.run.catalogSeed)
+    g.run.catalogRNG = misc:incrementRNG(g.run.catalogRNG)
     local spawnedItem = g.g:Spawn(
         EntityType.PICKUP,
         PickupVariant.COLLECTIBLE,
@@ -6125,7 +6089,7 @@ function ____exports.spawnItem(self, position)
         ZERO_VECTOR,
         nil,
         0,
-        g.run.catalogSeed
+        g.run.catalogRNG
     ):ToPickup()
     if spawnedItem ~= nil then
         local data = spawnedItem:GetData()
@@ -6194,8 +6158,8 @@ function touchedEtherealPenny(self, pickup)
     if pickup.Variant ~= PickupVariant.COIN or not g.p:HasTrinket(TrinketTypeCustom.ETHEREAL_PENNY) then
         return
     end
-    g.run.etherealPennySeed = misc:incrementRNG(g.run.etherealPennySeed)
-    math.randomseed(g.run.etherealPennySeed)
+    g.run.etherealPennyRNG = misc:incrementRNG(g.run.etherealPennyRNG)
+    math.randomseed(g.run.etherealPennyRNG)
     local slotChoice = math.random(1, 5)
     if slotChoice ~= 1 then
         return
@@ -6207,19 +6171,19 @@ function touchedEtherealPenny(self, pickup)
         position,
         ZERO_VECTOR,
         nil,
-        HeartSubType.HEART_HALF_SOUL,
-        g.run.etherealPennySeed
+        HeartSubType.HALF_SOUL,
+        g.run.etherealPennyRNG
     )
 end
 function heartRelic(self, pickup)
-    if pickup.SubType == HeartSubType.HEART_SOUL and pickup.SpawnerType == EntityType.FAMILIAR and pickup.SpawnerVariant == FamiliarVariant.RELIC then
+    if pickup.SubType == HeartSubType.SOUL and pickup.SpawnerType == EntityType.FAMILIAR and pickup.SpawnerVariant == FamiliarVariant.RELIC then
         g.g:Spawn(
             EntityType.PICKUP,
             PickupVariant.HEART,
             pickup.Position,
             pickup.Velocity,
             pickup.SpawnerEntity,
-            HeartSubType.HEART_HALF_SOUL,
+            HeartSubType.HALF_SOUL,
             pickup.InitSeed
         )
         pickup:Remove()
@@ -6227,13 +6191,13 @@ function heartRelic(self, pickup)
 end
 function heartCheckDDReroll(self, pickup)
     local roomType = g.r:GetType()
-    if pickup.FrameCount == 1 and pickup.SubType == HeartSubType.HEART_FULL and pickup.Price == 3 and roomType == RoomType.CURSE then
+    if pickup.FrameCount == 1 and pickup.SubType == HeartSubType.FULL and pickup.Price == 3 and roomType == RoomType.CURSE then
         postNewRoom:spawnCurseRoomPedestalItem()
         pickup:Remove()
     end
 end
 function heartCheckCatalogReroll(self, pickup)
-    if pickup.FrameCount == 1 and pickup.SubType == HeartSubType.HEART_FULL and pickup.Price == 3 and not catalog:inIllegalRoomType() then
+    if pickup.FrameCount == 1 and pickup.SubType == HeartSubType.FULL and pickup.Price == 3 and not catalog:inIllegalRoomType() then
         catalog:spawnItem(pickup.Position)
         pickup:Remove()
     end
@@ -6335,9 +6299,19 @@ return ____exports
  end,
 ["callbacks.postRender"] = function(...) 
 local ____exports = {}
-local checkRacingPlus
+local main, checkRacingPlus
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
 local ____globals = require("globals")
 local g = ____globals.default
+function main(self)
+    g.l = g.g:GetLevel()
+    g.r = g.g:GetRoom()
+    g.p = Isaac.GetPlayer(0)
+    g.seeds = g.g:GetSeeds()
+    g.itemPool = g.g:GetItemPool()
+    checkRacingPlus(nil)
+end
 function checkRacingPlus(self)
     if g.racingPlusEnabled then
         return
@@ -6367,16 +6341,8 @@ function checkRacingPlus(self)
         2
     )
 end
-function ____exports.main(self)
-    g.l = g.g:GetLevel()
-    g.r = g.g:GetRoom()
-    local player = Isaac.GetPlayer(0)
-    if player ~= nil then
-        g.p = player
-    end
-    g.seeds = g.g:GetSeeds()
-    g.itemPool = g.g:GetItemPool()
-    checkRacingPlus(nil)
+function ____exports.init(self, mod)
+    mod:AddCallback(ModCallback.POST_RENDER, main)
 end
 return ____exports
  end,
@@ -6491,46 +6457,6 @@ function ____exports.main(self, tear)
     explosivo(nil, tear)
     lilMonstro(nil, tear)
     fireMindImproved(nil, tear)
-end
-return ____exports
- end,
-["roomCleared"] = function(...) 
-local ____exports = {}
-local chargedBaby
-local ____constants = require("constants")
-local ZERO_VECTOR = ____constants.ZERO_VECTOR
-local ____globals = require("globals")
-local g = ____globals.default
-function chargedBaby(self)
-    if not g.p:HasCollectible(CollectibleType.CHARGED_BABY) then
-        return
-    end
-    local ____g_run_0, ____chargedBabyCounters_1 = g.run, "chargedBabyCounters"
-    ____g_run_0[____chargedBabyCounters_1] = ____g_run_0[____chargedBabyCounters_1] + 1
-    if g.run.chargedBabyCounters ~= 4 then
-        return
-    end
-    g.run.chargedBabyCounters = 0
-    local chargedBabies = Isaac.FindByType(
-        EntityType.FAMILIAR,
-        FamiliarVariant.CHARGED_BABY,
-        -1,
-        false,
-        false
-    )
-    for ____, chargedBabyEntity in ipairs(chargedBabies) do
-        Isaac.Spawn(
-            EntityType.PICKUP,
-            PickupVariant.LIL_BATTERY,
-            0,
-            chargedBabyEntity.Position,
-            ZERO_VECTOR,
-            nil
-        )
-    end
-end
-function ____exports.main(self)
-    chargedBaby(nil)
 end
 return ____exports
  end,
@@ -6916,7 +6842,7 @@ return ____exports
 local ____lualib = require("lualib_bundle")
 local __TS__ArraySplice = ____lualib.__TS__ArraySplice
 local ____exports = {}
-local recordLastFireDirection, recordHealth, checkRoomCleared, checkItemPickup, checkItemPickupQueueEmpty, checkItemPickupQueueNotEmpty, postNewItem, checkTransformations, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
+local main, recordLastFireDirection, checkFamiliarMultiShot, monstrosTooth, momsKnife, nineVolt, theBlackBean, tinyPlanet, isaacsHeart, judasShadow, mongoBaby, fartingBaby, blackPowder, brownNugget, fireMindImproved, holyMantleNerfed, adrenalineImproved, pennyOnAString, checkPillTimer
 local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
 local CacheFlag = ____isaac_2Dtypescript_2Ddefinitions.CacheFlag
 local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
@@ -6925,14 +6851,17 @@ local Direction = ____isaac_2Dtypescript_2Ddefinitions.Direction
 local EffectVariant = ____isaac_2Dtypescript_2Ddefinitions.EffectVariant
 local EntityPartition = ____isaac_2Dtypescript_2Ddefinitions.EntityPartition
 local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
 local NullItemID = ____isaac_2Dtypescript_2Ddefinitions.NullItemID
 local PickupVariant = ____isaac_2Dtypescript_2Ddefinitions.PickupVariant
-local PlayerForm = ____isaac_2Dtypescript_2Ddefinitions.PlayerForm
 local PlayerType = ____isaac_2Dtypescript_2Ddefinitions.PlayerType
+local RoomType = ____isaac_2Dtypescript_2Ddefinitions.RoomType
 local SoundEffect = ____isaac_2Dtypescript_2Ddefinitions.SoundEffect
 local TearVariant = ____isaac_2Dtypescript_2Ddefinitions.TearVariant
 local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
-local getEnumValues = ____isaacscript_2Dcommon.getEnumValues
+local getCollectibleMaxCharges = ____isaacscript_2Dcommon.getCollectibleMaxCharges
+local openAllDoors = ____isaacscript_2Dcommon.openAllDoors
+local playerHasHealthLeft = ____isaacscript_2Dcommon.playerHasHealthLeft
 local removeCollectibleFromItemTracker = ____isaacscript_2Dcommon.removeCollectibleFromItemTracker
 local sfxManager = ____isaacscript_2Dcommon.sfxManager
 local spawnEffect = ____isaacscript_2Dcommon.spawnEffect
@@ -6947,112 +6876,36 @@ local ____globals = require("globals")
 local g = ____globals.default
 local technology = require("items.technology")
 local misc = require("misc")
-local postItemPickup = require("postItemPickup")
-local roomCleared = require("roomCleared")
 local slots = require("slots")
 local ____postUpdateCollectible = require("callbacks.postUpdateCollectible")
 local postUpdateCollectible = ____postUpdateCollectible.default
+function main(self)
+    recordLastFireDirection(nil)
+    checkFamiliarMultiShot(nil)
+    postUpdateCollectible(nil)
+    slots:postUpdate()
+    technology:postUpdate()
+    monstrosTooth(nil)
+    momsKnife(nil)
+    nineVolt(nil)
+    theBlackBean(nil)
+    tinyPlanet(nil)
+    isaacsHeart(nil)
+    judasShadow(nil)
+    mongoBaby(nil)
+    fartingBaby(nil)
+    blackPowder(nil)
+    brownNugget(nil)
+    fireMindImproved(nil)
+    holyMantleNerfed(nil)
+    adrenalineImproved(nil)
+    pennyOnAString(nil)
+    checkPillTimer(nil)
+end
 function recordLastFireDirection(self)
     local fireDirection = g.p:GetFireDirection()
     if fireDirection ~= Direction.NO_DIRECTION then
         g.run.lastFireDirection = fireDirection
-    end
-end
-function recordHealth(self)
-    g.run.health.changedOnThisFrame = false
-    g.run.health.restoredLastHealthOnThisFrame = false
-    g.run.lastHealth.hearts = g.run.health.hearts
-    local hearts = g.p:GetHearts()
-    if hearts ~= g.run.health.hearts then
-        g.run.health.hearts = hearts
-        g.run.health.changedOnThisFrame = true
-    end
-    g.run.lastHealth.maxHearts = g.run.health.maxHearts
-    local maxHearts = g.p:GetMaxHearts()
-    if maxHearts ~= g.run.health.maxHearts then
-        g.run.health.maxHearts = maxHearts
-        g.run.health.changedOnThisFrame = true
-    end
-    g.run.lastHealth.soulHearts = g.run.health.soulHearts
-    local soulHearts = g.p:GetSoulHearts()
-    if soulHearts ~= g.run.health.soulHearts then
-        g.run.health.soulHearts = soulHearts
-        g.run.health.changedOnThisFrame = true
-    end
-    g.run.lastHealth.blackHearts = g.run.health.blackHearts
-    local blackHearts = g.p:GetBlackHearts()
-    if blackHearts ~= g.run.health.blackHearts then
-        g.run.health.blackHearts = blackHearts
-        g.run.health.changedOnThisFrame = true
-    end
-    g.run.lastHealth.boneHearts = g.run.health.boneHearts
-    local boneHearts = g.p:GetBoneHearts()
-    if boneHearts ~= g.run.health.boneHearts then
-        g.run.health.boneHearts = boneHearts
-        g.run.health.changedOnThisFrame = true
-    end
-end
-function checkRoomCleared(self)
-    local roomClear = g.r:IsClear()
-    if roomClear == g.run.room.clearState then
-        return
-    end
-    g.run.room.clearState = roomClear
-    if not roomClear then
-        return
-    end
-    roomCleared:main()
-end
-function checkItemPickup(self)
-    if g.p:IsItemQueueEmpty() then
-        checkItemPickupQueueEmpty(nil)
-    else
-        checkItemPickupQueueNotEmpty(nil)
-    end
-end
-function checkItemPickupQueueEmpty(self)
-    if g.run.pickingUpItem == CollectibleType.NULL then
-        return
-    end
-    if g.run.pickingUpItemType == ItemType.PASSIVE or g.run.pickingUpItemType == ItemType.ACTIVE or g.run.pickingUpItemType == ItemType.FAMILIAR then
-        postNewItem(nil)
-    end
-    g.run.pickingUpItem = CollectibleType.NULL
-    g.run.pickingUpItemRoom = 0
-    g.run.pickingUpItemType = ItemType.NULL
-end
-function checkItemPickupQueueNotEmpty(self)
-    local roomIndex = misc:getRoomIndex()
-    if g.run.pickingUpItem ~= CollectibleType.NULL then
-        return
-    end
-    if g.p.QueuedItem.Item == nil then
-        return
-    end
-    g.run.pickingUpItem = g.p.QueuedItem.Item.ID
-    g.run.pickingUpItemRoom = roomIndex
-    g.run.pickingUpItemType = g.p.QueuedItem.Item.Type
-end
-function postNewItem(self)
-    local postItemFunction = postItemPickup.functionMap:get(g.run.pickingUpItem)
-    if postItemFunction ~= nil then
-        postItemFunction(nil)
-    end
-end
-function checkTransformations(self)
-    for ____, transformation in ipairs(getEnumValues(nil, PlayerForm)) do
-        local hasPlayerForm = g.p:HasPlayerForm(transformation)
-        local storedHasPlayerForm = g.run.transformations:get(transformation)
-        if storedHasPlayerForm == nil then
-            error("Failed to get the stored player form for: " .. tostring(transformation))
-        end
-        if hasPlayerForm ~= storedHasPlayerForm then
-            g.run.transformations:set(transformation, hasPlayerForm)
-            if transformation == PlayerForm.LEVIATHAN then
-                misc:setHealthFromLastFrame()
-                misc:killIfNoHealth()
-            end
-        end
     end
 end
 function checkFamiliarMultiShot(self)
@@ -7096,12 +6949,12 @@ end
 function nineVolt(self)
     local gameFrameCount = g.g:GetFrameCount()
     local activeItem = g.p:GetActiveItem()
-    local activeItemMaxCharges = misc:getItemMaxCharges(activeItem)
+    local activeItemMaxCharges = getCollectibleMaxCharges(nil, activeItem)
     if g.run.nineVoltFrame == 0 or gameFrameCount <= g.run.nineVoltFrame then
         return
     end
     g.run.nineVoltFrame = 0
-    if activeItem == 0 then
+    if activeItem == CollectibleType.NULL then
         return
     end
     local charge = g.p:GetActiveCharge()
@@ -7144,7 +6997,7 @@ function tinyPlanet(self)
     end
     g.run.room.softlock = true
     g.r:SetClear(true)
-    misc:openAllDoors()
+    openAllDoors(nil)
 end
 function isaacsHeart(self)
     if not g.p:HasCollectible(CollectibleType.ISAACS_HEART) then
@@ -7183,11 +7036,9 @@ function mongoBaby(self)
                     tear.familiar.Position,
                     tear.velocity
                 )
-                if familiarTear ~= nil then
-                    familiarTear.Scale = tear.scale
-                    familiarTear.CollisionDamage = tear.damage
-                    __TS__ArraySplice(g.run.room.mongoBabyTears, i, 1)
-                end
+                familiarTear.Scale = tear.scale
+                familiarTear.CollisionDamage = tear.damage
+                __TS__ArraySplice(g.run.room.mongoBabyTears, i, 1)
             end
             i = i - 1
         end
@@ -7351,7 +7202,7 @@ function checkPillTimer(self)
             if #bigChests > 0 then
                 return
             end
-            if misc:hasNoHealth() then
+            if not playerHasHealthLeft(nil, g.p) then
                 return
             end
             if gameFrameCount % 3 == 0 then
@@ -7406,44 +7257,195 @@ function checkPillTimer(self)
         g.run.pills.familiarFrenzy = 0
     end
 end
-function ____exports.main(self)
-    recordLastFireDirection(nil)
-    recordHealth(nil)
-    checkRoomCleared(nil)
-    checkItemPickup(nil)
-    checkTransformations(nil)
-    checkFamiliarMultiShot(nil)
-    postUpdateCollectible(nil)
-    slots:postUpdate()
-    technology:postUpdate()
-    monstrosTooth(nil)
-    momsKnife(nil)
-    nineVolt(nil)
-    theBlackBean(nil)
-    tinyPlanet(nil)
-    isaacsHeart(nil)
-    judasShadow(nil)
-    mongoBaby(nil)
-    fartingBaby(nil)
-    blackPowder(nil)
-    brownNugget(nil)
-    fireMindImproved(nil)
-    holyMantleNerfed(nil)
-    adrenalineImproved(nil)
-    pennyOnAString(nil)
-    checkPillTimer(nil)
+function ____exports.init(self, mod)
+    mod:AddCallback(ModCallback.POST_UPDATE, main)
 end
+return ____exports
+ end,
+["callbacks.postUseItem"] = function(...) 
+local ____exports = {}
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local Card = ____isaac_2Dtypescript_2Ddefinitions.Card
+local CollectibleAnimation = ____isaac_2Dtypescript_2Ddefinitions.CollectibleAnimation
+local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
+local GridEntityType = ____isaac_2Dtypescript_2Ddefinitions.GridEntityType
+local LevelStateFlag = ____isaac_2Dtypescript_2Ddefinitions.LevelStateFlag
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
+local PlayerItemAnimation = ____isaac_2Dtypescript_2Ddefinitions.PlayerItemAnimation
+local PoopEntityVariant = ____isaac_2Dtypescript_2Ddefinitions.PoopEntityVariant
+local SoundEffect = ____isaac_2Dtypescript_2Ddefinitions.SoundEffect
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local getCollectibleMaxCharges = ____isaacscript_2Dcommon.getCollectibleMaxCharges
+local sfxManager = ____isaacscript_2Dcommon.sfxManager
+local ____CollectibleTypeCustom = require("enums.CollectibleTypeCustom")
+local CollectibleTypeCustom = ____CollectibleTypeCustom.CollectibleTypeCustom
+local ____globals = require("globals")
+local g = ____globals.default
+local catalog = require("items.catalog")
+local postItemPickup = require("postItemPickup")
+function ____exports.main(self, collectibleType)
+    if not g.p:HasCollectible(CollectibleType.NINE_VOLT) then
+        return true
+    end
+    local maxCharges = getCollectibleMaxCharges(nil, collectibleType)
+    if maxCharges < 3 then
+        return true
+    end
+    g.run.nineVoltFrame = g.g:GetFrameCount()
+    return true
+end
+function ____exports.bookOfRevelations(self)
+    g.p:AddSoulHearts(-1)
+    return true
+end
+function ____exports.theNail(self)
+    g.p:AddSoulHearts(-1)
+    return true
+end
+function ____exports.monstrosTooth(self)
+    local ____g_run_0, ____monstroCounters_1 = g.run, "monstroCounters"
+    ____g_run_0[____monstroCounters_1] = ____g_run_0[____monstroCounters_1] + 1
+    if g.run.monstroCounters == 3 then
+        g.run.monstroCounters = 0
+        g.run.monstroFrame = 0
+    else
+        g.run.monstroFrame = g.g:GetFrameCount() + 15
+    end
+    return true
+end
+function ____exports.bookOfSecrets(self)
+    if g.l:GetStateFlag(LevelStateFlag.BLUE_MAP_EFFECT) then
+        postItemPickup:blueMap()
+    end
+    return true
+end
+function ____exports.satanicBible(self)
+    g.p:AddBlackHearts(-1)
+    return true
+end
+function ____exports.brownNugget(self)
+    if g.run.brownNuggetCounters == 0 then
+        g.run.brownNuggetCounters = 1
+        g.run.brownNuggetFrame = g.g:GetFrameCount() + 3
+    end
+    return true
+end
+function ____exports.holyPoop(self)
+    Isaac.GridSpawn(GridEntityType.POOP, PoopEntityVariant.HOLY, g.p.Position, false)
+    sfxManager:Play(
+        SoundEffect.FART,
+        1,
+        0,
+        false,
+        1
+    )
+    return true
+end
+function ____exports.momsBraImproved(self)
+    g.p:UseActiveItem(
+        CollectibleType.MOMS_BRA,
+        true,
+        false,
+        false,
+        false
+    )
+    return true
+end
+function ____exports.monsterManualImproved(self)
+    g.p:UseActiveItem(
+        CollectibleType.MONSTER_MANUAL,
+        true,
+        false,
+        false,
+        false
+    )
+    return true
+end
+function ____exports.boxOfSpidersImproved(self)
+    g.p:UseActiveItem(
+        CollectibleType.BOX_OF_SPIDERS,
+        true,
+        false,
+        false,
+        false
+    )
+    return true
+end
+function ____exports.megaBlastSingle(self)
+    g.p:UseActiveItem(
+        CollectibleType.MEGA_BLAST,
+        true,
+        false,
+        false,
+        false
+    )
+    g.p:RemoveCollectible(CollectibleTypeCustom.MEGA_BLAST_SINGLE)
+    return true
+end
+function ____exports.clockworkAssembly(self)
+    g.run.spawningRestock = true
+    RacingPlusGlobals.run.streakIgnore = true
+    g.p:UseCard(Card.WHEEL_OF_FORTUNE)
+    return true
+end
+function ____exports.chargingStation(self)
+    if RacingPlusSchoolbag:isItemFullyCharged() then
+        return false
+    end
+    local coins = g.p:GetNumCoins()
+    if coins == 0 then
+        return false
+    end
+    g.p:AddCoins(-1)
+    RacingPlusSchoolbag:addCharge(true)
+    g.p:AnimateCollectible(CollectibleTypeCustom.CHARGING_STATION, PlayerItemAnimation.USE_ITEM, CollectibleAnimation.PLAYER_PICKUP)
+    sfxManager:Play(
+        SoundEffect.BEEP,
+        1,
+        0,
+        false,
+        1
+    )
+    return true
+end
+function ____exports.init(self, mod)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.main)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.bookOfRevelations, CollectibleType.BOOK_OF_REVELATIONS)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.theNail, CollectibleType.THE_NAIL)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.monstrosTooth, CollectibleType.MONSTROS_TOOTH)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.bookOfSecrets, CollectibleType.BOOK_OF_SECRETS)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.satanicBible, CollectibleType.SATANIC_BIBLE)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.brownNugget, CollectibleType.BROWN_NUGGET)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.holyPoop, CollectibleTypeCustom.HOLY_POOP)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.momsBraImproved, CollectibleTypeCustom.MOMS_BRA_IMPROVED)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.monsterManualImproved, CollectibleTypeCustom.MONSTER_MANUAL_IMPROVED)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.boxOfSpidersImproved, CollectibleTypeCustom.BOX_OF_SPIDERS_IMPROVED)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.megaBlastSingle, CollectibleTypeCustom.MEGA_BLAST_SINGLE)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.clockworkAssembly, CollectibleTypeCustom.CLOCKWORK_ASSEMBLY)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, ____exports.chargingStation, CollectibleTypeCustom.CHARGING_STATION)
+    mod:AddCallback(ModCallback.POST_USE_ITEM, catalog.useItem, CollectibleTypeCustom.CATALOG)
+end
+return ____exports
+ end,
+["enums.PickupVariantCustom"] = function(...) 
+local ____exports = {}
+____exports.PickupVariantCustom = {INVISIBLE_PICKUP = Isaac.GetEntityVariantByName("Invisible Pickup")}
 return ____exports
  end,
 ["callbacks.preEntitySpawn"] = function(...) 
 local ____exports = {}
 local collectible
-local ____globals = require("globals")
-local g = ____globals.default
-local ____enums = require("types.enums")
-local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
-local PickupVariantCustom = ____enums.PickupVariantCustom
-function collectible(self, subType, position, velocity, spawner, initSeed)
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
+local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local PickupVariant = ____isaac_2Dtypescript_2Ddefinitions.PickupVariant
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local spawnCollectible = ____isaacscript_2Dcommon.spawnCollectible
+local ____CollectibleTypeCustom = require("enums.CollectibleTypeCustom")
+local CollectibleTypeCustom = ____CollectibleTypeCustom.CollectibleTypeCustom
+local ____PickupVariantCustom = require("enums.PickupVariantCustom")
+local PickupVariantCustom = ____PickupVariantCustom.PickupVariantCustom
+function collectible(self, subType, position, _velocity, _spawner, initSeed)
     local replacedSubType
     repeat
         local ____switch5 = subType
@@ -7461,7 +7463,7 @@ function collectible(self, subType, position, velocity, spawner, initSeed)
                 break
             end
         end
-        ____cond5 = ____cond5 or ____switch5 == CollectibleType.BUCKET_LARD
+        ____cond5 = ____cond5 or ____switch5 == CollectibleType.BUCKET_OF_LARD
         if ____cond5 then
             do
                 replacedSubType = CollectibleType.SUPER_BANDAGE
@@ -7475,15 +7477,7 @@ function collectible(self, subType, position, velocity, spawner, initSeed)
         end
     until true
     if replacedSubType ~= nil then
-        g.g:Spawn(
-            EntityType.PICKUP,
-            PickupVariant.COLLECTIBLE,
-            position,
-            velocity,
-            spawner,
-            replacedSubType,
-            initSeed
-        )
+        spawnCollectible(nil, replacedSubType, position, initSeed)
         return {EntityType.PICKUP, PickupVariantCustom.INVISIBLE_PICKUP, 0, 0}
     end
     return nil
@@ -7532,6 +7526,9 @@ return ____exports
 ["callbacks.preProjectileCollision"] = function(...) 
 local ____exports = {}
 local fartingBaby
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local FamiliarVariant = ____isaac_2Dtypescript_2Ddefinitions.FamiliarVariant
 local ____globals = require("globals")
 local g = ____globals.default
 function fartingBaby(self, projectile, collider)
@@ -7564,11 +7561,15 @@ local ____globals = require("globals")
 local g = ____globals.default
 function lostContact(self, tear, collider)
     if collider.Type == EntityType.PROJECTILE and g.p:HasCollectible(CollectibleType.LOST_CONTACT) then
-        local ____ = CacheFlag.keep
-        local ____ = going
-        local ____ = If
-        local ____ = we
-        return true
+        g.g:Spawn(
+            tear.Type,
+            tear.Variant,
+            tear.Position,
+            tear.Velocity,
+            tear.SpawnerEntity,
+            tear.SubType,
+            tear.InitSeed
+        )
     end
 end
 function ____exports.main(self, tear, collider)
@@ -7628,523 +7629,6 @@ function ____exports.voidItem(self)
 end
 return ____exports
  end,
-["path"] = function(...) 
-local ____exports = {}
-local getCoordsFromGridIndex, getGridIndexFromXY
-local ____globals = require("globals")
-local g = ____globals.default
-require("lib.astar")
-require("lib.tiledmaphandler")
-function getCoordsFromGridIndex(self, gridIndex)
-    local y = math.floor(gridIndex / 13)
-    local x = gridIndex - y * 13
-    return {x = x, y = y}
-end
-function getGridIndexFromXY(self, coords)
-    local x = coords.x - 1
-    local y = coords.y - 1
-    return y * 13 + x
-end
-local GridValue = GridValue or ({})
-GridValue.ROOM = 0
-GridValue[GridValue.ROOM] = "ROOM"
-GridValue.NULL = 1
-GridValue[GridValue.NULL] = "NULL"
-function ____exports.findMidBoss(self, percent)
-    local startingRoomIndex = g.l:GetStartingRoomIndex()
-    local rooms = g.l:GetRooms()
-    local grid = {}
-    do
-        local i = 0
-        while i < 13 do
-            local row = {}
-            do
-                local j = 0
-                while j < 13 do
-                    row[#row + 1] = GridValue.NULL
-                    j = j + 1
-                end
-            end
-            grid[#grid + 1] = row
-            i = i + 1
-        end
-    end
-    local bossRoomIndex
-    do
-        local i = 0
-        while i < rooms.Size do
-            do
-                local roomDesc = rooms:Get(i)
-                if roomDesc == nil then
-                    goto __continue5
-                end
-                local roomIndexSafe = roomDesc.SafeGridIndex
-                local roomData = roomDesc.Data
-                local roomType = roomData.Type
-                local roomShape = roomData.Shape
-                if roomType == RoomType.BOSS then
-                    bossRoomIndex = roomIndexSafe
-                end
-                if roomType == RoomType.DEFAULT or roomType == RoomType.BOSS then
-                    local ____getCoordsFromGridIndex_result_0 = getCoordsFromGridIndex(nil, roomIndexSafe)
-                    local x = ____getCoordsFromGridIndex_result_0.x
-                    local y = ____getCoordsFromGridIndex_result_0.y
-                    grid[y + 1][x + 1] = GridValue.ROOM
-                    if roomShape == RoomShape.ROOMSHAPE_1x2 or roomShape == RoomShape.ROOMSHAPE_IIV then
-                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
-                    elseif roomShape == RoomShape.ROOMSHAPE_2x1 or roomShape == RoomShape.ROOMSHAPE_IIH then
-                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
-                    elseif roomShape == RoomShape.ROOMSHAPE_2x2 then
-                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
-                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
-                        grid[y + 1 + 1][x + 1 + 1] = GridValue.ROOM
-                    elseif roomShape == RoomShape.ROOMSHAPE_LTL then
-                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
-                        grid[y + 1 + 1][x] = GridValue.ROOM
-                    elseif roomShape == RoomShape.ROOMSHAPE_LTR then
-                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
-                        grid[y + 1 + 1][x + 1 + 1] = GridValue.ROOM
-                    elseif roomShape == RoomShape.ROOMSHAPE_LBL then
-                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
-                        grid[y + 1 + 1][x + 1 + 1] = GridValue.ROOM
-                    elseif roomShape == RoomShape.ROOMSHAPE_LBR then
-                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
-                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
-                    end
-                    Isaac.DebugString(("Plotted room " .. tostring(i)) .. ":")
-                    Isaac.DebugString("  ID: " .. tostring(roomData.Variant))
-                    Isaac.DebugString("  Index: " .. tostring(roomIndexSafe))
-                    Isaac.DebugString(((("  Coordinates: (" .. tostring(x)) .. ", ") .. tostring(y)) .. ")")
-                    Isaac.DebugString("  Shape: " .. tostring(roomShape))
-                end
-            end
-            ::__continue5::
-            i = i + 1
-        end
-    end
-    local startingRoomCoords = getCoordsFromGridIndex(nil, startingRoomIndex)
-    if bossRoomIndex == nil then
-        error("Failed to find the boss room when iterating through the rooms.")
-    end
-    local bossRoomCoords = getCoordsFromGridIndex(nil, bossRoomIndex)
-    Isaac.DebugString("Grid:")
-    Isaac.DebugString("     1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16")
-    do
-        local i = 0
-        while i < #grid do
-            local rowString = ("  " .. tostring(i)) .. " "
-            if i < 10 then
-                rowString = rowString .. " "
-            end
-            do
-                local j = 0
-                while j < #grid[i + 1] do
-                    local gridValue = grid[i + 1][j + 1]
-                    if gridValue == GridValue.NULL then
-                        rowString = rowString .. "  "
-                    elseif gridValue == GridValue.ROOM then
-                        rowString = rowString .. tostring(gridValue)
-                        if i == startingRoomCoords.y and j == startingRoomCoords.x then
-                            rowString = rowString .. "S"
-                        elseif i == bossRoomCoords.y and j == bossRoomCoords.x then
-                            rowString = rowString .. "B"
-                        end
-                    end
-                    rowString = rowString .. " "
-                    j = j + 1
-                end
-            end
-            Isaac.DebugString(rowString)
-            i = i + 1
-        end
-    end
-    local maphandler = TiledMapHandler(grid)
-    local astar = AStar(maphandler)
-    startingRoomCoords.x = startingRoomCoords.x + 1
-    startingRoomCoords.y = startingRoomCoords.y + 1
-    bossRoomCoords.x = bossRoomCoords.x + 1
-    bossRoomCoords.y = bossRoomCoords.y + 1
-    Isaac.ConsoleOutput(((("STARTING ROOM COORDS: (" .. tostring(startingRoomCoords.x)) .. ", ") .. tostring(startingRoomCoords.y)) .. ")")
-    Isaac.ConsoleOutput(((("BOSS ROOM COORDS: (" .. tostring(bossRoomCoords.x)) .. ", ") .. tostring(bossRoomCoords.y)) .. ")")
-    local path = astar:findPath(startingRoomCoords, bossRoomCoords)
-    local nodes = path:getNodes()
-    Isaac.DebugString("Path:")
-    do
-        local i = 0
-        while i < #nodes do
-            local node = nodes[i + 1]
-            local loc = node.location
-            Isaac.DebugString(((((tostring(i) .. ".  (") .. tostring(loc.x)) .. ", ") .. tostring(loc.y)) .. ")")
-            i = i + 1
-        end
-    end
-    local nodeIndex = math.floor(#nodes * percent)
-    nodeIndex = nodeIndex - 1
-    local inBetweenNodeCoords = nodes[nodeIndex + 1].location
-    return getGridIndexFromXY(nil, inBetweenNodeCoords)
-end
-return ____exports
- end,
-["callbacks.useCard"] = function(...) 
-local ____lualib = require("lualib_bundle")
-local __TS__ArrayIncludes = ____lualib.__TS__ArrayIncludes
-local ____exports = {}
-local deleteNearestHeart
-local ____constants = require("constants")
-local ZERO_VECTOR = ____constants.ZERO_VECTOR
-local ____globals = require("globals")
-local g = ____globals.default
-local misc = require("misc")
-local path = require("path")
-local ____enums = require("types.enums")
-local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
-function deleteNearestHeart(self)
-    local hearts = Isaac.FindByType(
-        EntityType.PICKUP,
-        PickupVariant.HEART,
-        HeartSubType.HEART_FULL,
-        false,
-        false
-    )
-    local nearestPickup = nil
-    local nearestPickupDistance = nil
-    for ____, heart in ipairs(hearts) do
-        do
-            local pickup = heart:ToPickup()
-            if pickup == nil then
-                goto __continue13
-            end
-            if pickup.FrameCount <= 1 and pickup.SpawnerType == EntityType.PLAYER and not pickup.Touched and pickup.Price == 0 and pickup.State ~= 1 then
-                local distanceToPlayer = g.p.Position:Distance(pickup.Position)
-                if nearestPickup == nil or nearestPickupDistance == nil then
-                    nearestPickup = pickup
-                    nearestPickupDistance = distanceToPlayer
-                elseif distanceToPlayer < nearestPickupDistance then
-                    nearestPickup = pickup
-                    nearestPickupDistance = distanceToPlayer
-                end
-            end
-        end
-        ::__continue13::
-    end
-    if nearestPickup ~= nil then
-        nearestPickup.State = 1
-        nearestPickup:Remove()
-    end
-end
-function ____exports.magician(self)
-    if not g.p:HasCollectible(CollectibleTypeCustom.TECHNOLOGY_2_5) then
-        return
-    end
-    local lasers = Isaac.FindByType(
-        EntityType.LASER,
-        LaserVariant.LASER_THIN_RED,
-        -1,
-        false,
-        false
-    )
-    for ____, entity in ipairs(lasers) do
-        if entity.SpawnerType == EntityType.PLAYER then
-            local laser = entity:ToLaser()
-            if laser ~= nil then
-                laser.TearFlags = laser.TearFlags | TearFlag.HOMING
-            end
-        end
-    end
-end
-function ____exports.emperor(self)
-    if RacingPlusGlobals.run.bossCommand then
-        return
-    end
-    local gridIndex = path:findMidBoss(0.66)
-    g.l.LeaveDoor = -1
-    g.g:StartRoomTransition(gridIndex, Direction.NO_DIRECTION, RoomTransition.TRANSITION_TELEPORT)
-    Isaac.DebugString("Nerfed emperor to room. " .. tostring(gridIndex))
-end
-function ____exports.lovers(self)
-    do
-        local i = 0
-        while i < 2 do
-            deleteNearestHeart(nil)
-            i = i + 1
-        end
-    end
-    Isaac.Spawn(
-        EntityType.PICKUP,
-        PickupVariant.BED,
-        0,
-        g.r:FindFreePickupSpawnPosition(g.p.Position, 1, true),
-        ZERO_VECTOR,
-        g.p
-    )
-end
-function ____exports.wheelOfFortune(self)
-    local slotVariant
-    if g.run.spawningRestock then
-        g.run.spawningRestock = false
-        slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE
-    else
-        g.run.wheelOfFortuneSeed = misc:incrementRNG(g.run.wheelOfFortuneSeed)
-        math.randomseed(g.run.wheelOfFortuneSeed)
-        local slotChoice = math.random(1, 3)
-        if slotChoice == 1 then
-            slotVariant = SlotVariant.SLOT_MACHINE
-        elseif slotChoice == 2 then
-            slotVariant = SlotVariant.FORTUNE_TELLING_MACHINE
-        elseif slotChoice == 3 then
-            slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE
-        else
-            error("Unknown slot choice: " .. tostring(slotChoice))
-        end
-    end
-    local slots = Isaac.FindByType(
-        EntityType.SLOT,
-        -1,
-        -1,
-        false,
-        false
-    )
-    for ____, slot in ipairs(slots) do
-        if slot.FrameCount == 0 then
-            g.g:Spawn(
-                EntityType.SLOT,
-                slotVariant,
-                slot.Position,
-                slot.Velocity,
-                slot.Parent,
-                slot.SubType,
-                slot.InitSeed
-            )
-            Isaac.Spawn(
-                EntityType.EFFECT,
-                EffectVariant.POOF01,
-                3,
-                slot.Position,
-                ZERO_VECTOR,
-                nil
-            )
-            slot:Remove()
-        end
-    end
-end
-function ____exports.sun(self)
-    local rooms = g.l:GetRooms()
-    do
-        local i = 0
-        while i < rooms.Size do
-            local roomDesc = rooms:Get(i)
-            if roomDesc ~= nil then
-                local roomIndexSafe = roomDesc.SafeGridIndex
-                local room = g.l:GetRoomByIdx(roomIndexSafe)
-                room.DisplayFlags = 0
-            end
-            i = i + 1
-        end
-    end
-    local randomIndexes = {}
-    repeat
-        do
-            local randomIndex
-            repeat
-                do
-                    g.run.sunCardRNG = misc:incrementRNG(g.run.sunCardRNG)
-                    math.randomseed(g.run.sunCardRNG)
-                    randomIndex = math.random(0, rooms.Size - 1)
-                end
-            until not __TS__ArrayIncludes(randomIndexes, randomIndex)
-            randomIndexes[#randomIndexes + 1] = randomIndex
-        end
-    until not (#randomIndexes < 3)
-    for ____, randomIndex in ipairs(randomIndexes) do
-        local roomDesc = rooms:Get(randomIndex)
-        if roomDesc ~= nil then
-            local roomIndexSafe = roomDesc.SafeGridIndex
-            local room = g.l:GetRoomByIdx(roomIndexSafe)
-            room.DisplayFlags = 5
-        end
-    end
-    g.l:UpdateVisibility()
-end
-function ____exports.world(self)
-    local rooms = g.l:GetRooms()
-    if g.l:GetStateFlag(LevelStateFlag.STATE_COMPASS_EFFECT) then
-        return
-    end
-    do
-        local i = 0
-        while i < rooms.Size do
-            do
-                local roomDesc = rooms:Get(i)
-                if roomDesc == nil then
-                    goto __continue40
-                end
-                local roomIndexSafe = roomDesc.SafeGridIndex
-                local roomData = roomDesc.Data
-                local roomType = roomData.Type
-                if roomType ~= RoomType.BOSS then
-                    local room = g.l:GetRoomByIdx(roomIndexSafe)
-                    room.DisplayFlags = 0
-                end
-            end
-            ::__continue40::
-            i = i + 1
-        end
-    end
-    g.l:UpdateVisibility()
-end
-function ____exports.ansuz(self)
-    local rooms = g.l:GetRooms()
-    do
-        local i = 0
-        while i < rooms.Size do
-            local roomDesc = rooms:Get(i)
-            if roomDesc ~= nil then
-                local roomIndexSafe = roomDesc.SafeGridIndex
-                local room = g.l:GetRoomByIdx(roomIndexSafe)
-                room.DisplayFlags = room.DisplayFlags & ~(1 << 2)
-            end
-            i = i + 1
-        end
-    end
-    g.l:UpdateVisibility()
-end
-return ____exports
- end,
-["callbacks.useItem"] = function(...) 
-local ____exports = {}
-local ____globals = require("globals")
-local g = ____globals.default
-local misc = require("misc")
-local postItemPickup = require("postItemPickup")
-local ____enums = require("types.enums")
-local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
-function ____exports.main(self, collectibleType)
-    if not g.p:HasCollectible(CollectibleType.NINE_VOLT) then
-        return true
-    end
-    local maxCharges = misc:getItemMaxCharges(collectibleType)
-    if maxCharges < 3 then
-        return true
-    end
-    g.run.nineVoltFrame = g.g:GetFrameCount()
-    return true
-end
-function ____exports.bookOfRevelations(self)
-    g.p:AddSoulHearts(-1)
-    return true
-end
-function ____exports.theNail(self)
-    g.p:AddSoulHearts(-1)
-    return true
-end
-function ____exports.monstrosTooth(self)
-    local ____g_run_0, ____monstroCounters_1 = g.run, "monstroCounters"
-    ____g_run_0[____monstroCounters_1] = ____g_run_0[____monstroCounters_1] + 1
-    if g.run.monstroCounters == 3 then
-        g.run.monstroCounters = 0
-        g.run.monstroFrame = 0
-    else
-        g.run.monstroFrame = g.g:GetFrameCount() + 15
-    end
-    return true
-end
-function ____exports.bookOfSecrets(self)
-    if g.l:GetStateFlag(LevelStateFlag.STATE_BLUE_MAP_EFFECT) then
-        postItemPickup:blueMap()
-    end
-    return true
-end
-function ____exports.satanicBible(self)
-    g.p:AddBlackHearts(-1)
-    return true
-end
-function ____exports.brownNugget(self)
-    if g.run.brownNuggetCounters == 0 then
-        g.run.brownNuggetCounters = 1
-        g.run.brownNuggetFrame = g.g:GetFrameCount() + 3
-    end
-    return true
-end
-function ____exports.holyPoop(self)
-    Isaac.GridSpawn(GridEntityType.POOP, PoopVariant.POOP_WHITE, g.p.Position, false)
-    sfxManager:Play(
-        SoundEffect.FART,
-        1,
-        0,
-        false,
-        1
-    )
-    return true
-end
-function ____exports.momsBraImproved(self)
-    g.p:UseActiveItem(
-        CollectibleType.MOMS_BRA,
-        true,
-        false,
-        false,
-        false
-    )
-    return true
-end
-function ____exports.monsterManualImproved(self)
-    g.p:UseActiveItem(
-        CollectibleType.MONSTER_MANUAL,
-        true,
-        false,
-        false,
-        false
-    )
-    return true
-end
-function ____exports.boxOfSpidersImproved(self)
-    g.p:UseActiveItem(
-        CollectibleType.BOX_OF_SPIDERS,
-        true,
-        false,
-        false,
-        false
-    )
-    return true
-end
-function ____exports.megaBlastSingle(self)
-    g.p:UseActiveItem(
-        CollectibleType.MEGA_SATANS_BREATH,
-        true,
-        false,
-        false,
-        false
-    )
-    g.p:RemoveCollectible(CollectibleTypeCustom.MEGA_BLAST_SINGLE)
-    return true
-end
-function ____exports.clockworkAssembly(self)
-    g.run.spawningRestock = true
-    RacingPlusGlobals.run.streakIgnore = true
-    g.p:UseCard(Card.WHEEL_OF_FORTUNE)
-    return true
-end
-function ____exports.chargingStation(self)
-    if RacingPlusSchoolbag:isItemFullyCharged() then
-        return false
-    end
-    local coins = g.p:GetNumCoins()
-    if coins == 0 then
-        return false
-    end
-    g.p:AddCoins(-1)
-    RacingPlusSchoolbag:addCharge(true)
-    g.p:AnimateCollectible(CollectibleTypeCustom.CHARGING_STATION, "UseItem", "PlayerPickup")
-    sfxManager:Play(
-        SoundEffect.BEEP,
-        1,
-        0,
-        false,
-        1
-    )
-    return true
-end
-return ____exports
- end,
 ["callbacks.usePill"] = function(...) 
 local ____lualib = require("lualib_bundle")
 local __TS__Iterator = ____lualib.__TS__Iterator
@@ -8166,7 +7650,7 @@ function animateUse(self, thisPillEffect)
         end
     end
     if thisPillColor == nil then
-        thisPillColor = PillColor.PILL_BLUE_BLUE
+        thisPillColor = PillColor.BLUE_BLUE
     end
     g.p:AnimatePill(thisPillColor, "UseItem")
     local pillName = itemConfig:GetPillEffect(thisPillEffect).Name
@@ -8316,6 +7800,14 @@ return ____exports
  end,
 ["main"] = function(...) 
 local ____exports = {}
+local main, welcomeBanner, addCallbacks, addCustomCallbacks
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
+local EffectVariant = ____isaac_2Dtypescript_2Ddefinitions.EffectVariant
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local log = ____isaacscript_2Dcommon.log
+local upgradeMod = ____isaacscript_2Dcommon.upgradeMod
 local entityTakeDmg = require("callbacks.entityTakeDmg")
 local evaluateCache = require("callbacks.evaluateCache")
 local executeCmd = require("callbacks.executeCmd")
@@ -8324,7 +7816,6 @@ local familiarUpdate = require("callbacks.familiarUpdate")
 local getCard = require("callbacks.getCard")
 local getPillColor = require("callbacks.getPillColor")
 local getPillEffect = require("callbacks.getPillEffect")
-local NPCUpdate = require("callbacks.NPCUpdate")
 local postBombUpdate = require("callbacks.postBombUpdate")
 local postEffectUpdate = require("callbacks.postEffectUpdate")
 local postFireTear = require("callbacks.postFireTear")
@@ -8334,6 +7825,7 @@ local postLaserInit = require("callbacks.postLaserInit")
 local postLaserUpdate = require("callbacks.postLaserUpdate")
 local postNewLevel = require("callbacks.postNewLevel")
 local postNewRoom = require("callbacks.postNewRoom")
+local postNPCUpdate = require("callbacks.postNPCUpdate")
 local postPickupInit = require("callbacks.postPickupInit")
 local postPickupRender = require("callbacks.postPickupRender")
 local postPickupUpdate = require("callbacks.postPickupUpdate")
@@ -8342,172 +7834,643 @@ local postProjectileUpdate = require("callbacks.postProjectileUpdate")
 local postRender = require("callbacks.postRender")
 local postTearUpdate = require("callbacks.postTearUpdate")
 local postUpdate = require("callbacks.postUpdate")
+local postUseItem = require("callbacks.postUseItem")
 local preEntitySpawn = require("callbacks.preEntitySpawn")
 local preFamiliarCollision = require("callbacks.preFamiliarCollision")
 local preProjectileCollision = require("callbacks.preProjectileCollision")
 local preTearCollision = require("callbacks.preTearCollision")
 local preUseItem = require("callbacks.preUseItem")
-local useCard = require("callbacks.useCard")
-local useItem = require("callbacks.useItem")
 local usePill = require("callbacks.usePill")
 local ____constants = require("constants")
+local MOD_NAME = ____constants.MOD_NAME
 local VERSION = ____constants.VERSION
-local ____isaacScriptInit = require("isaacScriptInit")
-local isaacScriptInit = ____isaacScriptInit.default
 local catalog = require("items.catalog")
-local ____enums = require("types.enums")
-local CollectibleTypeCustom = ____enums.CollectibleTypeCustom
-local EffectVariantCustom = ____enums.EffectVariantCustom
-local PillEffectCustom = ____enums.PillEffectCustom
-isaacScriptInit(nil)
-local RPRebalanced = RegisterMod("Racing+ Rebalanced", 1)
-RacingPlusRebalancedVersion = VERSION
-RPRebalanced:AddCallback(ModCallbacks.MC_NPC_UPDATE, NPCUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_UPDATE, postUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_RENDER, postRender.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, postPlayerInit.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, entityTakeDmg.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, postGameStarted.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, postNewLevel.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, postNewRoom.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_GET_CARD, getCard.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_EXECUTE_CMD, executeCmd.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, preEntitySpawn.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, postTearUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, preTearCollision.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PROJECTILE_UPDATE, postProjectileUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_PROJECTILE_COLLISION, preProjectileCollision.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_LASER_INIT, postLaserInit.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, postLaserUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, postKnifeUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_BOMB_UPDATE, postBombUpdate.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, postFireTear.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_GET_PILL_COLOR, getPillColor.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_GET_PILL_EFFECT, getPillEffect.main)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.bookOfRevelations, CollectibleType.BOOK_REVELATIONS)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.theNail, CollectibleType.THE_NAIL)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.monstrosTooth, CollectibleType.MONSTROS_TOOTH)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.bookOfSecrets, CollectibleType.BOOK_OF_SECRETS)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.satanicBible, CollectibleType.SATANIC_BIBLE)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.brownNugget, CollectibleType.BROWN_NUGGET)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.holyPoop, CollectibleTypeCustom.HOLY_POOP)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.momsBraImproved, CollectibleTypeCustom.MOMS_BRA_IMPROVED)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.monsterManualImproved, CollectibleTypeCustom.MONSTER_MANUAL_IMPROVED)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.boxOfSpidersImproved, CollectibleTypeCustom.BOX_OF_SPIDERS_IMPROVED)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.megaBlastSingle, CollectibleTypeCustom.MEGA_BLAST_SINGLE)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.clockworkAssembly, CollectibleTypeCustom.CLOCKWORK_ASSEMBLY)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, useItem.chargingStation, CollectibleTypeCustom.CHARGING_STATION)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_ITEM, catalog.useItem, CollectibleTypeCustom.CATALOG)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.magician, Card.MAGICIAN)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.emperor, Card.EMPEROR)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.lovers, Card.LOVERS)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.wheelOfFortune, Card.WHEEL_OF_FORTUNE)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.sun, Card.SUN)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.world, Card.WORLD)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_CARD, useCard.ansuz, Card.RUNE_ANSUZ)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, familiarUpdate.leech, FamiliarVariant.LEECH)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, familiarUpdate.yoListen, FamiliarVariant.YO_LISTEN)
-local preventStackingFamiliarVariants = {
-    FamiliarVariant.LITTLE_CHUBBY,
-    FamiliarVariant.DEAD_BIRD,
-    FamiliarVariant.EVES_BIRD_FOOT,
-    FamiliarVariant.LEECH,
-    FamiliarVariant.LIL_HAUNT,
-    FamiliarVariant.SISSY_LONGLEGS,
-    FamiliarVariant.LIL_GURDY,
-    FamiliarVariant.BIG_CHUBBY
-}
-for ____, familiarVariant in ipairs(preventStackingFamiliarVariants) do
-    RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, familiarUpdate.preventStacking, familiarVariant)
+function main(self)
+    local modVanilla = RegisterMod(MOD_NAME, 1)
+    local mod = upgradeMod(nil, modVanilla)
+    welcomeBanner(nil)
+    addCallbacks(nil, mod)
+    addCustomCallbacks(nil, mod)
 end
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.littleChubby, FamiliarVariant.LITTLE_CHUBBY)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.deadBird, FamiliarVariant.DEAD_BIRD)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.deadBird, FamiliarVariant.EVES_BIRD_FOOT)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.daddyLonglegs, FamiliarVariant.DADDY_LONGLEGS)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.sacrificialDagger, FamiliarVariant.SACRIFICIAL_DAGGER)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.leech, FamiliarVariant.LEECH)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.lilHaunt, FamiliarVariant.LIL_HAUNT)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.blueBabysOnlyFriend, FamiliarVariant.BLUEBABYS_ONLY_FRIEND)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.gemini, FamiliarVariant.GEMINI)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.lilGurdy, FamiliarVariant.LIL_GURDY)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.bumbo, FamiliarVariant.BUMBO)
-RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.bigChubby, FamiliarVariant.BIG_CHUBBY)
-local disableVanillaShootingFamiliarVariants = {
-    FamiliarVariant.BROTHER_BOBBY,
-    FamiliarVariant.LITTLE_GISH,
-    FamiliarVariant.LITTLE_STEVEN,
-    FamiliarVariant.ROBO_BABY,
-    FamiliarVariant.SISTER_MAGGY,
-    FamiliarVariant.GHOST_BABY,
-    FamiliarVariant.HARLEQUIN_BABY,
-    FamiliarVariant.RAINBOW_BABY,
-    FamiliarVariant.ISAACS_HEAD,
-    FamiliarVariant.MONGO_BABY,
-    FamiliarVariant.SERAPHIM,
-    FamiliarVariant.LIL_LOKI
-}
-for ____, familiarVariant in ipairs(disableVanillaShootingFamiliarVariants) do
-    RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.disableVanillaShooting, familiarVariant)
+function welcomeBanner(self)
+    local welcomeText = ((MOD_NAME .. " ") .. VERSION) .. " initialized."
+    local hyphens = string.rep(
+        "-",
+        math.floor(#welcomeText)
+    )
+    local welcomeTextBorder = ("+-" .. hyphens) .. "-+"
+    log(welcomeTextBorder)
+    log(("| " .. welcomeText) .. " |")
+    log(welcomeTextBorder)
 end
-local damage7FamiliarVariants = {FamiliarVariant.FOREVER_ALONE, FamiliarVariant.DISTANT_ADMIRATION, FamiliarVariant.FRIEND_ZONE}
-for ____, familiarVariant in ipairs(damage7FamiliarVariants) do
-    RPRebalanced:AddCallback(ModCallbacks.MC_FAMILIAR_INIT, familiarInit.damage7, familiarVariant)
+function addCallbacks(self, mod)
+    postNPCUpdate:init(mod)
+    postUpdate:init(mod)
+    postRender:init(mod)
+    postUseItem:init(mod)
+    mod:AddCallback(ModCallback.POST_PLAYER_INIT, postPlayerInit.main)
+    mod:AddCallback(ModCallback.ENTITY_TAKE_DMG, entityTakeDmg.main)
+    mod:AddCallback(ModCallback.POST_GAME_STARTED, postGameStarted.main)
+    mod:AddCallback(ModCallback.POST_NEW_LEVEL, postNewLevel.main)
+    mod:AddCallback(ModCallback.POST_NEW_ROOM, postNewRoom.main)
+    mod:AddCallback(ModCallback.GET_CARD, getCard.main)
+    mod:AddCallback(ModCallback.EXECUTE_CMD, executeCmd.main)
+    mod:AddCallback(ModCallback.PRE_ENTITY_SPAWN, preEntitySpawn.main)
+    mod:AddCallback(ModCallback.POST_PICKUP_UPDATE, postPickupUpdate.main)
+    mod:AddCallback(ModCallback.POST_TEAR_UPDATE, postTearUpdate.main)
+    mod:AddCallback(ModCallback.PRE_TEAR_COLLISION, preTearCollision.main)
+    mod:AddCallback(ModCallback.POST_PROJECTILE_UPDATE, postProjectileUpdate.main)
+    mod:AddCallback(ModCallback.PRE_PROJECTILE_COLLISION, preProjectileCollision.main)
+    mod:AddCallback(ModCallback.POST_LASER_INIT, postLaserInit.main)
+    mod:AddCallback(ModCallback.POST_LASER_UPDATE, postLaserUpdate.main)
+    mod:AddCallback(ModCallback.POST_KNIFE_UPDATE, postKnifeUpdate.main)
+    mod:AddCallback(ModCallback.POST_BOMB_UPDATE, postBombUpdate.main)
+    mod:AddCallback(ModCallback.POST_FIRE_TEAR, postFireTear.main)
+    mod:AddCallback(ModCallback.GET_PILL_COLOR, getPillColor.main)
+    mod:AddCallback(ModCallback.GET_PILL_EFFECT, getPillEffect.main)
+    mod:AddCallback(ModCallback.FAMILIAR_UPDATE, familiarUpdate.leech, FamiliarVariant.LEECH)
+    mod:AddCallback(ModCallback.FAMILIAR_UPDATE, familiarUpdate.yoListen, FamiliarVariant.YO_LISTEN)
+    local preventStackingFamiliarVariants = {
+        FamiliarVariant.LITTLE_CHUBBY,
+        FamiliarVariant.DEAD_BIRD,
+        FamiliarVariant.EVES_BIRD_FOOT,
+        FamiliarVariant.LEECH,
+        FamiliarVariant.LIL_HAUNT,
+        FamiliarVariant.SISSY_LONGLEGS,
+        FamiliarVariant.LIL_GURDY,
+        FamiliarVariant.BIG_CHUBBY
+    }
+    for ____, familiarVariant in ipairs(preventStackingFamiliarVariants) do
+        mod:AddCallback(ModCallback.FAMILIAR_UPDATE, familiarUpdate.preventStacking, familiarVariant)
+    end
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.littleChubby, FamiliarVariant.LITTLE_CHUBBY)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.deadBird, FamiliarVariant.DEAD_BIRD)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.deadBird, FamiliarVariant.EVES_BIRD_FOOT)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.daddyLonglegs, FamiliarVariant.DADDY_LONGLEGS)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.sacrificialDagger, FamiliarVariant.SACRIFICIAL_DAGGER)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.leech, FamiliarVariant.LEECH)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.lilHaunt, FamiliarVariant.LIL_HAUNT)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.blueBabysOnlyFriend, FamiliarVariant.BLUEBABYS_ONLY_FRIEND)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.gemini, FamiliarVariant.GEMINI)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.lilGurdy, FamiliarVariant.LIL_GURDY)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.bumbo, FamiliarVariant.BUMBO)
+    mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.bigChubby, FamiliarVariant.BIG_CHUBBY)
+    local disableVanillaShootingFamiliarVariants = {
+        FamiliarVariant.BROTHER_BOBBY,
+        FamiliarVariant.LITTLE_GISH,
+        FamiliarVariant.LITTLE_STEVEN,
+        FamiliarVariant.ROBO_BABY,
+        FamiliarVariant.SISTER_MAGGY,
+        FamiliarVariant.GHOST_BABY,
+        FamiliarVariant.HARLEQUIN_BABY,
+        FamiliarVariant.RAINBOW_BABY,
+        FamiliarVariant.ISAACS_HEAD,
+        FamiliarVariant.MONGO_BABY,
+        FamiliarVariant.SERAPHIM,
+        FamiliarVariant.LIL_LOKI
+    }
+    for ____, familiarVariant in ipairs(disableVanillaShootingFamiliarVariants) do
+        mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.disableVanillaShooting, familiarVariant)
+    end
+    local damage7FamiliarVariants = {FamiliarVariant.FOREVER_ALONE, FamiliarVariant.DISTANT_ADMIRATION, FamiliarVariant.FRIEND_ZONE}
+    for ____, familiarVariant in ipairs(damage7FamiliarVariants) do
+        mod:AddCallback(ModCallback.FAMILIAR_INIT, familiarInit.damage7, familiarVariant)
+    end
+    mod:AddCallback(ModCallback.EVALUATE_CACHE, evaluateCache.damage, CacheFlag.DAMAGE)
+    mod:AddCallback(ModCallback.EVALUATE_CACHE, evaluateCache.fireDelay, CacheFlag.FIRE_DELAY)
+    mod:AddCallback(ModCallback.EVALUATE_CACHE, evaluateCache.shotSpeed, CacheFlag.SHOTSPEED)
+    mod:AddCallback(ModCallback.EVALUATE_CACHE, evaluateCache.speed, CacheFlag.SPEED)
+    mod:AddCallback(ModCallback.EVALUATE_CACHE, evaluateCache.luck, CacheFlag.LUCK)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.damageUp, PillEffectCustom.DAMAGE_UP)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.tearDelayDown, PillEffectCustom.TEAR_DELAY_DOWN)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.dealAffinity, PillEffectCustom.DEAL_AFFINITY)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.boneAffinity, PillEffectCustom.BONE_AFFINITY)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.restock, PillEffectCustom.RESTOCK)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.goldenDump, PillEffectCustom.GOLDEN_DUMP)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.glimpse, PillEffectCustom.GLIMPSE)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.superSadness, PillEffectCustom.SUPER_SADNESS)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.invincibility, PillEffectCustom.INVINCIBILITY)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.reallyBadGas, PillEffectCustom.REALLY_BAD_GAS)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.aether, PillEffectCustom.AETHER)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.wallsHaveEyes, PillEffectCustom.WALLS_HAVE_EYES)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.bladderInfection, PillEffectCustom.BLADDER_INFECTION)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.scorchedEarth, PillEffectCustom.SCORCHED_EARTH)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.familiarFrenzy, PillEffectCustom.FAMILIAR_FRENZY)
+    mod:AddCallback(ModCallback.USE_PILL, usePill.unlock, PillEffectCustom.UNLOCK)
+    mod:AddCallback(ModCallback.PRE_USE_ITEM, preUseItem.isaacsTears, CollectibleType.ISAACS_TEARS)
+    mod:AddCallback(ModCallback.PRE_USE_ITEM, preUseItem.voidItem, CollectibleType.VOID)
+    mod:AddCallback(ModCallback.PRE_USE_ITEM, catalog.preUseItem, CollectibleTypeCustom.CATALOG)
+    mod:AddCallback(ModCallback.PRE_FAMILIAR_COLLISION, preFamiliarCollision.momsRazor, FamiliarVariant.MOMS_RAZOR)
+    mod:AddCallback(ModCallback.POST_PICKUP_INIT, postPickupInit.tarotCard, PickupVariant.TAROTCARD)
+    mod:AddCallback(ModCallback.POST_PICKUP_UPDATE, postPickupUpdate.heart, PickupVariant.HEART)
+    mod:AddCallback(ModCallback.POST_PICKUP_UPDATE, postPickupUpdate.pill, PickupVariant.PILL)
+    mod:AddCallback(ModCallback.POST_PICKUP_UPDATE, postPickupUpdate.collectible, PickupVariant.COLLECTIBLE)
+    mod:AddCallback(ModCallback.POST_PICKUP_RENDER, postPickupRender.collectible, PickupVariant.COLLECTIBLE)
+    mod:AddCallback(ModCallback.POST_EFFECT_UPDATE, postEffectUpdate.blueFlame, EffectVariant.BLUE_FLAME)
+    mod:AddCallback(ModCallback.POST_EFFECT_UPDATE, postEffectUpdate.diceRoomCustom, EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM)
+    local playerCreepEffectVariants = {
+        EffectVariant.PLAYER_CREEP_LEMON_MISHAP,
+        EffectVariant.PLAYER_CREEP_HOLY_WATER,
+        EffectVariant.PLAYER_CREEP_RED,
+        EffectVariant.PLAYER_CREEP_GREEN,
+        EffectVariant.PLAYER_CREEP_HOLY_WATER_TRAIL,
+        EffectVariant.PLAYER_CREEP_LEMON_PARTY
+    }
+    for ____, effectVariant in ipairs(playerCreepEffectVariants) do
+        mod:AddCallback(ModCallback.POST_EFFECT_UPDATE, postEffectUpdate.creepScaling, effectVariant)
+    end
 end
-RPRebalanced:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache.damage, CacheFlag.DAMAGE)
-RPRebalanced:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache.fireDelay, CacheFlag.FIRE_DELAY)
-RPRebalanced:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache.shotSpeed, CacheFlag.SHOTSPEED)
-RPRebalanced:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache.speed, CacheFlag.SPEED)
-RPRebalanced:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, evaluateCache.luck, CacheFlag.LUCK)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.damageUp, PillEffectCustom.PILLEFFECT_DAMAGE_UP)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.tearDelayDown, PillEffectCustom.PILLEFFECT_TEAR_DELAY_DOWN)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.dealAffinity, PillEffectCustom.PILLEFFECT_DEAL_AFFINITY)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.boneAffinity, PillEffectCustom.PILLEFFECT_BONE_AFFINITY)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.restock, PillEffectCustom.PILLEFFECT_RESTOCK)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.goldenDump, PillEffectCustom.PILLEFFECT_GOLDEN_DUMP)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.glimpse, PillEffectCustom.PILLEFFECT_GLIMPSE)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.superSadness, PillEffectCustom.PILLEFFECT_SUPER_SADNESS)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.invincibility, PillEffectCustom.PILLEFFECT_INVINCIBILITY)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.reallyBadGas, PillEffectCustom.PILLEFFECT_REALLY_BAD_GAS)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.aether, PillEffectCustom.PILLEFFECT_AETHER)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.wallsHaveEyes, PillEffectCustom.PILLEFFECT_WALLS_HAVE_EYES)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.bladderInfection, PillEffectCustom.PILLEFFECT_BLADDER_INFECTION)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.scorchedEarth, PillEffectCustom.PILLEFFECT_SCORCHED_EARTH)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.familiarFrenzy, PillEffectCustom.PILLEFFECT_FAMILIAR_FRENZY)
-RPRebalanced:AddCallback(ModCallbacks.MC_USE_PILL, usePill.unlock, PillEffectCustom.PILLEFFECT_UNLOCK)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, preUseItem.isaacsTears, CollectibleType.ISAACS_TEARS)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, preUseItem.voidItem, CollectibleType.VOID)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, catalog.preUseItem, CollectibleTypeCustom.CATALOG)
-RPRebalanced:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, preFamiliarCollision.momsRazor, FamiliarVariant.MOMS_RAZOR)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, postPickupInit.tarotCard, PickupVariant.TAROTCARD)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.heart, PickupVariant.HEART)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.pill, PickupVariant.PILL)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, postPickupUpdate.collectible, PickupVariant.COLLECTIBLE)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, postPickupRender.collectible, PickupVariant.COLLECTIBLE)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, postEffectUpdate.blueFlame, EffectVariant.BLUE_FLAME)
-RPRebalanced:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, postEffectUpdate.diceRoomCustom, EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM)
-local playerCreepEffectVariants = {
-    EffectVariant.PLAYER_CREEP_LEMON_MISHAP,
-    EffectVariant.PLAYER_CREEP_HOLYWATER,
-    EffectVariant.PLAYER_CREEP_RED,
-    EffectVariant.PLAYER_CREEP_GREEN,
-    EffectVariant.PLAYER_CREEP_HOLYWATER_TRAIL,
-    EffectVariant.PLAYER_CREEP_LEMON_PARTY
-}
-for ____, effectVariant in ipairs(playerCreepEffectVariants) do
-    RPRebalanced:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, postEffectUpdate.creepScaling, effectVariant)
+function addCustomCallbacks(self, mod)
 end
-local modName = "Racing+ Rebalanced"
-local welcomeText = ((modName .. " ") .. VERSION) .. " initialized."
-local hyphens = string.rep(
-    "-",
-    math.floor(#welcomeText)
-)
-local welcomeTextBorder = ("+-" .. hyphens) .. "-+"
-Isaac.DebugString(welcomeTextBorder)
-Isaac.DebugString(("| " .. welcomeText) .. " |")
-Isaac.DebugString(welcomeTextBorder)
+main(nil)
+return ____exports
+ end,
+["path"] = function(...) 
+local ____exports = {}
+local getCoordsFromGridIndex, getGridIndexFromXY
+local ____globals = require("globals")
+local g = ____globals.default
+require("lib.astar")
+require("lib.tiledmaphandler")
+function getCoordsFromGridIndex(self, gridIndex)
+    local y = math.floor(gridIndex / 13)
+    local x = gridIndex - y * 13
+    return {x = x, y = y}
+end
+function getGridIndexFromXY(self, coords)
+    local x = coords.x - 1
+    local y = coords.y - 1
+    return y * 13 + x
+end
+local GridValue = GridValue or ({})
+GridValue.ROOM = 0
+GridValue[GridValue.ROOM] = "ROOM"
+GridValue.NULL = 1
+GridValue[GridValue.NULL] = "NULL"
+function ____exports.findMidBoss(self, percent)
+    local startingRoomIndex = g.l:GetStartingRoomIndex()
+    local rooms = g.l:GetRooms()
+    local grid = {}
+    do
+        local i = 0
+        while i < 13 do
+            local row = {}
+            do
+                local j = 0
+                while j < 13 do
+                    row[#row + 1] = GridValue.NULL
+                    j = j + 1
+                end
+            end
+            grid[#grid + 1] = row
+            i = i + 1
+        end
+    end
+    local bossRoomIndex
+    do
+        local i = 0
+        while i < rooms.Size do
+            do
+                local roomDesc = rooms:Get(i)
+                if roomDesc == nil then
+                    goto __continue5
+                end
+                local roomIndexSafe = roomDesc.SafeGridIndex
+                local roomData = roomDesc.Data
+                local roomType = roomData.Type
+                local roomShape = roomData.Shape
+                if roomType == RoomType.BOSS then
+                    bossRoomIndex = roomIndexSafe
+                end
+                if roomType == RoomType.DEFAULT or roomType == RoomType.BOSS then
+                    local ____getCoordsFromGridIndex_result_0 = getCoordsFromGridIndex(nil, roomIndexSafe)
+                    local x = ____getCoordsFromGridIndex_result_0.x
+                    local y = ____getCoordsFromGridIndex_result_0.y
+                    grid[y + 1][x + 1] = GridValue.ROOM
+                    if roomShape == RoomShape then
+                        local ____ = 0.1
+                    end
+                    local ____ = x2 or roomShape == RoomShape.IIV
+                    do
+                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
+                    end
+                    if roomShape == RoomShape then
+                        local ____ = 0.2
+                    end
+                    local ____ = x1 or roomShape == RoomShape.IIH
+                    do
+                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
+                    end
+                    if roomShape == RoomShape then
+                        local ____ = 0.2
+                    end
+                    local ____ = x2
+                    do
+                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
+                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
+                        grid[y + 1 + 1][x + 1 + 1] = GridValue.ROOM
+                    end
+                    if roomShape == RoomShape.LTL then
+                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
+                        grid[y + 1 + 1][x] = GridValue.ROOM
+                    elseif roomShape == RoomShape.LTR then
+                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
+                        grid[y + 1 + 1][x + 1 + 1] = GridValue.ROOM
+                    elseif roomShape == RoomShape.LBL then
+                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
+                        grid[y + 1 + 1][x + 1 + 1] = GridValue.ROOM
+                    elseif roomShape == RoomShape.LBR then
+                        grid[y + 1][x + 1 + 1] = GridValue.ROOM
+                        grid[y + 1 + 1][x + 1] = GridValue.ROOM
+                    end
+                    Isaac.DebugString(("Plotted room " .. tostring(i)) .. ":")
+                    Isaac.DebugString("  ID: " .. tostring(roomData.Variant))
+                    Isaac.DebugString("  Index: " .. tostring(roomIndexSafe))
+                    Isaac.DebugString(((("  Coordinates: (" .. tostring(x)) .. ", ") .. tostring(y)) .. ")")
+                    Isaac.DebugString("  Shape: " .. tostring(roomShape))
+                end
+            end
+            ::__continue5::
+            i = i + 1
+        end
+    end
+    local startingRoomCoords = getCoordsFromGridIndex(nil, startingRoomIndex)
+    if bossRoomIndex == nil then
+        error("Failed to find the boss room when iterating through the rooms.")
+    end
+    local bossRoomCoords = getCoordsFromGridIndex(nil, bossRoomIndex)
+    Isaac.DebugString("Grid:")
+    Isaac.DebugString("     1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16")
+    do
+        local i = 0
+        while i < #grid do
+            local rowString = ("  " .. tostring(i)) .. " "
+            if i < 10 then
+                rowString = rowString .. " "
+            end
+            do
+                local j = 0
+                while j < #grid[i + 1] do
+                    local gridValue = grid[i + 1][j + 1]
+                    if gridValue == GridValue.NULL then
+                        rowString = rowString .. "  "
+                    elseif gridValue == GridValue.ROOM then
+                        rowString = rowString .. tostring(gridValue)
+                        if i == startingRoomCoords.y and j == startingRoomCoords.x then
+                            rowString = rowString .. "S"
+                        elseif i == bossRoomCoords.y and j == bossRoomCoords.x then
+                            rowString = rowString .. "B"
+                        end
+                    end
+                    rowString = rowString .. " "
+                    j = j + 1
+                end
+            end
+            Isaac.DebugString(rowString)
+            i = i + 1
+        end
+    end
+    local maphandler = TiledMapHandler(grid)
+    local astar = AStar(maphandler)
+    startingRoomCoords.x = startingRoomCoords.x + 1
+    startingRoomCoords.y = startingRoomCoords.y + 1
+    bossRoomCoords.x = bossRoomCoords.x + 1
+    bossRoomCoords.y = bossRoomCoords.y + 1
+    Isaac.ConsoleOutput(((("STARTING ROOM COORDS: (" .. tostring(startingRoomCoords.x)) .. ", ") .. tostring(startingRoomCoords.y)) .. ")")
+    Isaac.ConsoleOutput(((("BOSS ROOM COORDS: (" .. tostring(bossRoomCoords.x)) .. ", ") .. tostring(bossRoomCoords.y)) .. ")")
+    local path = astar:findPath(startingRoomCoords, bossRoomCoords)
+    local nodes = path:getNodes()
+    Isaac.DebugString("Path:")
+    do
+        local i = 0
+        while i < #nodes do
+            local node = nodes[i + 1]
+            local loc = node.location
+            Isaac.DebugString(((((tostring(i) .. ".  (") .. tostring(loc.x)) .. ", ") .. tostring(loc.y)) .. ")")
+            i = i + 1
+        end
+    end
+    local nodeIndex = math.floor(#nodes * percent)
+    nodeIndex = nodeIndex - 1
+    local inBetweenNodeCoords = nodes[nodeIndex + 1].location
+    return getGridIndexFromXY(nil, inBetweenNodeCoords)
+end
+return ____exports
+ end,
+["callbacks.useCard"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local __TS__ArrayIncludes = ____lualib.__TS__ArrayIncludes
+local ____exports = {}
+local deleteNearestHeart
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local Card = ____isaac_2Dtypescript_2Ddefinitions.Card
+local Direction = ____isaac_2Dtypescript_2Ddefinitions.Direction
+local DisplayFlag = ____isaac_2Dtypescript_2Ddefinitions.DisplayFlag
+local DisplayFlagZero = ____isaac_2Dtypescript_2Ddefinitions.DisplayFlagZero
+local DoorSlot = ____isaac_2Dtypescript_2Ddefinitions.DoorSlot
+local EffectVariant = ____isaac_2Dtypescript_2Ddefinitions.EffectVariant
+local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local HeartSubType = ____isaac_2Dtypescript_2Ddefinitions.HeartSubType
+local LaserVariant = ____isaac_2Dtypescript_2Ddefinitions.LaserVariant
+local LevelStateFlag = ____isaac_2Dtypescript_2Ddefinitions.LevelStateFlag
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
+local PickupVariant = ____isaac_2Dtypescript_2Ddefinitions.PickupVariant
+local PoofSubType = ____isaac_2Dtypescript_2Ddefinitions.PoofSubType
+local RoomTransitionAnim = ____isaac_2Dtypescript_2Ddefinitions.RoomTransitionAnim
+local RoomType = ____isaac_2Dtypescript_2Ddefinitions.RoomType
+local SlotVariant = ____isaac_2Dtypescript_2Ddefinitions.SlotVariant
+local TearFlag = ____isaac_2Dtypescript_2Ddefinitions.TearFlag
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local addFlag = ____isaacscript_2Dcommon.addFlag
+local getLasers = ____isaacscript_2Dcommon.getLasers
+local getRandomInt = ____isaacscript_2Dcommon.getRandomInt
+local log = ____isaacscript_2Dcommon.log
+local removeFlag = ____isaacscript_2Dcommon.removeFlag
+local ____repeat = ____isaacscript_2Dcommon["repeat"]
+local spawnEffect = ____isaacscript_2Dcommon.spawnEffect
+local ____constants = require("constants")
+local ZERO_VECTOR = ____constants.ZERO_VECTOR
+local ____CollectibleTypeCustom = require("enums.CollectibleTypeCustom")
+local CollectibleTypeCustom = ____CollectibleTypeCustom.CollectibleTypeCustom
+local ____globals = require("globals")
+local g = ____globals.default
+local misc = require("misc")
+local path = require("path")
+function ____exports.magician(self)
+    if not g.p:HasCollectible(CollectibleTypeCustom.TECHNOLOGY_2_5) then
+        return
+    end
+    local lasers = getLasers(nil, LaserVariant.THIN_RED)
+    for ____, laser in ipairs(lasers) do
+        if laser.SpawnerType == EntityType.PLAYER then
+            laser.TearFlags = addFlag(nil, laser.TearFlags, TearFlag.HOMING)
+        end
+    end
+end
+function ____exports.emperor(self)
+    if RacingPlusGlobals.run.bossCommand then
+        return
+    end
+    local gridIndex = path:findMidBoss(0.66)
+    g.l.LeaveDoor = DoorSlot.NO_DOOR_SLOT
+    g.g:StartRoomTransition(gridIndex, Direction.NO_DIRECTION, RoomTransitionAnim.TELEPORT)
+    log("Nerfed emperor to room. " .. tostring(gridIndex))
+end
+function ____exports.lovers(self)
+    do
+        local i = 0
+        while i < 2 do
+            deleteNearestHeart(nil)
+            i = i + 1
+        end
+    end
+    Isaac.Spawn(
+        EntityType.PICKUP,
+        PickupVariant.BED,
+        0,
+        g.r:FindFreePickupSpawnPosition(g.p.Position, 1, true),
+        ZERO_VECTOR,
+        g.p
+    )
+end
+function deleteNearestHeart(self)
+    local hearts = Isaac.FindByType(
+        EntityType.PICKUP,
+        PickupVariant.HEART,
+        HeartSubType.FULL,
+        false,
+        false
+    )
+    local nearestPickup = nil
+    local nearestPickupDistance = nil
+    for ____, heart in ipairs(hearts) do
+        do
+            local pickup = heart:ToPickup()
+            if pickup == nil then
+                goto __continue13
+            end
+            if pickup.FrameCount <= 1 and pickup.SpawnerType == EntityType.PLAYER and not pickup.Touched and pickup.Price == 0 and pickup.State ~= 1 then
+                local distanceToPlayer = g.p.Position:Distance(pickup.Position)
+                if nearestPickup == nil or nearestPickupDistance == nil then
+                    nearestPickup = pickup
+                    nearestPickupDistance = distanceToPlayer
+                elseif distanceToPlayer < nearestPickupDistance then
+                    nearestPickup = pickup
+                    nearestPickupDistance = distanceToPlayer
+                end
+            end
+        end
+        ::__continue13::
+    end
+    if nearestPickup ~= nil then
+        nearestPickup.State = 1
+        nearestPickup:Remove()
+    end
+end
+function ____exports.wheelOfFortune(self)
+    local slotVariant
+    if g.run.spawningRestock then
+        g.run.spawningRestock = false
+        slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE
+    else
+        local slotChoice = getRandomInt(nil, 1, 3, g.run.wheelOfFortuneRNG)
+        if slotChoice == 1 then
+            slotVariant = SlotVariant.SLOT_MACHINE
+        elseif slotChoice == 2 then
+            slotVariant = SlotVariant.FORTUNE_TELLING_MACHINE
+        elseif slotChoice == 3 then
+            slotVariant = SlotVariant.SHOP_RESTOCK_MACHINE
+        else
+            error("Unknown slot choice: " .. tostring(slotChoice))
+        end
+    end
+    local slots = Isaac.FindByType(
+        EntityType.SLOT,
+        -1,
+        -1,
+        false,
+        false
+    )
+    for ____, slot in ipairs(slots) do
+        if slot.FrameCount == 0 then
+            g.g:Spawn(
+                EntityType.SLOT,
+                slotVariant,
+                slot.Position,
+                slot.Velocity,
+                slot.Parent,
+                slot.SubType,
+                slot.InitSeed
+            )
+            spawnEffect(nil, EffectVariant.POOF_1, PoofSubType.LARGE, slot.Position)
+            slot:Remove()
+        end
+    end
+end
+function ____exports.sun(self)
+    local rooms = g.l:GetRooms()
+    do
+        local i = 0
+        while i < rooms.Size do
+            local roomDescription = rooms:Get(i)
+            if roomDescription ~= nil then
+                local roomIndexSafe = roomDescription.SafeGridIndex
+                local room = g.l:GetRoomByIdx(roomIndexSafe)
+                room.DisplayFlags = DisplayFlagZero
+            end
+            i = i + 1
+        end
+    end
+    local randomIndexes = {}
+    ____repeat(
+        nil,
+        3,
+        function()
+            local randomIndex = getRandomInt(
+                nil,
+                0,
+                rooms.Size - 1,
+                g.run.sunCardRNG,
+                randomIndexes
+            )
+            randomIndexes[#randomIndexes + 1] = randomIndex
+        end
+    )
+    repeat
+        do
+            local randomIndex
+            repeat
+                do
+                    g.run.sunCardRNG = misc:incrementRNG(g.run.sunCardRNG)
+                    math.randomseed(g.run.sunCardRNG)
+                    randomIndex = math.random(0, rooms.Size - 1)
+                end
+            until not __TS__ArrayIncludes(randomIndexes, randomIndex)
+            randomIndexes[#randomIndexes + 1] = randomIndex
+        end
+    until not (#randomIndexes < 3)
+    for ____, randomIndex in ipairs(randomIndexes) do
+        local roomDescription = rooms:Get(randomIndex)
+        if roomDescription ~= nil then
+            local roomIndexSafe = roomDescription.SafeGridIndex
+            local room = g.l:GetRoomByIdx(roomIndexSafe)
+            room.DisplayFlags = addFlag(nil, DisplayFlag.VISIBLE, DisplayFlag.SHOW_ICON)
+        end
+    end
+    g.l:UpdateVisibility()
+end
+function ____exports.world(self)
+    local rooms = g.l:GetRooms()
+    if g.l:GetStateFlag(LevelStateFlag.COMPASS_EFFECT) then
+        return
+    end
+    do
+        local i = 0
+        while i < rooms.Size do
+            do
+                local roomDescription = rooms:Get(i)
+                if roomDescription == nil then
+                    goto __continue41
+                end
+                local roomIndexSafe = roomDescription.SafeGridIndex
+                local roomData = roomDescription.Data
+                if roomData == nil then
+                    goto __continue41
+                end
+                local roomType = roomData.Type
+                if roomType ~= RoomType.BOSS then
+                    local room = g.l:GetRoomByIdx(roomIndexSafe)
+                    room.DisplayFlags = DisplayFlagZero
+                end
+            end
+            ::__continue41::
+            i = i + 1
+        end
+    end
+    g.l:UpdateVisibility()
+end
+function ____exports.ansuz(self)
+    local rooms = g.l:GetRooms()
+    do
+        local i = 0
+        while i < rooms.Size do
+            local roomDescription = rooms:Get(i)
+            if roomDescription ~= nil then
+                local roomIndexSafe = roomDescription.SafeGridIndex
+                local room = g.l:GetRoomByIdx(roomIndexSafe)
+                room.DisplayFlags = removeFlag(nil, room.DisplayFlags, DisplayFlag.SHOW_ICON)
+            end
+            i = i + 1
+        end
+    end
+    g.l:UpdateVisibility()
+end
+function ____exports.init(self, mod)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.magician, Card.MAGICIAN)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.emperor, Card.EMPEROR)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.lovers, Card.LOVERS)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.wheelOfFortune, Card.WHEEL_OF_FORTUNE)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.sun, Card.SUN)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.world, Card.WORLD)
+    mod:AddCallback(ModCallback.POST_USE_CARD, ____exports.ansuz, Card.RUNE_ANSUZ)
+end
+return ____exports
+ end,
+["callbacksCustom.postRoomClearChanged"] = function(...) 
+local ____exports = {}
+local roomClearChangedTrue, chargedBaby
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local BatterySubType = ____isaac_2Dtypescript_2Ddefinitions.BatterySubType
+local CollectibleType = ____isaac_2Dtypescript_2Ddefinitions.CollectibleType
+local FamiliarVariant = ____isaac_2Dtypescript_2Ddefinitions.FamiliarVariant
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local getFamiliars = ____isaacscript_2Dcommon.getFamiliars
+local ModCallbackCustom = ____isaacscript_2Dcommon.ModCallbackCustom
+local spawnBattery = ____isaacscript_2Dcommon.spawnBattery
+local ____globals = require("globals")
+local g = ____globals.default
+function roomClearChangedTrue(self)
+    chargedBaby(nil)
+end
+function chargedBaby(self)
+    if not g.p:HasCollectible(CollectibleType.CHARGED_BABY) then
+        return
+    end
+    local ____g_run_0, ____chargedBabyCounters_1 = g.run, "chargedBabyCounters"
+    ____g_run_0[____chargedBabyCounters_1] = ____g_run_0[____chargedBabyCounters_1] + 1
+    if g.run.chargedBabyCounters ~= 4 then
+        return
+    end
+    g.run.chargedBabyCounters = 0
+    local chargedBabies = getFamiliars(nil, FamiliarVariant.CHARGED_BABY)
+    for ____, familiar in ipairs(chargedBabies) do
+        spawnBattery(nil, BatterySubType.NULL, familiar.Position)
+    end
+end
+function ____exports.init(self, mod)
+    mod:AddCallbackCustom(ModCallbackCustom.POST_ROOM_CLEAR_CHANGED, roomClearChangedTrue, true)
+end
+return ____exports
+ end,
+["callbacksCustom.postTransformation"] = function(...) 
+local ____exports = {}
+local leviathan
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.index")
+local PlayerForm = ____isaac_2Dtypescript_2Ddefinitions.PlayerForm
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.index")
+local ModCallbackCustom = ____isaacscript_2Dcommon.ModCallbackCustom
+local ____misc = require("misc")
+local killIfNoHealth = ____misc.killIfNoHealth
+local setHealthFromLastFrame = ____misc.setHealthFromLastFrame
+function leviathan(self, _player, _playerForm, hasForm)
+    if hasForm then
+        setHealthFromLastFrame(nil)
+        killIfNoHealth(nil)
+    end
+end
+function ____exports.init(self, mod)
+    mod:AddCallbackCustom(ModCallbackCustom.POST_TRANSFORMATION, leviathan, PlayerForm.LEVIATHAN)
+end
 return ____exports
  end,
 ["enums.CollectibleState"] = function(...) 
@@ -8521,43 +8484,9 @@ ____exports.CollectibleState.DUPLICATED = 2
 ____exports.CollectibleState[____exports.CollectibleState.DUPLICATED] = "DUPLICATED"
 return ____exports
  end,
-["enums.CreepSubTypeCustom"] = function(...) 
-local ____exports = {}
-____exports.CreepSubTypeCustom = CreepSubTypeCustom or ({})
-____exports.CreepSubTypeCustom.FLOOR_EFFECT_CREEP = 12545
-____exports.CreepSubTypeCustom[____exports.CreepSubTypeCustom.FLOOR_EFFECT_CREEP] = "FLOOR_EFFECT_CREEP"
-return ____exports
- end,
 ["enums.EffectVariantCustom"] = function(...) 
 local ____exports = {}
 ____exports.EffectVariantCustom = {DICE_ROOM_FLOOR_CUSTOM = Isaac.GetEntityVariantByName("Dice Room Floor (Custom)")}
-return ____exports
- end,
-["enums.PickupVariantCustom"] = function(...) 
-local ____exports = {}
-____exports.PickupVariantCustom = {INVISIBLE_PICKUP = Isaac.GetEntityVariantByName("Invisible Pickup")}
-return ____exports
- end,
-["enums.PillEffectCustom"] = function(...) 
-local ____exports = {}
-____exports.PillEffectCustom = {
-    DAMAGE_UP = Isaac.GetPillEffectByName("Damage Up"),
-    TEAR_DELAY_DOWN = Isaac.GetPillEffectByName("Tear Delay Down"),
-    DEAL_AFFINITY = Isaac.GetPillEffectByName("Deal Affinity"),
-    BONE_AFFINITY = Isaac.GetPillEffectByName("Bone Affinity"),
-    RESTOCK = Isaac.GetPillEffectByName("Restock"),
-    GOLDEN_DUMP = Isaac.GetPillEffectByName("Golden Dump"),
-    GLIMPSE = Isaac.GetPillEffectByName("Glimpse"),
-    SUPER_SADNESS = Isaac.GetPillEffectByName("Super Sadness"),
-    INVINCIBILITY = Isaac.GetPillEffectByName("Invincibility"),
-    REALLY_BAD_GAS = Isaac.GetPillEffectByName("Really Bad Gas"),
-    AETHER = Isaac.GetPillEffectByName("Aether"),
-    WALLS_HAVE_EYES = Isaac.GetPillEffectByName("Walls Have Eyes"),
-    BLADDER_INFECTION = Isaac.GetPillEffectByName("Bladder Infection"),
-    SCORCHED_EARTH = Isaac.GetPillEffectByName("Scorched Earth"),
-    FAMILIAR_FRENZY = Isaac.GetPillEffectByName("Familiar Frenzy"),
-    UNLOCK = Isaac.GetPillEffectByName("Unlock")
-}
 return ____exports
  end,
 ["types.SlotVariantCustom"] = function(...) 
@@ -23410,6 +23339,9 @@ end
 return ____exports
  end,
 ["lua_modules.isaacscript-common.functions.random"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local Set = ____lualib.Set
+local __TS__New = ____lualib.__TS__New
 local ____exports = {}
 local ____rng = require("lua_modules.isaacscript-common.functions.rng")
 local getRandomSeed = ____rng.getRandomSeed
@@ -23466,9 +23398,15 @@ end
 -- @param max The upper bound for the random number (inclusive).
 -- @param seedOrRNG Optional. The `Seed` or `RNG` object to use. If an `RNG` object is provided, the
 -- `RNG.Next` method will be called. Default is `getRandomSeed()`.
-function ____exports.getRandomInt(self, min, max, seedOrRNG)
+-- @param exceptions Optional. An array of elements that will be skipped over when getting the
+-- random integer. For example, a min of 1, a max of 4, and an exceptions array of
+-- `[2]` would cause the function to return either 1, 3, or 4.
+function ____exports.getRandomInt(self, min, max, seedOrRNG, exceptions)
     if seedOrRNG == nil then
         seedOrRNG = getRandomSeed(nil)
+    end
+    if exceptions == nil then
+        exceptions = {}
     end
     local rng = isRNG(nil, seedOrRNG) and seedOrRNG or newRNG(nil, seedOrRNG)
     if min > max then
@@ -23477,7 +23415,14 @@ function ____exports.getRandomInt(self, min, max, seedOrRNG)
         min = oldMax
         max = oldMin
     end
-    return rng:RandomInt(max - min + 1) + min
+    local exceptionsSet = __TS__New(Set, exceptions)
+    local randomInt
+    repeat
+        do
+            randomInt = rng:RandomInt(max - min + 1) + min
+        end
+    until exceptionsSet:has(randomInt)
+    return randomInt
 end
 return ____exports
  end,
@@ -32783,6 +32728,16 @@ function ____exports.playerConvertSoulHeartsToBlackHearts(self, player)
         function(____, soulHeartType) return soulHeartType == HeartSubType.SOUL and HeartSubType.BLACK or soulHeartType end
     )
     ____exports.setPlayerHealth(nil, player, playerHealth)
+end
+--- Helper function to see if the player is out of health.
+-- 
+-- Specifically, this function will return false if the player has 0 red hearts, 0 soul/black
+-- hearts, and 0 bone hearts.
+function ____exports.playerHasHealthLeft(self, player)
+    local hearts = player:GetHearts()
+    local soulHearts = player:GetSoulHearts()
+    local boneHearts = player:GetBoneHearts()
+    return hearts > 0 or soulHearts > 0 or boneHearts > 0
 end
 return ____exports
  end,

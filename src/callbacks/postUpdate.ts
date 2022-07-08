@@ -6,15 +6,18 @@ import {
   EffectVariant,
   EntityPartition,
   EntityType,
+  ModCallback,
   NullItemID,
   PickupVariant,
-  PlayerForm,
   PlayerType,
+  RoomType,
   SoundEffect,
   TearVariant,
 } from "isaac-typescript-definitions";
 import {
-  getEnumValues,
+  getCollectibleMaxCharges,
+  openAllDoors,
+  playerHasHealthLeft,
   removeCollectibleFromItemTracker,
   sfxManager,
   spawnEffect,
@@ -26,17 +29,15 @@ import { TrinketTypeCustom } from "../enums/TrinketTypeCustom";
 import g from "../globals";
 import * as technology from "../items/technology";
 import * as misc from "../misc";
-import * as postItemPickup from "../postItemPickup";
-import * as roomCleared from "../roomCleared";
 import * as slots from "../slots";
 import postUpdateCollectible from "./postUpdateCollectible";
 
-export function main(): void {
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_UPDATE, main);
+}
+
+function main() {
   recordLastFireDirection();
-  recordHealth();
-  checkRoomCleared();
-  checkItemPickup();
-  checkTransformations();
   checkFamiliarMultiShot();
   postUpdateCollectible();
   slots.postUpdate();
@@ -72,139 +73,6 @@ function recordLastFireDirection() {
   }
 }
 
-function recordHealth() {
-  g.run.health.changedOnThisFrame = false;
-  g.run.health.restoredLastHealthOnThisFrame = false;
-
-  g.run.lastHealth.hearts = g.run.health.hearts;
-  const hearts = g.p.GetHearts();
-  if (hearts !== g.run.health.hearts) {
-    g.run.health.hearts = hearts;
-    g.run.health.changedOnThisFrame = true;
-  }
-
-  g.run.lastHealth.maxHearts = g.run.health.maxHearts;
-  const maxHearts = g.p.GetMaxHearts();
-  if (maxHearts !== g.run.health.maxHearts) {
-    g.run.health.maxHearts = maxHearts;
-    g.run.health.changedOnThisFrame = true;
-  }
-
-  g.run.lastHealth.soulHearts = g.run.health.soulHearts;
-  const soulHearts = g.p.GetSoulHearts();
-  if (soulHearts !== g.run.health.soulHearts) {
-    g.run.health.soulHearts = soulHearts;
-    g.run.health.changedOnThisFrame = true;
-  }
-
-  g.run.lastHealth.blackHearts = g.run.health.blackHearts;
-  const blackHearts = g.p.GetBlackHearts();
-  if (blackHearts !== g.run.health.blackHearts) {
-    g.run.health.blackHearts = blackHearts;
-    g.run.health.changedOnThisFrame = true;
-  }
-
-  g.run.lastHealth.boneHearts = g.run.health.boneHearts;
-  const boneHearts = g.p.GetBoneHearts();
-  if (boneHearts !== g.run.health.boneHearts) {
-    g.run.health.boneHearts = boneHearts;
-    g.run.health.changedOnThisFrame = true;
-  }
-}
-
-function checkRoomCleared() {
-  // Local variables
-  const roomClear = g.r.IsClear();
-
-  // Check the clear status of the room and compare it to what it was a frame ago
-  if (roomClear === g.run.room.clearState) {
-    return;
-  }
-  g.run.room.clearState = roomClear;
-  if (!roomClear) {
-    return;
-  }
-
-  roomCleared.main();
-}
-
-function checkItemPickup() {
-  if (g.p.IsItemQueueEmpty()) {
-    checkItemPickupQueueEmpty();
-  } else {
-    checkItemPickupQueueNotEmpty();
-  }
-}
-
-function checkItemPickupQueueEmpty() {
-  // Check to see if we were picking up something on the previous frame
-  if (g.run.pickingUpItem === CollectibleType.NULL) {
-    return;
-  }
-
-  // We just finished putting an item into our inventory
-  // (e.g. the animation where Isaac holds the item over his head just finished) Check to see if we
-  // need to do something specific after this item is added to our inventory
-  if (
-    g.run.pickingUpItemType === ItemType.PASSIVE || // 1
-    g.run.pickingUpItemType === ItemType.ACTIVE || // 3
-    g.run.pickingUpItemType === ItemType.FAMILIAR // 4
-  ) {
-    postNewItem();
-  }
-
-  // Mark that we are no longer picking up anything anymore
-  g.run.pickingUpItem = CollectibleType.NULL;
-  g.run.pickingUpItemRoom = 0;
-  g.run.pickingUpItemType = ItemType.NULL;
-}
-
-function checkItemPickupQueueNotEmpty() {
-  // Local variables
-  const roomIndex = misc.getRoomIndex();
-
-  // We are currently in the animation where Isaac holds an item over his head
-  if (g.run.pickingUpItem !== CollectibleType.NULL) {
-    // We have already marked down which item is being held, so do nothing
-    return;
-  }
-
-  if (g.p.QueuedItem.Item === null) {
-    // We are currently picking up an item, but QueuedItem is null This should never happen
-    return;
-  }
-
-  // Record which item we are picking up
-  g.run.pickingUpItem = g.p.QueuedItem.Item.ID;
-  g.run.pickingUpItemRoom = roomIndex;
-  g.run.pickingUpItemType = g.p.QueuedItem.Item.Type;
-}
-
-function postNewItem() {
-  const postItemFunction = postItemPickup.functionMap.get(g.run.pickingUpItem);
-  if (postItemFunction !== undefined) {
-    postItemFunction();
-  }
-}
-
-function checkTransformations() {
-  for (const transformation of getEnumValues(PlayerForm)) {
-    const hasPlayerForm = g.p.HasPlayerForm(transformation);
-    const storedHasPlayerForm = g.run.transformations.get(transformation);
-    if (storedHasPlayerForm === undefined) {
-      error(`Failed to get the stored player form for: ${transformation}`);
-    }
-    if (hasPlayerForm !== storedHasPlayerForm) {
-      g.run.transformations.set(transformation, hasPlayerForm);
-
-      if (transformation === PlayerForm.LEVIATHAN) {
-        misc.setHealthFromLastFrame();
-        misc.killIfNoHealth();
-      }
-    }
-  }
-}
-
 function checkFamiliarMultiShot() {
   if (g.run.familiarMultiShot > 0) {
     g.run.familiarMultiShot -= 1;
@@ -231,8 +99,8 @@ function monstrosTooth() {
   }
 
   if (roomClear) {
-    // The room might have been cleared since the initial Monstro's Tooth activation If so, cancel
-    // the remaining Monstro's
+    // The room might have been cleared since the initial Monstro's Tooth activation. If so, cancel
+    // the remaining Monstro's.
     g.run.monstroCounters = 0;
     g.run.monstroFrame = 0;
   } else {
@@ -258,14 +126,14 @@ function nineVolt() {
   // Local variables
   const gameFrameCount = g.g.GetFrameCount();
   const activeItem = g.p.GetActiveItem();
-  const activeItemMaxCharges = misc.getItemMaxCharges(activeItem);
+  const activeItemMaxCharges = getCollectibleMaxCharges(activeItem);
 
   if (g.run.nineVoltFrame === 0 || gameFrameCount <= g.run.nineVoltFrame) {
     return;
   }
   g.run.nineVoltFrame = 0;
 
-  if (activeItem === 0) {
+  if (activeItem === CollectibleType.NULL) {
     return;
   }
   let charge = g.p.GetActiveCharge();
@@ -290,7 +158,7 @@ function theBlackBean() {
     return;
   }
 
-  // Farting on every frame is very powerful Instead, only fart on every 3rd frame
+  // Farting on every frame is very powerful Instead, only fart on every 3rd frame.
   if (gameFrameCount % 3 === 0) {
     g.p.UseActiveItem(CollectibleType.BEAN, false, false, false, false);
   }
@@ -306,12 +174,12 @@ function tinyPlanet() {
     return;
   }
 
-  // Don't check for softlocks in boss rooms
+  // Don't check for softlocks in boss rooms.
   if (roomType === RoomType.BOSS) {
     return;
   }
 
-  // Check to see if they have been in the room long enough
+  // Check to see if they have been in the room long enough.
   if (roomFrameCount < 900) {
     // 30 seconds
     return;
@@ -319,7 +187,7 @@ function tinyPlanet() {
 
   g.run.room.softlock = true;
   g.r.SetClear(true);
-  misc.openAllDoors();
+  openAllDoors();
 }
 
 // CollectibleType.ISAACS_HEART (276)
@@ -359,6 +227,7 @@ function mongoBaby() {
   const gameFrameCount = g.g.GetFrameCount();
 
   for (let i = g.run.room.mongoBabyTears.length - 1; i >= 0; i--) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const tear = g.run.room.mongoBabyTears[i]!;
     if (gameFrameCount >= tear.frame) {
       const familiarTear = spawnTear(
@@ -367,11 +236,9 @@ function mongoBaby() {
         tear.familiar.Position,
         tear.velocity,
       );
-      if (familiarTear !== null) {
-        familiarTear.Scale = tear.scale;
-        familiarTear.CollisionDamage = tear.damage;
-        g.run.room.mongoBabyTears.splice(i, 1);
-      }
+      familiarTear.Scale = tear.scale;
+      familiarTear.CollisionDamage = tear.damage;
+      g.run.room.mongoBabyTears.splice(i, 1);
     }
   }
 }
@@ -579,7 +446,7 @@ function checkPillTimer() {
       }
 
       // Prevent dying animation softlocks.
-      if (misc.hasNoHealth()) {
+      if (!playerHasHealthLeft(g.p)) {
         return;
       }
 

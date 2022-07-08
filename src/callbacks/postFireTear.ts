@@ -1,16 +1,33 @@
 import {
+  BombVariant,
   CollectibleType,
   Direction,
   EntityType,
   FamiliarVariant,
+  GridEntityType,
+  LaserOffset,
+  RoomShape,
+  TearFlag,
   TearVariant,
 } from "isaac-typescript-definitions";
-import { spawnTear } from "isaacscript-common";
+import {
+  addFlag,
+  getRandomEnumValue,
+  removeFlag,
+  spawnBombWithSeed,
+  spawnTear,
+} from "isaacscript-common";
 import { FAMILIAR_TEAR_DAMAGE, FAMILIAR_TEAR_SCALE } from "../constants";
+import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import g from "../globals";
 import * as misc from "../misc";
 import * as pills from "../pills";
-import { CollectibleTypeCustom } from "../types/enums";
+
+const FADED_COLOR = Color(1, 1, 1, 0.5, 1, 1, 1);
+const PINK_COLOR = Color(2, 0, 2, 1, 1, 1, 1);
+const BLACK_COLOR = Color(0, 0, 0, 1, 1, 1, 1);
+const WHITE_COLOR = Color(1, 1, 1, 1, 1, 1, 1);
+const PURPLE_COLOR = Color(1, 0, 1, 1, 1, 1, 1);
 
 export function main(tear: EntityTear): void {
   if (
@@ -46,7 +63,7 @@ function momsContacts(tear: EntityTear) {
     return;
   }
 
-  tear.TearFlags |= TearFlag.FREEZE;
+  tear.TearFlags = addFlag(tear.TearFlags, TearFlag.FREEZE);
 }
 
 // CollectibleType.ABEL (188)
@@ -72,26 +89,25 @@ function abel(tear: EntityTear) {
 
 // CollectibleType.TINY_PLANET (233)
 function tinyPlanet(tear: EntityTear) {
-  // Local variables
   const direction = g.p.GetFireDirection();
 
   if (!g.p.HasCollectible(CollectibleType.TINY_PLANET)) {
     return;
   }
 
-  // We need to have spectral for this ability to work properly
-  tear.TearFlags |= TearFlag.SPECTRAL;
+  // We need to have spectral for this ability to work properly.
+  tear.TearFlags = addFlag(tear.TearFlags, TearFlag.SPECTRAL);
 
-  // We want the tears to orbit for a long time without falling to the ground
+  // We want the tears to orbit for a long time without falling to the ground.
   tear.FallingSpeed = 0;
 
-  // Mark the direction of the tear on the subtype All vanilla tears have a subtype of 0, so any
-  // non-zero value will denote that this is a Tiny Planet tear We add 1 because a direction of left
-  // is enum 0 and we need the subtype to be non-zero
-  tear.SubType = direction + 1;
+  // Mark the direction of the tear on the subtype. All vanilla tears have a subtype of 0, so any
+  // non-zero value will denote that this is a Tiny Planet tear. We add 1 because a direction of
+  // left is enum 0 and we need the subtype to be non-zero.
+  tear.SubType = (direction as int) + 1;
 
-  // Set the tear's starting position (this is necessary because otherwise you will see it in the
-  // default location for a frame)
+  // Set the tear's starting position. (This is necessary because otherwise you will see it in the
+  // default location for a frame.)
   const distance = 90;
   let degrees = 0;
   if (direction === Direction.RIGHT) {
@@ -136,7 +152,7 @@ function fireMind(tear: EntityTear) {
     return;
   }
 
-  // Mark that we shot this tear
+  // Mark that we shot this tear.
   tear.SubType = 1;
 }
 
@@ -149,7 +165,7 @@ function strabismus(tear: EntityTear) {
     return;
   }
 
-  // Spawn a new tear with a random velocity
+  // Spawn a new tear with a random velocity.
   const seed = tear.GetDropRNG().GetSeed();
   math.randomseed(seed);
   const rotation = math.random(1, 359);
@@ -165,22 +181,16 @@ function u235(tear: EntityTear) {
     return;
   }
 
-  // Every 8th tear is a bomb
+  // Every 8th tear is a bomb.
   if (g.run.tearCounter % 8 === 0) {
-    const bomb = g.g
-      .Spawn(
-        EntityType.BOMBDROP, // 4
-        0,
-        tear.Position,
-        tear.Velocity,
-        tear.SpawnerEntity,
-        0,
-        tear.InitSeed,
-      )
-      .ToBomb();
-    if (bomb !== null) {
-      bomb.ExplosionDamage = g.p.Damage * 5 + 30; // Same formula as Dr. Fetus
-    }
+    const bomb = spawnBombWithSeed(
+      BombVariant.NORMAL,
+      0,
+      tear.Position,
+      tear.InitSeed,
+      tear.Velocity,
+    );
+    bomb.ExplosionDamage = g.p.Damage * 5 + 30; // Same formula as Dr. Fetus
 
     tear.Remove();
   }
@@ -191,7 +201,7 @@ function pillAether(tear: EntityTear) {
     return;
   }
 
-  // Shoot 8 tears at a time
+  // Shoot 8 tears at a time.
   g.run.pills.aetherAngle += 45;
   if (g.run.pills.aetherAngle < 360) {
     const vel = tear.Velocity.Rotated(g.run.pills.aetherAngle);
@@ -207,7 +217,6 @@ function pillWallsHaveEyes(tear: EntityTear) {
   }
   g.run.pills.wallsHaveEyesShooting = true;
 
-  // Local variables
   const roomShape = g.r.GetRoomShape();
   const fireDirection = g.p.GetFireDirection();
 
@@ -219,19 +228,18 @@ function pillWallsHaveEyes(tear: EntityTear) {
   let amountToAdd = 1;
   if (direction === Direction.LEFT || direction === Direction.RIGHT) {
     amountToAdd = 15;
-    if (roomShape >= RoomShape.ROOMSHAPE_2x1) {
+    if (roomShape >= RoomShape.SHAPE_2x1) {
       amountToAdd = 28;
     }
   }
 
-  // Make a list of the walls to shoot from
-  const roomShapeCoordinates = pills.WALL_COORDINATES.get(roomShape);
-  if (roomShapeCoordinates === undefined) {
-    error(`Failed to get the wall coordinates for room shape: ${roomShape}`);
-  }
-  const coordinates = roomShapeCoordinates.get(direction);
+  // Make a list of the walls to shoot from.
+  const wallCoordinates = pills.ROOM_SHAPE_WALL_COORDINATES[roomShape];
+  const coordinates = wallCoordinates.get(direction);
   if (coordinates === undefined) {
-    error(`Failed to get the wall coordinates direction: ${direction}`);
+    error(
+      `Failed to get the wall coordinates for direction: ${Direction[direction]}`,
+    );
   }
   const [
     startingGridCoordinate,
@@ -244,7 +252,7 @@ function pillWallsHaveEyes(tear: EntityTear) {
     walls.push(coordinate);
   }
   if (startingGridCoordinateForSecondWall !== undefined) {
-    // Only for L rooms
+    // Only for L rooms.
     for (let i = 0; i < numTimesToIterate; i++) {
       const coordinate = startingGridCoordinateForSecondWall + i * amountToAdd;
       walls.push(coordinate);
@@ -253,7 +261,7 @@ function pillWallsHaveEyes(tear: EntityTear) {
 
   for (const wall of walls) {
     const gridEntity = g.r.GetGridEntity(wall);
-    if (gridEntity === null) {
+    if (gridEntity === undefined) {
       continue;
     }
 
@@ -283,7 +291,7 @@ function pillWallsHaveEyes(tear: EntityTear) {
 }
 
 function removeFear(tear: EntityTear) {
-  tear.TearFlags &= ~TearFlag.FEAR;
+  tear.TearFlags = removeFlag(tear.TearFlags, TearFlag.FEAR);
 }
 
 function familiars(tear: EntityTear) {
@@ -327,7 +335,7 @@ function familiars(tear: EntityTear) {
         // 6
         const laser = g.p.FireTechLaser(
           familiar.Position,
-          0,
+          LaserOffset.TECH_1,
           velocity,
           false,
           false,
@@ -385,58 +393,52 @@ function spawnTearWithIncreasedDmg(
   velocity: Vector,
   damage: number,
 ) {
-  const familiarTear = Isaac.Spawn(
-    EntityType.TEAR,
-    0,
+  const familiarTear = spawnTear(
+    TearVariant.BLUE,
     0,
     familiar.Position,
     velocity,
-    null,
-  ).ToTear();
-  if (familiarTear === null) {
-    return;
-  }
+  );
   familiarTear.Scale = tear.Scale * FAMILIAR_TEAR_SCALE;
   familiarTear.CollisionDamage = damage;
 
   switch (familiar.Variant) {
+    // 4
     case FamiliarVariant.LITTLE_GISH: {
-      // 4
-      const color = Color(0, 0, 0, 1, 1, 1, 1); // Black
-      familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlag.SLOW;
+      familiarTear.SetColor(BLACK_COLOR, 10000, 1000, false, false);
+      familiarTear.TearFlags = addFlag(familiarTear.TearFlags, TearFlag.SLOW);
       break;
     }
 
+    // 5
     case FamiliarVariant.LITTLE_STEVEN: {
-      // 5
-      const color = Color(1, 0, 1, 1, 1, 1, 1); // Purple
-      familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlag.HOMING;
+      familiarTear.SetColor(PURPLE_COLOR, 10000, 1000, false, false);
+      familiarTear.TearFlags = addFlag(familiarTear.TearFlags, TearFlag.HOMING);
       break;
     }
 
+    // 9
     case FamiliarVariant.GHOST_BABY: {
-      // 9
-      const color = Color(1, 1, 1, 0.5, 1, 1, 1); // Faded
-      familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlag.SPECTRAL;
+      familiarTear.SetColor(FADED_COLOR, 10000, 1000, false, false);
+      familiarTear.TearFlags = addFlag(
+        familiarTear.TearFlags,
+        TearFlag.SPECTRAL,
+      );
       break;
     }
 
+    // 11
     case FamiliarVariant.RAINBOW_BABY: {
-      // 11
-      const color = Color(2, 0, 2, 1, 1, 1, 1); // Pink
-      familiarTear.SetColor(color, 10000, 1000, false, false);
+      familiarTear.SetColor(PINK_COLOR, 10000, 1000, false, false);
       math.randomseed(g.g.GetFrameCount());
-      const tearFlag = math.random(1, 60);
-      familiarTear.TearFlags |= 1 << tearFlag;
+      const tearFlag = getRandomEnumValue(TearFlag);
+      familiarTear.TearFlags = addFlag(familiarTear.TearFlags, tearFlag);
       break;
     }
 
+    // 74
     case FamiliarVariant.MONGO_BABY: {
-      // 74
-      // Shoot a second tear a few frames from now
+      // Shoot a second tear a few frames from now.
       g.run.room.mongoBabyTears.push({
         frame: g.g.GetFrameCount() + 3,
         familiar: EntityRef(familiar),
@@ -447,13 +449,12 @@ function spawnTearWithIncreasedDmg(
       break;
     }
 
+    // 92
     case FamiliarVariant.SERAPHIM: {
-      // 92
-      // Sacred Heart gives a 89.53% damage up, so emulate this
+      // Sacred Heart gives a 89.53% damage up, so emulate this.
       familiarTear.CollisionDamage = damage * 1.8953;
-      const color = Color(1, 1, 1, 1, 1, 1, 1); // White
-      familiarTear.SetColor(color, 10000, 1000, false, false);
-      familiarTear.TearFlags |= TearFlag.HOMING; // 1 << 2
+      familiarTear.SetColor(WHITE_COLOR, 10000, 1000, false, false);
+      familiarTear.TearFlags = addFlag(familiarTear.TearFlags, TearFlag.HOMING);
       break;
     }
 

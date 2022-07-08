@@ -1,3 +1,4 @@
+import { TrinketType } from "isaac-typescript-definitions";
 import g from "../globals";
 import { CollectibleTypeCustom } from "../types/enums";
 
@@ -105,11 +106,10 @@ function damagePills(player: EntityPlayer) {
 }
 
 function damageGlobalPenalty(player: EntityPlayer) {
-  // Local variables
   const stage = g.l.GetStage();
 
-  // For the purposes of the global damage penalty, Blue Womb should not count as a floor Meaning
-  // that Womb 2 is stage 8 and Cathedral is stage 9
+  // For the purposes of the global damage penalty, Blue Womb should not count as a floor, meaning
+  // that Womb 2 is stage 8 and Cathedral is stage 9.
   const adjustedStage = stage >= 9 ? stage - 1 : stage;
   const stagePenalty = ((adjustedStage - 1) / 9) * 0.3; // From 0% on stage 1 to 30% on stage 10
   player.Damage *= 1 - stagePenalty;
@@ -121,7 +121,6 @@ export function fireDelay(player: EntityPlayer): void {
 }
 
 function fireDelayItems(player: EntityPlayer) {
-  // Local variables
   const hearts = player.GetHearts();
 
   // 2

@@ -1,11 +1,16 @@
+import { DamageFlag, ModCallback } from "isaac-typescript-definitions";
 import g from "../globals";
 import entityTakeDmgNPC from "./entityTakeDmgNPC";
 import entityTakeDmgPlayer from "./entityTakeDmgPlayer";
 
-export function main(
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.ENTITY_TAKE_DMG, main);
+}
+
+function main(
   entity: Entity,
   damageAmount: float,
-  damageFlags: int,
+  damageFlags: BitFlags<DamageFlag>,
   damageSource: EntityRef,
   damageCountdownFrames: int,
 ): boolean {
@@ -14,7 +19,7 @@ export function main(
   }
 
   const player = entity.ToPlayer();
-  if (player !== null) {
+  if (player !== undefined) {
     return entityTakeDmgPlayer(
       player,
       damageAmount,
@@ -25,7 +30,7 @@ export function main(
   }
 
   const npc = entity.ToNPC();
-  if (npc !== null) {
+  if (npc !== undefined) {
     return entityTakeDmgNPC(
       npc,
       damageAmount,

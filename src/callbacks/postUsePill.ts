@@ -1,7 +1,13 @@
-import { ZERO_VECTOR } from "../constants";
+import {
+  CacheFlag,
+  CollectibleType,
+  FamiliarVariant,
+  LevelStage,
+} from "isaac-typescript-definitions";
+import { repeat, spawnFamiliar, VectorZero } from "isaacscript-common";
+import * as postNewRoom from "../callbacksCustom/postNewRoomReordered";
 import g from "../globals";
 import * as pills from "../pills";
-import * as postNewRoom from "./postNewRoom";
 
 export function damageUp(): void {
   let damageAmount = 2;
@@ -29,14 +35,14 @@ export function dealAffinity(): void {
   // Local variables
   const stage = g.l.GetStage();
 
-  if (stage === 1 || stage === 2) {
-    // It is impossible to get a Devil Room on the first floor On the second floor, we already have
-    // a 100% chance to get a Devil Room
+  if (stage === LevelStage.BASEMENT_1 || stage === LevelStage.BASEMENT_2) {
+    // It is impossible to get a Devil Room on the first floor. On the second floor, we already have
+    // a 100% chance to get a Devil Room.
     pills.animateHappy();
     return;
   }
 
-  // "g.g.GetLastDevilRoomStage()" is bugged and returns userdata instead of an integer
+  // The "Game.GetLastDevilRoomStage" method is bugged and returns userdata instead of an integer.
   const lastDevilStage = RacingPlusGlobals.run.lastDDLevel;
   let levelModifier = 1;
   if (g.p.HasCollectible(CollectibleType.PHD)) {
@@ -56,16 +62,15 @@ export function boneAffinity(pillEffect: int): void {
     numBones *= 2;
   }
 
-  for (let i = 0; i < numBones; i++) {
-    Isaac.Spawn(
-      EntityType.FAMILIAR,
+  repeat(numBones, () => {
+    spawnFamiliar(
       FamiliarVariant.BONE_ORBITAL,
       0,
       g.p.Position,
-      ZERO_VECTOR,
+      VectorZero,
       g.p,
     );
-  }
+  });
 
   animateUse(pillEffect);
 }
@@ -183,7 +188,7 @@ function animateUse(thisPillEffect: PillEffect) {
     }
   }
   if (thisPillColor === undefined) {
-    thisPillColor = PillColor.PILL_BLUE_BLUE;
+    thisPillColor = PillColor.BLUE_BLUE;
   }
 
   g.p.AnimatePill(thisPillColor, "UseItem");

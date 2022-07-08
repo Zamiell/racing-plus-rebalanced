@@ -1,10 +1,10 @@
 import { CollectibleType, EntityType } from "isaac-typescript-definitions";
 import g from "../globals";
 
-export function main(tear: EntityTear, collider: Entity): null | boolean {
+export function main(tear: EntityTear, collider: Entity): boolean | undefined {
   lostContact(tear, collider); // 213
 
-  return null;
+  return undefined;
 }
 
 function lostContact(tear: EntityTear, collider: Entity) {
@@ -12,8 +12,7 @@ function lostContact(tear: EntityTear, collider: Entity) {
     collider.Type === EntityType.PROJECTILE &&
     g.p.HasCollectible(CollectibleType.LOST_CONTACT)
   ) {
-    CacheFlag. keep going If we return true here, the
-    // tear will not block the shot Instead, spawn another tear
+    // If we return true here, the tear will not block the shot. Instead, spawn another tear.
     g.g.Spawn(
       tear.Type,
       tear.Variant,

@@ -1,18 +1,19 @@
+import { EntityType, FamiliarVariant } from "isaac-typescript-definitions";
 import g from "../globals";
 
 export function main(
   projectile: EntityProjectile,
   collider: Entity,
-): null | boolean {
+): boolean | undefined {
   fartingBaby(projectile, collider); // 404
 
-  return null;
+  return undefined;
 }
 
 function fartingBaby(projectile: EntityProjectile, collider: Entity) {
   if (
     collider.Type !== EntityType.FAMILIAR ||
-    collider.Variant !== FamiliarVariant.FARTING_BABY
+    collider.Variant !== (FamiliarVariant.FARTING_BABY as int)
   ) {
     return;
   }
