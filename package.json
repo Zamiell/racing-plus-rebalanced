@@ -22,7 +22,6 @@
   "type": "commonjs",
   "dependencies": {
     "@types/node": "^18.0.3",
-    "convert-xml-to-json": "^1.0.0",
     "isaac-typescript-definitions": "^3.0.17",
     "isaacscript": "^2.7.6",
     "isaacscript-common": "^4.9.0",
