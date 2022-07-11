@@ -1,4 +1,6 @@
 import {
+  CollectibleType,
+  EntityFlag,
   EntityType,
   GridEntityType,
   ItemPoolType,
@@ -17,12 +19,15 @@ import {
   ModUpgraded,
   newRNG,
   removeAllGridExcept,
+  removeAllPickups,
   removeAllSlots,
   spawnCollectible,
+  spawnPickup,
   spawnSlotWithSeed,
 } from "isaacscript-common";
 import { updateCachedAPIFunctions } from "../cache";
 import { POKE_GO_EXCEPTION_ENTITIES } from "../constants";
+import { EffectVariantCustom } from "../enums/EffectVariantCustom";
 import g from "../globals";
 import * as technology25 from "../items/technology25";
 import { removeAllEntities } from "../misc";
@@ -68,7 +73,6 @@ function checkDressingMachine() {
 
 // RoomType.SHOP (2)
 function checkShopMachine() {
-  // Local variables
   const roomSeed = g.r.GetSpawnSeed();
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
@@ -120,7 +124,6 @@ function checkShopMachine() {
 
 // RoomType.ARCADE (9)
 function replaceArcade() {
-  // Local variables
   const stage = g.l.GetStage();
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
@@ -189,7 +192,6 @@ function replaceArcade() {
 
 // RoomType.CURSE (10)
 function replaceCurseRoom() {
-  // Local variables
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
@@ -229,7 +231,6 @@ export function spawnCurseRoomPedestalItem(): void {
 
 // RoomType.CHALLENGE (21)
 function replaceChallengeRoom() {
-  // Local variables
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
@@ -249,24 +250,17 @@ function replaceChallengeRoom() {
   removeAllEntities();
 
   // Get a new item from the Treasure Room pool.
-  const subType = g.itemPool.GetCollectible(
+  const collectibleType = g.itemPool.GetCollectible(
     ItemPoolType.TREASURE,
     true,
     g.r.GetSpawnSeed(),
   );
-  Isaac.Spawn(
-    EntityType.PICKUP,
-    PickupVariant.COLLECTIBLE,
-    subType,
-    g.r.GetCenterPos(),
-    ZERO_VECTOR,
-    null,
-  ).ToPickup();
+  const position = g.r.GetCenterPos();
+  spawnCollectible(collectibleType, position);
 }
 
 // RoomType.DEVIL (14)
 function replaceRedChestDD() {
-  // Local variables
   const roomDesc = g.l.GetCurrentRoomDesc();
   const roomVariant = roomDesc.Data.Variant;
   const roomType = g.r.GetType();
@@ -280,22 +274,15 @@ function replaceRedChestDD() {
     return;
   }
 
-  misc.removeSpecificEntities(EntityType.PICKUP, PickupVariant.REDCHEST);
+  removeAllPickups(PickupVariant.RED_CHEST);
 
-  Isaac.Spawn(
-    EntityType.PICKUP,
-    PickupVariant.SHOPITEM,
-    0,
-    misc.gridToPos(6, 4),
-    ZERO_VECTOR,
-    null,
-  );
-  // (we do not care about the seed because it will be replaced on the next frame)
+  const position = gridCoordinatesToWorldPosition(6, 4);
+  spawnPickup(PickupVariant.SHOP_ITEM, CollectibleType.NULL, position);
+  // (We do not care about the seed because it will be replaced on the next frame.)
 }
 
 // RoomType.CHEST (20)
 function replaceChestRoom() {
-  // Local variables
   const velocityMultiplier = 8;
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
@@ -315,9 +302,9 @@ function replaceChestRoom() {
 
   misc.removeAllEntities();
 
-  // Spawn Golden Chests equal to the number of keys held If under X keys, spawn up to X Gray Chests
-  // (we cannot use the "spawnPickupsInCircle()" function because they are not all the same type of
-  // pickup)
+  // Spawn Golden Chests equal to the number of keys held. If under X keys, spawn up to X Gray
+  // Chests. (We cannot use the "spawnPickupsInCircle()" function because they are not all the same
+  // type of pickup.)
   let numToSpawn = numKeys;
   const numToSpawnMin = 8;
   if (numToSpawn < numToSpawnMin) {
@@ -335,7 +322,7 @@ function replaceChestRoom() {
     const rotatedVelocity = velocity.Rotated(degrees);
     seed = misc.incrementRNG(seed);
 
-    let variant = PickupVariant.LOCKEDCHEST;
+    let variant = PickupVariant.LOCKED_CHEST;
     if (i >= numKeys) {
       variant = PickupVariant.CHEST;
     }
@@ -353,7 +340,6 @@ function replaceChestRoom() {
 
 // RoomType.DICE (21)
 function replaceDiceRoom() {
-  // Local variables
   const roomType = g.r.GetType();
   const isFirstVisit = g.r.IsFirstVisit();
 
@@ -372,22 +358,23 @@ function replaceDiceRoom() {
     misc.removeAllEntities();
   }
 
-  // Figure out what pip to spawn
-  math.randomseed(g.r.GetSpawnSeed());
+  // Figure out what pip to spawn.
+  const seed = g.r.GetSpawnSeed();
+  math.randomseed(seed);
   const dicePip = math.random(1, 6);
   const diceEffect = Isaac.Spawn(
     EntityType.EFFECT,
     EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM,
-    dicePip, // Use a subtype corresponding to the random dice pip chosen
+    dicePip, // Use a subtype corresponding to the random dice pip chosen.
     g.r.GetCenterPos(),
     ZERO_VECTOR,
     null,
   );
 
-  // The custom effect will always spawn with a visual pip of 1, so update the sprite
+  // The custom effect will always spawn with a visual pip of 1, so update the sprite.
   diceEffect.GetSprite().Play(dicePip.toString(), true);
 
-  // This is needed so that the entity will not appear on top of the player
+  // This is needed so that the entity will not appear on top of the player.
   diceEffect.DepthOffset = -150;
 }
 

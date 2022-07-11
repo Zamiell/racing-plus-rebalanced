@@ -23,7 +23,6 @@ import {
   spawnEffect,
   spawnTear,
 } from "isaacscript-common";
-import { ZERO_VECTOR } from "../constants";
 import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import { TrinketTypeCustom } from "../enums/TrinketTypeCustom";
 import g from "../globals";
@@ -90,7 +89,6 @@ function checkFamiliarMultiShot() {
 
 // CollectibleType.MONSTROS_TOOTH (86)
 function monstrosTooth() {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
   const roomClear = g.r.IsClear();
 
@@ -123,7 +121,6 @@ function momsKnife() {
 
 // CollectibleType.NINE_VOLT (116)
 function nineVolt() {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
   const activeItem = g.p.GetActiveItem();
   const activeItemMaxCharges = getCollectibleMaxCharges(activeItem);
@@ -150,7 +147,6 @@ function theBlackBean() {
     return;
   }
 
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
   if (gameFrameCount >= g.run.blackBeanEndFrame) {
@@ -166,7 +162,6 @@ function theBlackBean() {
 
 // CollectibleType.TINY_PLANET (233)
 function tinyPlanet() {
-  // Local variables
   const roomFrameCount = g.r.GetFrameCount();
   const roomType = g.r.GetType();
 
@@ -209,7 +204,6 @@ function isaacsHeart() {
 
 // CollectibleType.JUDAS_SHADOW (311)
 function judasShadow() {
-  // Local variables
   const character = g.p.GetPlayerType();
 
   if (!g.run.judasShadow && character === PlayerType.BLACK_JUDAS) {
@@ -223,7 +217,6 @@ function judasShadow() {
 
 // CollectibleType.MONGO_BABY (322)
 function mongoBaby() {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
   for (let i = g.run.room.mongoBabyTears.length - 1; i >= 0; i--) {
@@ -245,11 +238,10 @@ function mongoBaby() {
 
 // CollectibleType.FARTING_BABY (404)
 function fartingBaby() {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
-  // Farting Baby creates shockwaves (we iterate backwards because we might remove some elements
-  // from the table)
+  // Farting Baby creates shockwaves. (We iterate backwards because we might remove some elements
+  // from the table.)
   for (let i = g.run.room.fartingBabyShockwaves.length - 1; i >= 0; i--) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const shockwave = g.run.room.fartingBabyShockwaves[i]!;
@@ -270,7 +262,7 @@ function fartingBaby() {
       sfxManager.Play(SoundEffect.ROCK_CRUMBLE, 0.5, 0, false, 1);
       // (If the sound effect plays at full volume, it starts to get annoying.)
 
-      // Make the shockwave deal damage to NPCs
+      // Make the shockwave deal damage to NPCs.
       const entities = Isaac.FindInRadius(
         shockwave.position,
         40,
@@ -289,7 +281,7 @@ function fartingBaby() {
       shockwave.position = shockwave.position.add(shockwave.velocity);
     }
 
-    // Stop if it gets to a wall
+    // Stop if it gets to a wall.
     if (!g.r.IsPositionInRoom(shockwave.position, 0)) {
       g.run.room.fartingBabyShockwaves.splice(i, 1);
     }
@@ -323,7 +315,6 @@ function blackPowder() {
 
 // CollectibleType.BROWN_NUGGET (504)
 function brownNugget() {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
   if (g.run.brownNuggetFrame === 0 || gameFrameCount < g.run.brownNuggetFrame) {
@@ -335,7 +326,7 @@ function brownNugget() {
   g.p.UseActiveItem(CollectibleType.BROWN_NUGGET, false, false, false, false);
   if (g.run.brownNuggetCounters === 9) {
     // We now have spawned 10 familiars in total, because one is already spawned with the initial
-    // trigger
+    // trigger.
     g.run.brownNuggetCounters = 0;
     g.run.brownNuggetFrame = 0;
   }
@@ -364,7 +355,7 @@ function holyMantleNerfed() {
     return;
   }
 
-  // Keep track of whether we lose our Holy Mantle
+  // Keep track of whether we lose our Holy Mantle.
   const effects = g.p.GetEffects();
   const numMantleEffects = effects.GetCollectibleEffectNum(
     CollectibleType.HOLY_MANTLE,
@@ -401,7 +392,6 @@ function pennyOnAString() {
 }
 
 function checkPillTimer() {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
   if (

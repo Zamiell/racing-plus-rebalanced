@@ -1,9 +1,8 @@
 import { PillColor, PillEffect } from "isaac-typescript-definitions";
-import { PillEffectCustom } from "./enums";
 
 export default interface GlobalsRunPills {
   // The randomly selected pill effects for this run.
-  effects: Map<PillColor, PillEffect | PillEffectCustom>;
+  effects: Map<PillColor, PillEffect>;
 
   // Stat up counters
   damageUp: int;

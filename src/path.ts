@@ -1,3 +1,4 @@
+import { RoomShape, RoomType } from "isaac-typescript-definitions";
 import g from "./globals";
 import "./lib/astar"; // eslint-disable-line import/extensions
 import "./lib/tiledmaphandler"; // eslint-disable-line import/extensions
@@ -11,71 +12,74 @@ export function findMidBoss(percent: int): int {
   const startingRoomIndex = g.l.GetStartingRoomIndex();
   const rooms = g.l.GetRooms();
 
-  // Initialize an empty 13x13 grid
+  // Initialize an empty 13x13 grid.
   const grid: GridValue[][] = [];
   for (let i = 0; i < 13; i++) {
-    const row = [];
+    const row: GridValue[] = [];
     for (let j = 0; j < 13; j++) {
       row.push(GridValue.NULL);
     }
     grid.push(row);
   }
 
-  // Make an entry for each room on the floor
-  // (to both the grid and the roomData)
+  // Make an entry for each room on the floor (to both the grid and the roomData).
   let bossRoomIndex: int | undefined;
   for (let i = 0; i < rooms.Size; i++) {
-    // This is 0 indexed
+    // This is 0 indexed.
     const roomDesc = rooms.Get(i);
-    if (roomDesc === null) {
+    if (roomDesc === undefined) {
       continue;
     }
-    const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index
+    const roomIndexSafe = roomDesc.SafeGridIndex; // This is always the top-left index.
     const roomData = roomDesc.Data;
+    if (roomData === undefined) {
+      continue;
+    }
+
     const roomType = roomData.Type;
     const roomShape = roomData.Shape;
 
-    // Record the boss index
+    // Record the boss index.
     if (roomType === RoomType.BOSS) {
       bossRoomIndex = roomIndexSafe;
     }
 
-    // There will never be a special room in the path to the boss, so we can ignore special rooms
-    // Furthermore, we do not want to account for the Secret Room (e.g. moon strats)
+    // There will never be a special room in the path to the boss, so we can ignore special rooms.
+    // Furthermore, we do not want to account for the Secret Room (e.g. moon strats).
     if (roomType === RoomType.DEFAULT || roomType === RoomType.BOSS) {
       // Fill in the grid
       const { x, y } = getCoordsFromGridIndex(roomIndexSafe);
       grid[y][x] = GridValue.ROOM;
 
       if (
-        roomShape === RoomShape.1x2 || // 1 wide x 2 tall
+        roomShape === RoomShape.SHAPE_1x2 || // 1 wide x 2 tall
         roomShape === RoomShape.IIV // 1 wide x 2 tall, narrow
       ) {
         grid[y + 1][x] = GridValue.ROOM; // The square below
       } else if (
-        roomShape === RoomShape.2x1 || // 2 wide x 1 tall
+        roomShape === RoomShape.SHAPE_2x1 || // 2 wide x 1 tall
         roomShape === RoomShape.IIH // 2 wide x 1 tall, narrow
       ) {
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
-      } else if (roomShape === RoomShape.2x2) {
-        // 2 wide x 2 tall
+      } else if (roomShape === RoomShape.SHAPE_2x2) {
+        // 2 wide x 2 tall.
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
         grid[y + 1][x] = GridValue.ROOM; // The square below
         grid[y + 1][x + 1] = GridValue.ROOM; // The square to the bottom-right
       } else if (roomShape === RoomShape.LTL) {
-        // L room, top-left is missing
+        // L room, top-left is missing.
         grid[y + 1][x] = GridValue.ROOM; // The square below
         grid[y + 1][x - 1] = GridValue.ROOM; // The square to the bottom-left
       } else if (roomShape === RoomShape.LTR) {
-        // L room, top-right is missing
+        // L room, top-right is missing.
         grid[y + 1][x] = GridValue.ROOM; // The square below
         grid[y + 1][x + 1] = GridValue.ROOM; // The square to the bottom-right
       } else if (roomShape === RoomShape.LBL) {
-        // L room, bottom-left is missing
+        // L room, bottom-left is missing.
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
         grid[y + 1][x + 1] = GridValue.ROOM; // The square to the bottom-right
       } else if (roomShape === RoomShape.LBR) {
-        // L room, bottom-right is missing
+        // L room, bottom-right is missing.
         grid[y][x + 1] = GridValue.ROOM; // The square to the right
         grid[y + 1][x] = GridValue.ROOM; // The square below
       }
@@ -88,14 +92,14 @@ export function findMidBoss(percent: int): int {
     }
   }
 
-  // Get the coordinates for the two most important rooms
+  // Get the coordinates for the two most important rooms.
   const startingRoomCoords = getCoordsFromGridIndex(startingRoomIndex);
   if (bossRoomIndex === undefined) {
     error("Failed to find the boss room when iterating through the rooms.");
   }
   const bossRoomCoords = getCoordsFromGridIndex(bossRoomIndex);
 
-  // Print out a graphic representing the grid
+  // Print out a graphic representing the grid.
   Isaac.DebugString("Grid:");
   Isaac.DebugString("     1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16");
   for (let i = 0; i < grid.length; i++) {
@@ -120,7 +124,7 @@ export function findMidBoss(percent: int): int {
     Isaac.DebugString(rowString);
   }
 
-  // We have created a grid, so now we feed it to the AStar algorithm
+  // We have created a grid, so now we feed it to the AStar algorithm.
   const maphandler = TiledMapHandler(grid);
   const astar = AStar(maphandler);
 
@@ -145,20 +149,16 @@ export function findMidBoss(percent: int): int {
     Isaac.DebugString(`${i}.  (${loc.x}, ${loc.y})`);
   }
 
-  // Get the node X% of the way towards the boss
+  // Get the node X% of the way towards the boss.
   let nodeIndex = math.floor(nodes.length * percent);
   // Subtract one from the index to account for the the fact that the nodes table is generated by
-  // Lua code, and is therefore 1-indexed instead of 0-indexed
+  // Lua code, and is therefore 1-indexed instead of 0-indexed.
   nodeIndex -= 1;
   const inBetweenNodeCoords = nodes[nodeIndex].location;
   return getGridIndexFromXY(inBetweenNodeCoords);
 }
 
-// Get the grid coordinates on a 13x13 grid
-// 0 --> (0, 0)
-// 1 --> (1, 0)
-// 13 --> (0, 1)
-// 14 --> (1, 1)
+// Get the grid coordinates on a 13x13 grid 0 --> (0, 0) 1 --> (1, 0) 13 --> (0, 1) 14 --> (1, 1)
 // etc.
 function getCoordsFromGridIndex(gridIndex: int): { x: int; y: int } {
   const y = math.floor(gridIndex / 13);

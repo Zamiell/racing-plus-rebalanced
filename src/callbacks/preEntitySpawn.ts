@@ -1,13 +1,18 @@
 import {
   CollectibleType,
   EntityType,
+  ModCallback,
   PickupVariant,
 } from "isaac-typescript-definitions";
 import { spawnCollectible } from "isaacscript-common";
 import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import { PickupVariantCustom } from "../enums/PickupVariantCustom";
 
-export function main(
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.PRE_ENTITY_SPAWN, main);
+}
+
+function main(
   entityType: EntityType,
   variant: int,
   subType: int,

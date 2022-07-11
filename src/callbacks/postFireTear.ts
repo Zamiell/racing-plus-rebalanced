@@ -6,6 +6,7 @@ import {
   FamiliarVariant,
   GridEntityType,
   LaserOffset,
+  ModCallback,
   RoomShape,
   TearFlag,
   TearVariant,
@@ -29,7 +30,11 @@ const BLACK_COLOR = Color(0, 0, 0, 1, 1, 1, 1);
 const WHITE_COLOR = Color(1, 1, 1, 1, 1, 1, 1);
 const PURPLE_COLOR = Color(1, 0, 1, 1, 1, 1, 1);
 
-export function main(tear: EntityTear): void {
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_FIRE_TEAR, main);
+}
+
+function main(tear: EntityTear) {
   if (
     !g.run.abelDoubleTear && // 188
     !g.run.wizDoubleTear && // 358

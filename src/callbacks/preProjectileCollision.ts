@@ -1,7 +1,15 @@
-import { EntityType, FamiliarVariant } from "isaac-typescript-definitions";
+import {
+  EntityType,
+  FamiliarVariant,
+  ModCallback,
+} from "isaac-typescript-definitions";
 import g from "../globals";
 
-export function main(
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.PRE_PROJECTILE_COLLISION, main);
+}
+
+function main(
   projectile: EntityProjectile,
   collider: Entity,
 ): boolean | undefined {

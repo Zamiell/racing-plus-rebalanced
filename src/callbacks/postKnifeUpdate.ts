@@ -1,4 +1,9 @@
+import { CollectibleType, ModCallback } from "isaac-typescript-definitions";
 import g from "../globals";
+
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_KNIFE_UPDATE, main);
+}
 
 export function main(knife: EntityKnife): void {
   if (g.run.knifeCooldownFrames > 0) {
@@ -17,8 +22,8 @@ export function main(knife: EntityKnife): void {
   }
 
   if (isFlying && !flyingLastFrame) {
-    // Calculate the velocity (the velocity of the knife will always be 0, even if it is flying
-    // across the room)
+    // Calculate the velocity. (The velocity of the knife will always be 0, even if it is flying
+    // across the room.)
     let lastKnifePosition = g.run.room.knifePositions.get(knife.Index);
     if (lastKnifePosition === undefined) {
       lastKnifePosition = Vector(knife.Position.X, knife.Position.Y);
@@ -26,7 +31,7 @@ export function main(knife: EntityKnife): void {
     const velocity = knife.Position.sub(lastKnifePosition);
 
     // Fire a tear and then immediately remove it, which will cause familiars to shoot a tear (if
-    // any)
+    // any).
     const fakeTear = g.p.FireTear(g.p.Position, velocity, false, true, false);
     fakeTear.Remove();
 
@@ -36,7 +41,7 @@ export function main(knife: EntityKnife): void {
     }
     g.run.familiarMultiShotVelocity = velocity;
 
-    // Prevent the player from spamming the knife in order to get a bunch of familiar shots
+    // Prevent the player from spamming the knife in order to get a bunch of familiar shots.
     g.run.knifeCooldownFrames = 45; // 1.5 seconds
   }
 

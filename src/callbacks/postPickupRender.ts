@@ -1,21 +1,33 @@
+import {
+  ModCallback,
+  PickupVariant,
+  RoomShape,
+} from "isaac-typescript-definitions";
 import g from "../globals";
 
 const shopItemNumbersYellow = Sprite();
 shopItemNumbersYellow.Load("gfx/005.150_shop item custom.anm2", true);
 shopItemNumbersYellow.Play("NumbersYellow", true);
 
+export function init(mod: Mod): void {
+  mod.AddCallback(
+    ModCallback.POST_PICKUP_RENDER,
+    collectible,
+    PickupVariant.COLLECTIBLE, // 100
+  );
+}
+
 // PickupVariant.COLLECTIBLE (100)
-export function collectible(pickup: EntityPickup): void {
-  // Local variables
+function collectible(pickup: EntityPickup) {
   const roomShape = g.r.GetRoomShape();
 
-  // The special yellow rendering will not work in large rooms
-  if (roomShape >= RoomShape.1x2) {
+  // The special yellow rendering will not work in large rooms.
+  if (roomShape >= RoomShape.SHAPE_1x2) {
     return;
   }
 
   // Make shop pedestal items always have yellow price text so that it is easier to distinguish them
-  // from other pickups
+  // from other pickups.
   if (pickup.Price <= 0) {
     return;
   }

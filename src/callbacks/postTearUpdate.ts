@@ -4,6 +4,7 @@ import {
   EffectVariant,
   EntityType,
   FamiliarVariant,
+  ModCallback,
   TearFlag,
   TearVariant,
 } from "isaac-typescript-definitions";
@@ -11,6 +12,10 @@ import { addFlag, spawnEffect } from "isaacscript-common";
 import { FAMILIAR_TEAR_DAMAGE } from "../constants";
 import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import g from "../globals";
+
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_TEAR_UPDATE, main);
+}
 
 export function main(tear: EntityTear): void {
   bobsRottenHead(tear); // 42

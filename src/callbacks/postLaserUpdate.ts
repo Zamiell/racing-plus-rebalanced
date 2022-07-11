@@ -1,8 +1,11 @@
-import { EntityFlag } from "isaac-typescript-definitions";
+import { EntityFlag, ModCallback } from "isaac-typescript-definitions";
 import { FAMILIAR_TEAR_DAMAGE } from "../constants";
 import g from "../globals";
 import * as misc from "../misc";
-import { CollectibleTypeCustom } from "../types/enums";
+
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_LASER_UPDATE, main);
+}
 
 export function main(laser: EntityLaser): void {
   // Items

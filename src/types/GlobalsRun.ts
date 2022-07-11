@@ -7,7 +7,7 @@ import GlobalsRunRoom from "./GlobalsRunRoom";
 // Per-run variables
 export default class GlobalsRun {
   // Tracking per run
-  randomSeed = 0;
+  randomSeed = 1 as Seed;
   tearCounter = 0;
 
   // Tracking per level. We start at 0 instead of 1 so that we can trigger the `POST_NEW_ROOM`
@@ -15,7 +15,7 @@ export default class GlobalsRun {
   level = new GlobalsRunLevel(0, 0, 0);
 
   // Tracking per room
-  room = new GlobalsRunRoom(true);
+  room = new GlobalsRunRoom();
 
   // Miscellaneous variables
   lastFireDirection = Direction.DOWN;

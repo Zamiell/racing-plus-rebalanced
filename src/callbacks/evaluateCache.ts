@@ -1,12 +1,50 @@
-import { TrinketType } from "isaac-typescript-definitions";
+import {
+  CacheFlag,
+  CollectibleType,
+  LevelStage,
+  ModCallback,
+  TrinketType,
+} from "isaac-typescript-definitions";
+import { CollectibleTypeCustom } from "../enums/CollectibleTypeCustom";
 import g from "../globals";
-import { CollectibleTypeCustom } from "../types/enums";
 
-const TINY_PLANET_EXCEPTION_ITEMS = [
+const TINY_PLANET_EXCEPTION_COLLECTIBLE_TYPES: readonly CollectibleType[] = [
   CollectibleType.EPIC_FETUS, // 168
   CollectibleType.LUDOVICO_TECHNIQUE, // 329
   CollectibleType.TECH_X, // 395
 ];
+
+export function init(mod: Mod): void {
+  mod.AddCallback(
+    ModCallback.EVALUATE_CACHE,
+    damage,
+    CacheFlag.DAMAGE, // 1
+  );
+
+  mod.AddCallback(
+    ModCallback.EVALUATE_CACHE,
+    fireDelay,
+    CacheFlag.FIRE_DELAY, // 2
+  );
+
+  mod.AddCallback(
+    ModCallback.EVALUATE_CACHE,
+    shotSpeed,
+    CacheFlag.SHOT_SPEED, // 4
+  );
+
+  mod.AddCallback(
+    ModCallback.EVALUATE_CACHE,
+    speed,
+    CacheFlag.SPEED, // 16
+  );
+
+  mod.AddCallback(
+    ModCallback.EVALUATE_CACHE,
+    luck,
+    CacheFlag.LUCK, // 1024
+  );
+}
 
 export function damage(player: EntityPlayer): void {
   damageItems(player);
@@ -37,7 +75,7 @@ function damageItems(player: EntityPlayer) {
   // 233
   if (
     player.HasCollectible(CollectibleType.TINY_PLANET) &&
-    !hasTinyPlanetExceptionItem()
+    !hasTinyPlanetExceptionItem(player)
   ) {
     player.Damage *= 1.5;
   }
@@ -110,8 +148,11 @@ function damageGlobalPenalty(player: EntityPlayer) {
 
   // For the purposes of the global damage penalty, Blue Womb should not count as a floor, meaning
   // that Womb 2 is stage 8 and Cathedral is stage 9.
-  const adjustedStage = stage >= 9 ? stage - 1 : stage;
-  const stagePenalty = ((adjustedStage - 1) / 9) * 0.3; // From 0% on stage 1 to 30% on stage 10
+  const adjustedStage =
+    stage >= LevelStage.BLUE_WOMB
+      ? (((stage as int) - 1) as LevelStage)
+      : stage;
+  const stagePenalty = (((adjustedStage as int) - 1) / 9) * 0.3; // From 0% on stage 1 to 30% on stage 10
   player.Damage *= 1 - stagePenalty;
 }
 
@@ -144,7 +185,7 @@ function fireDelayItems(player: EntityPlayer) {
   // 233
   if (
     player.HasCollectible(CollectibleType.TINY_PLANET) &&
-    !hasTinyPlanetExceptionItem()
+    !hasTinyPlanetExceptionItem(player)
   ) {
     player.MaxFireDelay -= 4;
   }
@@ -186,7 +227,7 @@ function fireDelayItems(player: EntityPlayer) {
 
   // 444
   if (
-    player.HasCollectible(CollectibleType.DARK_PRINCESS_CROWN) &&
+    player.HasCollectible(CollectibleType.DARK_PRINCES_CROWN) &&
     hearts === 2
   ) {
     player.MaxFireDelay -= 2;
@@ -242,13 +283,13 @@ function speedItems(player: EntityPlayer) {
   }
 
   // 121
-  if (player.HasCollectible(CollectibleType.ODD_MUSHROOM_DAMAGE)) {
+  if (player.HasCollectible(CollectibleType.ODD_MUSHROOM_LARGE)) {
     player.MoveSpeed += 0.1;
   }
 
   // 299
   if (player.HasCollectible(CollectibleType.TAURUS)) {
-    // In vanilla, Taurus gives -0.3 speed We want it to grant 0.2 speed
+    // In vanilla, Taurus gives -0.3 speed We want it to grant 0.2 speed.
     player.MoveSpeed += 0.5;
   }
 
@@ -274,9 +315,9 @@ function luckItems(player: EntityPlayer) {
   }
 }
 
-function hasTinyPlanetExceptionItem(): boolean {
-  for (const item of TINY_PLANET_EXCEPTION_ITEMS) {
-    if (g.p.HasCollectible(item)) {
+function hasTinyPlanetExceptionItem(player: EntityPlayer): boolean {
+  for (const collectibleType of TINY_PLANET_EXCEPTION_COLLECTIBLE_TYPES) {
+    if (player.HasCollectible(collectibleType)) {
       return true;
     }
   }

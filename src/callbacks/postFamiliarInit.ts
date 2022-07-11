@@ -1,6 +1,116 @@
-import { CollectibleType } from "isaac-typescript-definitions";
-import { ZERO_VECTOR } from "../constants";
+import {
+  CollectibleType,
+  FamiliarVariant,
+  ModCallback,
+} from "isaac-typescript-definitions";
 import g from "../globals";
+
+const DISABLE_VANILLA_SHOOTING_FAMILIAR_VARIANTS = [
+  FamiliarVariant.BROTHER_BOBBY, // 1
+  FamiliarVariant.LITTLE_GISH, // 4
+  FamiliarVariant.LITTLE_STEVEN, // 5
+  FamiliarVariant.ROBO_BABY, // 6
+  FamiliarVariant.SISTER_MAGGY, // 7
+  FamiliarVariant.GHOST_BABY, // 9
+  FamiliarVariant.HARLEQUIN_BABY, // 10
+  FamiliarVariant.RAINBOW_BABY, // 11
+  FamiliarVariant.ISAACS_HEAD, // 12
+  FamiliarVariant.MONGO_BABY, // 74
+  FamiliarVariant.SERAPHIM, // 92
+  FamiliarVariant.LIL_LOKI, // 97
+];
+
+const DAMAGE_7_FAMILIAR_VARIANT = [
+  FamiliarVariant.FOREVER_ALONE, // 30
+  FamiliarVariant.DISTANT_ADMIRATION, // 31
+  FamiliarVariant.FRIEND_ZONE, // 84
+];
+
+export function init(mod: Mod): void {
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    littleChubby,
+    FamiliarVariant.LITTLE_CHUBBY, // 3
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    deadBird,
+    FamiliarVariant.DEAD_BIRD, // 14
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    deadBird,
+    FamiliarVariant.EVES_BIRD_FOOT, // 15
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    daddyLonglegs,
+    FamiliarVariant.DADDY_LONGLEGS, // 16
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    sacrificialDagger,
+    FamiliarVariant.SACRIFICIAL_DAGGER, // 35
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    leech,
+    FamiliarVariant.LEECH, // 56
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    lilHaunt,
+    FamiliarVariant.LIL_HAUNT, // 63
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    blueBabysOnlyFriend,
+    FamiliarVariant.BLUE_BABYS_ONLY_FRIEND, // 77
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    gemini,
+    FamiliarVariant.GEMINI, // 79
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    lilGurdy,
+    FamiliarVariant.LIL_GURDY, // 87
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    bumbo,
+    FamiliarVariant.BUMBO, // 88
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_FAMILIAR_INIT,
+    bigChubby,
+    FamiliarVariant.BIG_CHUBBY, // 104
+  );
+
+  for (const familiarVariant of DISABLE_VANILLA_SHOOTING_FAMILIAR_VARIANTS) {
+    mod.AddCallback(
+      ModCallback.POST_FAMILIAR_INIT,
+      disableVanillaShooting,
+      familiarVariant,
+    );
+  }
+
+  for (const familiarVariant of DAMAGE_7_FAMILIAR_VARIANT) {
+    mod.AddCallback(ModCallback.POST_FAMILIAR_INIT, damage7, familiarVariant);
+  }
+}
 
 // FamiliarVariant.LITTLE_CHUBBY (3)
 export function littleChubby(familiar: EntityFamiliar): void {
@@ -106,7 +216,7 @@ export function lilGurdy(familiar: EntityFamiliar): void {
 
 // FamiliarVariant.BUMBO (88)
 export function bumbo(familiar: EntityFamiliar): void {
-  // Make Bumbo start at level 3 Bumbo reaches level 4 (max level) at 25 coins
+  // Make Bumbo start at level 3 Bumbo reaches level 4 (max level) at 25 coins.
   familiar.Coins = 25;
 }
 

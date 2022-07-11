@@ -1,3 +1,9 @@
+import {
+  CollectibleType,
+  PickupPrice,
+  RoomType,
+  TrinketType,
+} from "isaac-typescript-definitions";
 import { CATALOG_ITEM_PRICE, SHOP_PRICES, TWO_HEART_ITEMS } from "../constants";
 import g from "../globals";
 import { CollectibleState, CollectibleTypeCustom } from "../types/enums";
@@ -16,9 +22,9 @@ export default (): void => {
       continue;
     }
 
-    // Collectible states start at 0 Racing+ sets the state to 1 when it is finished replacing the
-    // pedestal (we must wait until it has replaced the pedestal, or we will inadvertently duplicate
-    // it)
+    // Collectible states start at 0. Racing+ sets the state to 1 when it is finished replacing the
+    // pedestal. (We must wait until it has replaced the pedestal, or we will inadvertently
+    // duplicate it.)
     if (
       pickup.SubType !== CollectibleType.NULL &&
       pickup.State !== CollectibleState.NORMAL
@@ -30,9 +36,8 @@ export default (): void => {
   }
 };
 
-// We need to make some items cost 2 red hearts without modifying the "items.xml" file
+// We need to make some items cost 2 red hearts without modifying the "items.xml" file.
 function checkDDPrice(pickup: EntityPickup) {
-  // Local variables
   const roomType = g.r.GetType();
 
   if (
@@ -44,34 +49,33 @@ function checkDDPrice(pickup: EntityPickup) {
   }
 
   // We only care about items that have a negative price, as those are the ones that cost red hearts
-  // or soul hearts
-  if (pickup.Price === 0 || pickup.Price === PickupPrice.PRICE_FREE) {
+  // or soul hearts.
+  if (pickup.Price === 0 || pickup.Price === (PickupPrice.FREE as int)) {
     return;
   }
 
   const DDPrice = getDDPrice(pickup.SubType);
   if (pickup.Price !== DDPrice) {
-    // Update the price to what it should be
+    // Update the price to what it should be.
     pickup.AutoUpdatePrice = false;
     pickup.Price = DDPrice;
   }
 }
 
 function getDDPrice(subType: CollectibleType | CollectibleTypeCustom) {
-  // Local variables
   const maxHearts = g.p.GetMaxHearts();
 
-  // If we have no red hearts, then all devil items will cost 3 soul hearts
+  // If we have no red hearts, then all devil items will cost 3 soul hearts.
   if (maxHearts === 0) {
     return -3;
   }
 
-  // Judas' Tongue causes all 2 red heart items to cost 1 red heart
+  // Judas' Tongue causes all 2 red heart items to cost 1 red heart.
   if (g.p.HasTrinket(TrinketType.JUDAS_TONGUE)) {
     return -1;
   }
 
-  // Good items should cost 2 red hearts
+  // Good items should cost 2 red hearts.
   if (TWO_HEART_ITEMS.includes(subType)) {
     return -2;
   }
@@ -100,14 +104,13 @@ function checkShopPrice(pickup: EntityPickup) {
 }
 
 function getPrice(pickup: EntityPickup) {
-  // Local variables
   const numSteamSales = g.p.GetCollectibleNum(CollectibleType.STEAM_SALE);
 
   if (g.p.HasTrinket(TrinketType.STORE_CREDIT)) {
-    return PickupPrice.PRICE_FREE;
+    return PickupPrice.FREE;
   }
   if (numSteamSales === 2) {
-    return PickupPrice.PRICE_FREE;
+    return PickupPrice.FREE;
   }
 
   let price: int;
@@ -132,7 +135,6 @@ function getPrice(pickup: EntityPickup) {
 }
 
 function checkSetBossItem(pedestal: EntityPickup) {
-  // Local variables
   const roomType = g.r.GetType();
 
   if (roomType !== RoomType.BOSS) {

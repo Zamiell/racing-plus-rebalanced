@@ -1,4 +1,4 @@
-import { Card } from "isaac-typescript-definitions";
+import { Card, ModCallback } from "isaac-typescript-definitions";
 import { getRandomArrayElement } from "isaacscript-common";
 
 const REPLACEMENT_CARDS = [
@@ -13,7 +13,11 @@ const REPLACEMENT_CARDS = [
   Card.ERA_WALK, // 54
 ];
 
-export function main(rng: RNG, card: Card): int | undefined {
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.GET_CARD, main);
+}
+
+function main(rng: RNG, card: Card): int | undefined {
   // Remove the Rules Card and A Card Against Humanity from the game.
   if (
     card !== Card.RULES && // 44

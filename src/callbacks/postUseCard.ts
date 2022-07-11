@@ -212,7 +212,6 @@ export function wheelOfFortune(): void {
 
 // Card.SUN (20)
 export function sun(): void {
-  // Local variables
   const rooms = g.l.GetRooms();
 
   // Make all the rooms invisible.
@@ -245,7 +244,6 @@ export function sun(): void {
 
 // Card.WORLD (22)
 export function world(): void {
-  // Local variables
   const rooms = g.l.GetRooms();
 
   // If they already have the compass effect, then this card will have no effect.
@@ -276,7 +274,6 @@ export function world(): void {
 
 // Card.RUNE_ANSUZ (36)
 export function ansuz(): void {
-  // Local variables
   const rooms = g.l.GetRooms();
 
   // Remove all the icons (so that the rune only reveals the map).

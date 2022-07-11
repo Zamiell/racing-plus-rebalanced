@@ -3,11 +3,95 @@ import {
   CollectibleType,
   FamiliarVariant,
   LevelStage,
+  ModCallback,
 } from "isaac-typescript-definitions";
 import { repeat, spawnFamiliar, VectorZero } from "isaacscript-common";
 import * as postNewRoom from "../callbacksCustom/postNewRoomReordered";
+import { PillEffectCustom } from "../enums/PillEffectCustom";
 import g from "../globals";
 import * as pills from "../pills";
+
+export function init(mod: Mod): void {
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    damageUp,
+    PillEffectCustom.DAMAGE_UP,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    tearDelayDown,
+    PillEffectCustom.TEAR_DELAY_DOWN,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    dealAffinity,
+    PillEffectCustom.DEAL_AFFINITY,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    boneAffinity,
+    PillEffectCustom.BONE_AFFINITY,
+  );
+
+  mod.AddCallback(ModCallback.POST_USE_PILL, restock, PillEffectCustom.RESTOCK);
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    goldenDump,
+    PillEffectCustom.GOLDEN_DUMP,
+  );
+
+  mod.AddCallback(ModCallback.POST_USE_PILL, glimpse, PillEffectCustom.GLIMPSE);
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    superSadness,
+    PillEffectCustom.SUPER_SADNESS,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    invincibility,
+    PillEffectCustom.INVINCIBILITY,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    reallyBadGas,
+    PillEffectCustom.REALLY_BAD_GAS,
+  );
+
+  mod.AddCallback(ModCallback.POST_USE_PILL, aether, PillEffectCustom.AETHER);
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    wallsHaveEyes,
+    PillEffectCustom.WALLS_HAVE_EYES,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    bladderInfection,
+    PillEffectCustom.BLADDER_INFECTION,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    scorchedEarth,
+    PillEffectCustom.SCORCHED_EARTH,
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_USE_PILL,
+    familiarFrenzy,
+    PillEffectCustom.FAMILIAR_FRENZY,
+  );
+
+  mod.AddCallback(ModCallback.POST_USE_PILL, unlock, PillEffectCustom.UNLOCK);
+}
 
 export function damageUp(): void {
   let damageAmount = 2;
@@ -32,7 +116,6 @@ export function tearDelayDown(): void {
 }
 
 export function dealAffinity(): void {
-  // Local variables
   const stage = g.l.GetStage();
 
   if (stage === LevelStage.BASEMENT_1 || stage === LevelStage.BASEMENT_2) {

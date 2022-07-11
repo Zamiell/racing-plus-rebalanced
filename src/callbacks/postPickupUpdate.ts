@@ -1,21 +1,56 @@
+import {
+  CollectibleType,
+  EntityType,
+  FamiliarVariant,
+  HeartSubType,
+  ModCallback,
+  PickupVariant,
+  RoomType,
+} from "isaac-typescript-definitions";
+import {
+  spawnCollectible,
+  spawnHeart,
+  spawnHeartWithSeed,
+} from "isaacscript-common";
 import * as postNewRoom from "../callbacksCustom/postNewRoomReordered";
-import { ZERO_VECTOR } from "../constants";
+import { CollectibleState } from "../enums/CollectibleState";
+import { TrinketTypeCustom } from "../enums/TrinketTypeCustom";
 import g from "../globals";
 import * as catalog from "../items/catalog";
 import * as misc from "../misc";
 import { COLORS } from "../pills";
-import { CollectibleState, TrinketTypeCustom } from "../types/enums";
 
-export function main(pickup: EntityPickup): void {
+export function init(mod: Mod): void {
+  mod.AddCallback(ModCallback.POST_PICKUP_UPDATE, main);
+
+  mod.AddCallback(
+    ModCallback.POST_PICKUP_UPDATE,
+    heart,
+    PickupVariant.HEART, // 10
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_PICKUP_UPDATE,
+    pill,
+    PickupVariant.PILL, // 70
+  );
+
+  mod.AddCallback(
+    ModCallback.POST_PICKUP_UPDATE,
+    collectible,
+    PickupVariant.COLLECTIBLE, // 100
+  );
+}
+
+function main(pickup: EntityPickup) {
   checkTouched(pickup);
 }
 
 function checkTouched(pickup: EntityPickup) {
-  // Local variables
   const sprite = pickup.GetSprite();
   const data = pickup.GetData();
 
-  // Keep track of pickups that are touched
+  // Keep track of pickups that are touched.
   if (sprite.IsPlaying("Collect") && data.touched === undefined) {
     data.touched = true;
     Isaac.DebugString(
@@ -45,15 +80,7 @@ function touchedEtherealPenny(pickup: EntityPickup) {
     return;
   }
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
-  g.g.Spawn(
-    EntityType.PICKUP,
-    PickupVariant.HEART,
-    position,
-    ZERO_VECTOR,
-    null,
-    HeartSubType.HALF_SOUL,
-    g.run.etherealPennyRNG,
-  );
+  spawnHeartWithSeed(HeartSubType.HALF_SOUL, position, g.run.etherealPennyRNG);
 }
 
 // PickupVariant.HEART (10)
@@ -77,7 +104,7 @@ export function pill(pickup: EntityPickup): void {
 
   pickup.Remove();
 
-  // Get a new random color
+  // Get a new random color.
   math.randomseed(pickup.InitSeed);
   const colorIndex = math.random(0, COLORS.length - 1);
   const color = COLORS[colorIndex];
@@ -95,29 +122,26 @@ export function pill(pickup: EntityPickup): void {
 
 // CollectibleType.RELIC (98)
 function heartRelic(pickup: EntityPickup) {
-  // Replace soul hearts from The Relic with half soul hearts (5.10.8)
+  // Replace soul hearts from The Relic with half soul hearts.
   if (
     pickup.SubType === HeartSubType.SOUL &&
     pickup.SpawnerType === EntityType.FAMILIAR &&
     pickup.SpawnerVariant === FamiliarVariant.RELIC
   ) {
-    g.g.Spawn(
-      EntityType.PICKUP,
-      PickupVariant.HEART,
+    spawnHeart(
+      HeartSubType.HALF_SOUL,
       pickup.Position,
       pickup.Velocity,
       pickup.SpawnerEntity,
-      HeartSubType.HALF_SOUL,
       pickup.InitSeed,
     );
     pickup.Remove();
   }
 }
 
-// For some reason, items rerolled in Curse Rooms change to red hearts Delete them and respawn
-// another pedestal item
+// For some reason, items rerolled in Curse Rooms change to red hearts. Delete them and respawn
+// another pedestal item.
 function heartCheckDDReroll(pickup: EntityPickup) {
-  // Local variables
   const roomType = g.r.GetType();
 
   if (
@@ -131,8 +155,8 @@ function heartCheckDDReroll(pickup: EntityPickup) {
   }
 }
 
-// For some reason, rolled Catalog items change to red hearts Delete them and respawn another
-// pedestal item
+// For some reason, rolled Catalog items change to red hearts. Delete them and respawn another
+// pedestal item.
 function heartCheckCatalogReroll(pickup: EntityPickup) {
   if (
     pickup.FrameCount === 1 &&
@@ -140,7 +164,7 @@ function heartCheckCatalogReroll(pickup: EntityPickup) {
     pickup.Price === 3 &&
     !catalog.inIllegalRoomType()
   ) {
-    catalog.spawnItem(pickup.Position);
+    catalog.spawnCatalogCollectible(pickup.Position);
     pickup.Remove();
   }
 }
@@ -155,45 +179,37 @@ function collectibleCheckDouble(pickup: EntityPickup) {
     return;
   }
 
-  // Double every pedestal item that spawns (we can't do this in the MC_POST_PICKUP_INIT callback
-  // because the position is not set)
+  // Double every pedestal item that spawns. (We can't do this in the `POST_PICKUP_INIT` callback
+  // because the position is not set.)
   const gameFrameCount = g.g.GetFrameCount();
   if (
     g.r.IsFirstVisit() &&
-    // Frame 0 does not work Frame 1 works but we need to wait an extra frame for Racing+ to replace
-    // the pedestal
+    // Frame 0 does not work. Frame 1 works but we need to wait an extra frame for Racing+ to
+    // replace the pedestal.
     pickup.FrameCount === 2 &&
-    pickup.State !== 2 && // We mark a state of 2 to indicate a duplicated pedestal
+    pickup.State !== 2 && // We mark a state of 2 to indicate a duplicated pedestal.
     (g.run.room.doubleItemsFrame === 0 ||
       g.run.room.doubleItemsFrame === gameFrameCount)
   ) {
     const position = g.r.FindFreePickupSpawnPosition(pickup.Position, 1, true);
     g.run.randomSeed = misc.incrementRNG(g.run.randomSeed);
-    const pedestal = g.g
-      .Spawn(
-        EntityType.PICKUP,
-        PickupVariant.COLLECTIBLE,
-        position,
-        ZERO_VECTOR,
-        null,
-        0,
-        g.run.randomSeed,
-      )
-      .ToPickup();
+    const collectible = spawnCollectible(
+      CollectibleType.NULL,
+      position,
+      g.run.randomSeed,
+    );
 
-    if (pedestal !== null) {
-      // We don't want it to automatically be bought
-      pedestal.Price = pickup.Price;
+    // We don't want it to automatically be bought.
+    collectible.Price = pickup.Price;
 
-      // We want it to keep the behavior of the room
-      pedestal.TheresOptionsPickup = pickup.TheresOptionsPickup;
+    // We want it to keep the behavior of the room.
+    collectible.OptionsPickupIndex = pickup.OptionsPickupIndex;
 
-      // Mark it so that we don't duplicate it again
-      pedestal.State = CollectibleState.DUPLICATED;
+    // Mark it so that we don't duplicate it again.
+    collectible.State = CollectibleState.DUPLICATED;
 
-      // We only want to duplicate pedestals once per room to avoid duplicating rerolled pedestals
-      // (the state will go back to 0 for a rerolled pedestal)
-      g.run.room.doubleItemsFrame = gameFrameCount;
-    }
+    // We only want to duplicate pedestals once per room to avoid duplicating rerolled pedestals.
+    // (The state will go back to 0 for a rerolled pedestal.)
+    g.run.room.doubleItemsFrame = gameFrameCount;
   }
 }

@@ -1,55 +1,44 @@
-import {
-  CATALOG_ILLEGAL_ROOM_TYPES,
-  CATALOG_ITEM_PRICE,
-  ZERO_VECTOR,
-} from "../constants";
+import { CollectibleType } from "isaac-typescript-definitions";
+import { sfxManager, spawnCollectible } from "isaacscript-common";
+import { CATALOG_ILLEGAL_ROOM_TYPES, CATALOG_ITEM_PRICE } from "../constants";
+import { SoundEffectCustom } from "../enums/SoundEffectCustom";
 import g from "../globals";
 import * as misc from "../misc";
-import { SoundEffectCustom } from "../types/enums";
 
 // ModCallback.POST_USE_ITEM (3)
 export function useItem(): boolean {
   const position = g.r.FindFreePickupSpawnPosition(g.p.Position, 1, true);
-  spawnItem(position);
+  spawnCatalogCollectible(position);
   sfxManager.Play(SoundEffectCustom.SANTA, 1, 0, false, 1);
   return true;
 }
 
-export function spawnItem(position: Vector): void {
+export function spawnCatalogCollectible(position: Vector): void {
   g.run.catalogRNG = misc.incrementRNG(g.run.catalogRNG);
-  const spawnedItem = g.g
-    .Spawn(
-      EntityType.PICKUP,
-      PickupVariant.COLLECTIBLE,
-      position,
-      ZERO_VECTOR,
-      null,
-      0, // Random item
-      g.run.catalogRNG,
-    )
-    .ToPickup();
+  const collectible = spawnCollectible(
+    CollectibleType.NULL,
+    position,
+    g.run.catalogRNG,
+  );
 
-  if (spawnedItem !== null) {
-    // Mark that this is a pedestal item spawned from a Catalog
-    const data = spawnedItem.GetData();
-    data.catalogItem = true;
+  // Mark that this is a pedestal item spawned from a Catalog.
+  const data = collectible.GetData();
+  data["catalogItem"] = true;
 
-    // Set the initial price
-    spawnedItem.AutoUpdatePrice = false;
-    spawnedItem.Price = CATALOG_ITEM_PRICE;
-  }
+  // Set the initial price.
+  collectible.AutoUpdatePrice = false;
+  collectible.Price = CATALOG_ITEM_PRICE;
 }
 
 // ModCallback.PRE_USE_ITEM (23)
 export function preUseItem(): boolean {
-  // Local variables
   const gameFrameCount = g.g.GetFrameCount();
 
-  // Prevent the player from using the Catalog in certain rooms
+  // Prevent the player from using the Catalog in certain rooms.
   if (inIllegalRoomType()) {
     g.p.AnimateSad();
 
-    // Mark to recharge the item on the next frame
+    // Mark to recharge the item on the next frame.
     RacingPlusGlobals.run.rechargeItemFrame = gameFrameCount + 1;
 
     // Cancel the effect
@@ -60,7 +49,6 @@ export function preUseItem(): boolean {
 }
 
 export function inIllegalRoomType(): boolean {
-  // Local variables
   const roomType = g.r.GetType();
 
   return CATALOG_ILLEGAL_ROOM_TYPES.includes(roomType);

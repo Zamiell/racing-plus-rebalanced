@@ -5,6 +5,7 @@ import {
   EntityType,
   HeartSubType,
   ItemPoolType,
+  ModCallback,
   PickupVariant,
 } from "isaac-typescript-definitions";
 import {
@@ -16,6 +17,7 @@ import {
   spawnWithSeed,
 } from "isaacscript-common";
 import { CreepSubTypeCustom } from "../enums/CreepSubTypeCustom";
+import { EffectVariantCustom } from "../enums/EffectVariantCustom";
 import g from "../globals";
 
 const ITEM_POOL_TYPES = [
@@ -32,8 +34,43 @@ enum DiceFloorState {
   ACTIVATED,
 }
 
+export function init(mod: Mod): void {
+  mod.AddCallback(
+    ModCallback.POST_EFFECT_UPDATE,
+    blueFlame,
+    EffectVariant.BLUE_FLAME, // 10
+  );
+  mod.AddCallback(
+    ModCallback.POST_EFFECT_UPDATE,
+    diceRoomCustom,
+    EffectVariantCustom.DICE_ROOM_FLOOR_CUSTOM,
+  );
+
+  const playerCreepEffectVariants = [
+    EffectVariant.PLAYER_CREEP_LEMON_MISHAP, // 32 (does 8 damage per tick, ticks every 10 frames)
+    EffectVariant.PLAYER_CREEP_HOLY_WATER, // 37 (does 8 damage per tick, ticks every 10 frames)
+    EffectVariant.PLAYER_CREEP_RED, // 46 (does 2 damage per tick, ticks every 10 frames)
+    // - `EffectVariant.PLAYER_CREEP_WHITE` (44) does not deal damage.
+    // - `EffectVariant.PLAYER_CREEP_BLACK` (45) does not deal damage.
+    EffectVariant.PLAYER_CREEP_GREEN, // 53 (does 0.35 damage per tick, ticks every 1 frame)
+    // (Racing+ replaces green player creep with holy water trail creep, so this entry is
+    // superfluous.)
+    EffectVariant.PLAYER_CREEP_HOLY_WATER_TRAIL, // 54 (does 2 damage per tick, ticks every 10 frames)
+    EffectVariant.PLAYER_CREEP_LEMON_PARTY, // 78 (does 8 damage per tick, ticks every 10 frames)
+    // - EffectVariant.PLAYER_CREEP_PUDDLE_MILK (90) does not deal damage.
+    // - EffectVariant.PLAYER_CREEP_BLACKPOWDER (92) does not deal damage.
+  ];
+  for (const effectVariant of playerCreepEffectVariants) {
+    mod.AddCallback(
+      ModCallback.POST_EFFECT_UPDATE,
+      creepScaling,
+      effectVariant,
+    );
+  }
+}
+
 // EffectVariant.BLUE_FLAME (10)
-export function blueFlame(effect: EntityEffect): void {
+function blueFlame(effect: EntityEffect) {
   if (effect.FrameCount === 0) {
     effect.Size *= 2; // This increases the hitbox
     effect.CollisionDamage *= 2; // Increased to 46 (from 23)
